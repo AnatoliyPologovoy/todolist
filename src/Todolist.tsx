@@ -6,7 +6,7 @@ type TodolistPropsType = {
     header: string,
     tasks: TasksType[],
     removeTask: (id: string) => void,
-    changeDoneTask: (id: string, newIsDone: boolean) => void
+    changeStatusTask: (id: string, newIsDone: boolean) => void
     addTask: (titleTask: string) => void
 }
 
@@ -37,9 +37,6 @@ export function Todolist(props: TodolistPropsType) {
         setFilter(filterWord)
     }
 
-    const checkboxChangeHandler = (id:string, checked:boolean) => {
-        props.changeDoneTask(id, checked)
-    }
 
     //Tasks array
     const renderTasksList = tasks.map(task => {
@@ -48,20 +45,17 @@ export function Todolist(props: TodolistPropsType) {
             <li key={task.id} className={task.isDone ? s.isDone : ''}>
                 <input type="checkbox"
                        checked={task.isDone}
-                       onChange={(event) => {checkboxChangeHandler(task.id, event.currentTarget.checked)}}
+                       onChange={(event) => {props.changeStatusTask(task.id, event.currentTarget.checked)}}
                 />&nbsp;
                 {task.title}&nbsp;
-                <button onClick={() => buttonRemoveTaskHandler(task.id)}>X</button>
+                <button onClick={() => props.removeTask(task.id)}>X</button>
             </li>
         )
     })
 
-    //removing tasks
-    const buttonRemoveTaskHandler = (id: string) => {
-        props.removeTask(id)
-    }
-    //adding new tasks
-    const addTaskHandler = () => {
+
+    //adding new tasks (button)
+    const addTaskButtonHandler = () => {
         if (inputValue.trim() !== '') {
             props.addTask(inputValue.trim());
         }
@@ -71,13 +65,13 @@ export function Todolist(props: TodolistPropsType) {
         setInputValue('');
     }
     //input
-    const inputOnChange = (evt: ChangeEvent<HTMLInputElement>) => {
-        setError('')
+    const onChangeInput = (evt: ChangeEvent<HTMLInputElement>) => {
+        setError('') //remove error when we start change input
         setInputValue(evt.currentTarget.value)
     }
-    const inputOnKeyHandler = (evt: KeyboardEvent<HTMLInputElement>) => {
+    const onKeyInputHandler = (evt: KeyboardEvent<HTMLInputElement>) => {
         if (evt.key === 'Enter') {
-            addTaskHandler()
+            addTaskButtonHandler()
         }
     }
 
@@ -89,11 +83,11 @@ export function Todolist(props: TodolistPropsType) {
             <input
                 value={inputValue}
                 type="text"
-                onChange={inputOnChange}
-                onKeyDown={inputOnKeyHandler}
+                onChange={onChangeInput}
+                onKeyDown={onKeyInputHandler}
                 className={error ? s.error : ''}
             />
-            <button onClick={addTaskHandler}>+</button>
+            <button onClick={addTaskButtonHandler}>+</button>
             { error && <div className={s.errorMessage}>{error}</div>}
             <ul>
                 {renderTasksList}
