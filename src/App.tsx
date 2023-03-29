@@ -1,11 +1,21 @@
 import React, {useState} from 'react';
 import './App.css';
-import {TasksType, Todolist} from "./Todolist";
+import {FilterType, TaskType, Todolist} from "./Todolist";
 import {v1} from "uuid";
 
+export type TodoListType = {
+    id: string
+    title: string
+    filter: FilterType
+}
 
-function App() {
-    const h1 = 'What i must to do';
+function App(): JSX.Element {
+    const tdlId_1 = v1()
+    const tdlId_2 = v1()
+    const [todoLists, setTodoLists] = useState<Array<TodoListType>>([
+        {id: tdlId_1, title: 'What to learn', filter: 'all'},
+        {id: tdlId_2, title: 'What to buy', filter: 'all'}
+    ])
 
     let [tasks, setTask] = useState([
         {id: v1(), title: "HTML&CSS", isDone: true},
@@ -23,7 +33,7 @@ function App() {
 
     const changeIsDoneTask = (id: string, newIsDown: boolean) => {
         setTask(tasks.map(
-            el => el.id === id ? {...el, isDone: newIsDown} : el ))
+            el => el.id === id ? {...el, isDone: newIsDown} : el))
     }
 
     const addTask = (titleTask: string) => {
@@ -31,15 +41,38 @@ function App() {
         setTask([newTask, ...tasks])
     }
 
+    const filteringTasks = (tasks: TaskType[], filter:FilterType) => {
+        const filteredTasks = tasks
+        switch (filter) {
+            case "active":
+                return filteredTasks.filter(task => !task.isDone)
+            case "complied":
+                return filteredTasks.filter(task => task.isDone)
+            default:
+                return filteredTasks
+        }
+    }
+
+    const todoListsComponents = todoLists.map(tdl => {
+        const filteredTasks: TaskType[] = filteringTasks(tasks, tdl.filter)
+        return (
+            <Todolist
+                key={tdl.id}
+                id={tdl.id}
+                header={tdl.title}
+                filter={tdl.filter}
+                tasks={filteredTasks}
+                removeTask={removeTask}
+                changeStatusTask={changeIsDoneTask}
+                addTask={addTask}
+            />
+        )
+    })
+
+
     return (
         <div className="App">
-            <Todolist header={h1}
-                      tasks={tasks}
-                      removeTask={removeTask}
-                      changeStatusTask={changeIsDoneTask}
-                      addTask={addTask}
-            />
-
+            {todoListsComponents}
         </div>
     );
 }
