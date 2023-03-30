@@ -21,7 +21,7 @@ function App(): JSX.Element {
         {id: tdlId_2, title: 'What to buy', filter: 'all'}
     ])
 
-    let [tasks, setTask] = useState<TasksStateType>(
+    const [tasks, setTask] = useState<TasksStateType>(
         {
             [tdlId_1]: [
                 {id: v1(), title: "HTML&CSS", isDone: true},
@@ -36,24 +36,47 @@ function App(): JSX.Element {
                 {id: v1(), title: "Bread", isDone: false},
             ]
         })
+    console.log(tasks)
 
-    const removeTask = (id: string) => {
+    const removeTodoList = (todoListId: string) => {
+        setTodoLists(todoLists.filter(tdl => tdl.id !== todoListId))
+        const newTasks = {...tasks}
+        delete newTasks[todoListId]
+        setTask(newTasks)
+    }
+
+    const removeTask = (taskId: string, todoListId: string) => {
+        const updatedTasks = tasks[todoListId].filter(task => task.id !== taskId)
         setTask(
-            tasks.filter(el => el.id !== id)
+            {...tasks, [todoListId]: updatedTasks}
         )
     }
-
-    const changeIsDoneTask = (id: string, newIsDown: boolean) => {
-        setTask(tasks.map(
-            el => el.id === id ? {...el, isDone: newIsDown} : el))
+    const changeIsDoneTask = (taskId: string, newIsDown: boolean, todoListId: string) => {
+        const updatedTasks = tasks[todoListId].map(task => {
+            return task.id === taskId ? {...task, isDone: newIsDown} : task
+        })
+        setTask({...tasks, [todoListId]: updatedTasks})
     }
-
-    const addTask = (titleTask: string) => {
+    const addTask = (titleTask: string, todoListId: string) => {
         const newTask = {id: v1(), title: titleTask, isDone: false}
-        setTask([newTask, ...tasks])
+        const updatedTasks = [newTask, ...tasks[todoListId]]
+        setTask({...tasks, [todoListId]: updatedTasks})
+    }
+    const changeFilter = (filterValue: FilterType, todoListId: string) => {
+        const updatedTodoList = todoLists.map(tdl => {
+            return tdl.id === todoListId ? {...tdl, filter: filterValue} : tdl
+        })
+        setTodoLists(updatedTodoList)
+        //or found need todolist, change in it filter and them setting copy todolists
+        // const foundTodoList = todoLists.find(tdl => tdl.id === todoListId)
+        // if (foundTodoList) {
+        //     foundTodoList.filter = filterValue
+        //     setTodoLists([...todoLists])
+        // }
+
     }
 
-    const filteringTasks = (tasks: TaskType[], filter: FilterType) => {
+    const filteringTasksForRender = (tasks: TaskType[], filter: FilterType) => {
         const filteredTasks = tasks
         switch (filter) {
             case "active":
@@ -66,17 +89,19 @@ function App(): JSX.Element {
     }
 
     const todoListsComponents = todoLists.map(tdl => {
-        const filteredTasks: TaskType[] = filteringTasks(tasks, tdl.filter)
+        const filteredTasks: TaskType[] = filteringTasksForRender(tasks[tdl.id], tdl.filter)
         return (
             <Todolist
                 key={tdl.id}
-                id={tdl.id}
-                header={tdl.title}
+                todoListId={tdl.id}
+                title={tdl.title}
                 filter={tdl.filter}
                 tasks={filteredTasks}
                 removeTask={removeTask}
                 changeStatusTask={changeIsDoneTask}
                 addTask={addTask}
+                changeFilter={changeFilter}
+                removeTodoList={removeTodoList}
             />
         )
     })
