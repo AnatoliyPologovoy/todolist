@@ -9,6 +9,10 @@ export type TodoListType = {
     filter: FilterType
 }
 
+export type TasksStateType = {
+    [key: string]: TaskType[]
+}
+
 function App(): JSX.Element {
     const tdlId_1 = v1()
     const tdlId_2 = v1()
@@ -17,13 +21,21 @@ function App(): JSX.Element {
         {id: tdlId_2, title: 'What to buy', filter: 'all'}
     ])
 
-    let [tasks, setTask] = useState([
-        {id: v1(), title: "HTML&CSS", isDone: true},
-        {id: v1(), title: "JS", isDone: true},
-        {id: v1(), title: "ReactJS", isDone: false},
-        {id: v1(), title: "Redux", isDone: false},
-        {id: v1(), title: "SQL", isDone: false},
-    ])
+    let [tasks, setTask] = useState<TasksStateType>(
+        {
+            [tdlId_1]: [
+                {id: v1(), title: "HTML&CSS", isDone: true},
+                {id: v1(), title: "JS", isDone: true},
+                {id: v1(), title: "ReactJS", isDone: false},
+                {id: v1(), title: "Redux", isDone: false},
+                {id: v1(), title: "SQL", isDone: false},
+            ],
+            [tdlId_2]: [
+                {id: v1(), title: "Milk", isDone: false},
+                {id: v1(), title: "Egs", isDone: true},
+                {id: v1(), title: "Bread", isDone: false},
+            ]
+        })
 
     const removeTask = (id: string) => {
         setTask(
@@ -41,7 +53,7 @@ function App(): JSX.Element {
         setTask([newTask, ...tasks])
     }
 
-    const filteringTasks = (tasks: TaskType[], filter:FilterType) => {
+    const filteringTasks = (tasks: TaskType[], filter: FilterType) => {
         const filteredTasks = tasks
         switch (filter) {
             case "active":
