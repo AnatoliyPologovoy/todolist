@@ -14,16 +14,28 @@ export const AddItemForm: FC<AddItemFormPropsType> = ({addItem}) => {
         setError('') //remove error when we start change input
         setInputValue(evt.currentTarget.value)
     }
+    const maxLengthTitle = 20
+    const minLengthTitle = 5
 
     const addItemHandler = () => {
         const trimmedValue = inputValue.trim()
-        if (trimmedValue !== '') {
-            addItem(trimmedValue);
-        }
-        else {
+        let isAddTaskPossible = true
+        if (trimmedValue === '') {
             setError('Field is required')
+            isAddTaskPossible = false
         }
-        setInputValue('');
+        if (trimmedValue.length > maxLengthTitle) {
+            setError('Title is too long')
+            isAddTaskPossible = false
+        }
+        if (trimmedValue.length < minLengthTitle) {
+            setError('Title is too short')
+            isAddTaskPossible = false
+        }
+        if (isAddTaskPossible) {
+            addItem(trimmedValue);
+            setInputValue('');
+        }
     }
 
 
@@ -32,10 +44,6 @@ export const AddItemForm: FC<AddItemFormPropsType> = ({addItem}) => {
             addItemHandler()
         }
     }
-
-
-    //const maxTitleLength = 20
-    //const isAddTaskPossible: boolean | null = !inputValue.length || inputValue.length > maxTitleLength || error
 
     return (
         <div>

@@ -8,7 +8,7 @@ type EditableSpanPropsType = {
 
 const EditableSpan: FC<EditableSpanPropsType> = ({title, classes, changeTitle}) => {
     const [isEditMode, setIsEditMode] = useState(false)
-    let [inputValue, setInputValue] = useState<string>(title)
+    const [inputValue, setInputValue] = useState<string>(title)
 
     const onEditMode = () => {
         setIsEditMode(true)
