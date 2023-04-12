@@ -3,6 +3,18 @@ import './App.css';
 import {FilterType, TaskType, Todolist} from "./Todolist";
 import {v1} from "uuid";
 import {AddItemForm} from "./addItemForm";
+import {
+    AppBar,
+    Button,
+    Checkbox, Container, createTheme, CssBaseline,
+    FormControlLabel,
+    FormGroup, Grid,
+    IconButton, ThemeProvider,
+    Toolbar,
+    Typography
+} from '@mui/material';
+import {Menu} from "@mui/icons-material";
+import {lightBlue, orange} from "@mui/material/colors";
 
 export type TodoListType = {
     id: string
@@ -39,6 +51,8 @@ function App(): JSX.Element {
                 {id: v1(), title: "Bread", isDone: false},
             ]
         })
+
+    const [isDarkMode, setDarkMode] = useState(true)
 
     //CRUD todoLists
     const removeTodoList = (todoListId: string) => {
@@ -114,29 +128,73 @@ function App(): JSX.Element {
     const todoListsComponents = todoLists.map(tdl => {
         const filteredTasks: TaskType[] = filteringTasksForRender(tasks[tdl.id], tdl.filter)
         return (
-            <Todolist
-                key={tdl.id}
-                todoListId={tdl.id}
-                title={tdl.title}
-                filter={tdl.filter}
-                tasks={filteredTasks}
-                removeTask={removeTask}
-                changeStatusTask={changeIsDoneTask}
-                addTask={addTask}
-                changeFilter={changeFilter}
-                removeTodoList={removeTodoList}
-                changeTitleTask={changeTitleTask}
-                changeTitleTodolist={changeTitleTodolist}
-            />
+            <Grid item>
+                <Todolist
+                    key={tdl.id}
+                    todoListId={tdl.id}
+                    title={tdl.title}
+                    filter={tdl.filter}
+                    tasks={filteredTasks}
+                    removeTask={removeTask}
+                    changeStatusTask={changeIsDoneTask}
+                    addTask={addTask}
+                    changeFilter={changeFilter}
+                    removeTodoList={removeTodoList}
+                    changeTitleTask={changeTitleTask}
+                    changeTitleTodolist={changeTitleTodolist}
+                />
+            </Grid>
         )
     })
 
+    const mode = isDarkMode ? 'dark' : 'light'
+    const customTheme = createTheme({
+        palette: {
+            primary: lightBlue,
+            secondary: orange,
+            mode: mode
+        }
+    })
 
     return (
-        <div className="App">
-            <AddItemForm addItem={addTodoList}/>
-            {todoListsComponents}
-        </div>
+        <ThemeProvider theme={customTheme}>
+            <CssBaseline>
+                <div className="App">
+                    <AppBar position="static">
+                        <Toolbar>
+                            <IconButton
+                                size="large"
+                                edge="start"
+                                color="inherit"
+                                aria-label="menu"
+                                sx={{mr: 2}}
+                            >
+                                <Menu/>
+                            </IconButton>
+                            <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
+                                TodoLists
+                            </Typography>
+                            <FormGroup>
+                                <FormControlLabel
+                                    control={<Checkbox
+                                        onChange={(e)=>setDarkMode(e.currentTarget.checked)} />}
+                                    label={isDarkMode ? "Light mode" : "Dark mode"}
+                                />
+                            </FormGroup>
+                            <Button color="inherit">Login</Button>
+                        </Toolbar>
+                    </AppBar>
+                    <Container fixed>
+                        <Grid container sx={{p: '15px 0'}}>
+                            <AddItemForm addItem={addTodoList}/>
+                        </Grid>
+                        <Grid container spacing={4}>
+                            {todoListsComponents}
+                        </Grid>
+                    </Container>
+                </div>
+            </CssBaseline>
+        </ThemeProvider>
     );
 }
 

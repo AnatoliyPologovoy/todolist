@@ -1,5 +1,7 @@
 import React, {ChangeEvent, FC, KeyboardEvent, useState} from 'react';
 import s from "./todolist.module.css";
+import {IconButton, TextField} from "@mui/material";
+import AddBoxIcon from '@mui/icons-material/AddBox';
 
 type AddItemFormPropsType = {
     addItem: (title: string) => void
@@ -45,16 +47,22 @@ export const AddItemForm: FC<AddItemFormPropsType> = ({addItem}) => {
         }
     }
 
+    const isError = !!error
+
     return (
         <div>
-            <input
+            <TextField
                 value={inputValue}
                 type="text"
                 onChange={onChangeInput}
                 onKeyDown={onKeyInputHandler}
-                className={error ? s.error : ''}
+                error={isError}
+                multiline={false}
+                size={"small"}
             />
-            <button onClick={addItemHandler}>+</button>
+            <IconButton onClick={addItemHandler}>
+                <AddBoxIcon/>
+            </IconButton>
             { error && <div className={s.errorMessage}>{error}</div>}
         </div>
     );
