@@ -1,8 +1,8 @@
-import React, {FormEvent} from "react";
+import React, {FormEvent, useRef} from "react";
 import s from "./todolist.module.css";
 import {AddItemForm} from "./addItemForm";
 import EditableSpan from "./EditableSpan";
-import {Button, Checkbox, IconButton, List, ListItem, ListItemButton} from "@mui/material";
+import {Button, Checkbox, FormControlLabel, IconButton, List, ListItem, ListItemButton} from "@mui/material";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 
@@ -57,6 +57,7 @@ export function Todolist(props: TodolistPropsType) {
         const changeTaskTitle = (newTitle: string) => {
             changeTitleTask(task.id, newTitle, todoListId)
         }
+
         return (
             <ListItem
                 divider
@@ -73,9 +74,8 @@ export function Todolist(props: TodolistPropsType) {
                 className={task.isDone ? s.isDone : ''}
             >
                 <ListItemButton onClick={(e)=> {
-                    let divNode = e.target
-
-                    console.log(divNode)
+                    const checkbox = e.currentTarget.children[0].children[0] as HTMLInputElement
+                    changeStatusTask(task.id, !checkbox.checked, todoListId)
                 }}>
                     <Checkbox
                         checked={task.isDone}

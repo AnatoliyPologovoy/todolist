@@ -177,6 +177,7 @@ function App(): JSX.Element {
                             <FormGroup>
                                 <FormControlLabel
                                     control={<Checkbox
+                                        checked={isDarkMode}
                                         onChange={(e)=>setDarkMode(e.currentTarget.checked)} />}
                                     label={isDarkMode ? "Light mode" : "Dark mode"}
                                 />
