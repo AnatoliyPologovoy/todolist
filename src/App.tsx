@@ -80,12 +80,6 @@ function App(): JSX.Element {
             return tdl.id === todoListId ? {...tdl, filter: filterValue} : tdl
         })
         setTodoLists(updatedTodoList)
-        //or found need todolist, change in it filter and them setting copy todolists
-        // const foundTodoList = todoLists.find(tdl => tdl.id === todoListId)
-        // if (foundTodoList) {
-        //     foundTodoList.filter = filterValue
-        //     setTodoLists([...todoLists])
-        // }
     }
     //CRUD tasks
     const removeTask = (taskId: string, todoListId: string) => {
