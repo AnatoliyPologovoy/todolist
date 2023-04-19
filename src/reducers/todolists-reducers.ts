@@ -24,7 +24,7 @@ export type ChangeTodolistFilterAT = {
     id: string
 }
 
-export type ActionsType = RemoveTodolistAT | AddTodolistAT | ChangeTodolistTitleAT | ChangeTodolistFilterAT
+export type ActionsType = RemoveTodolistACType | AddTodolistAT | ChangeTodolistTitleAT | ChangeTodolistFilterAT
 
 export const todolistsReducers = (state: TodoListType[], action: ActionsType): TodoListType[] => {
     switch (action.type) {
@@ -49,13 +49,16 @@ export const todolistsReducers = (state: TodoListType[], action: ActionsType): T
     }
 }
 
-export const RemoveTodolistAC = (id: string):RemoveTodolistAT => {
+export type RemoveTodolistACType = ReturnType<typeof RemoveTodolistAC> //creating type for the action
+
+export const RemoveTodolistAC = (id: string)=> {
     return {
         type: "REMOVE-TODOLIST",
         id
-    }
+    } as const //important notice for typing
 }
-export const AddTodolostAC = (title: string):AddTodolistAT => {
+
+export const AddTodolistAC = (title: string):AddTodolistAT => {
     return {
         type: "ADD-TODOLIST",
         title
