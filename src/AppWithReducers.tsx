@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {Reducer, useReducer, useState} from 'react';
 import './App.css';
 import {FilterType, TaskType, Todolist} from "./Todolist";
 import {v1} from "uuid";
@@ -15,6 +15,21 @@ import {
 } from '@mui/material';
 import {Menu} from "@mui/icons-material";
 import {lightBlue, orange} from "@mui/material/colors";
+import {
+    ActionsType,
+    AddTodolistAC, ChangeTodolistFilterAC,
+    ChangeTodolistTitleAC,
+    RemoveTodolistAC,
+    todolistsReducer
+} from "./reducers/todolists-reducers";
+import {
+    ActionsTaskType,
+    addTaskAC,
+    changeTaskStatusAC,
+    changeTaskTitleAC,
+    removeTaskAC,
+    tasksReducer
+} from "./reducers/task-reducers";
 
 export type TodoListType = {
     id: string
@@ -26,19 +41,21 @@ export type TasksStateType = {
     [key: string]: TaskType[]
 }
 
-function App(): JSX.Element {
+function AppWithReducers(): JSX.Element {
     //BLL:
     const tdlId_1 = v1()
     const tdlId_2 = v1()
 
-    const [todoLists, setTodoLists] =
-        useState<Array<TodoListType>>([
+    const [todoLists, dispatchTodoLists] =
+        useReducer<Reducer<TodoListType[], ActionsType>>(todolistsReducer,
+            [
         {id: tdlId_1, title: 'What to learn', filter: 'all'},
         {id: tdlId_2, title: 'What to buy', filter: 'all'}
     ])
 
-    const [tasks, setTask] = useState<TasksStateType>(
-        {
+    const [tasks, dispatchTask] =
+        useReducer<Reducer<TasksStateType, ActionsTaskType>>(tasksReducer,
+            {
             [tdlId_1]: [
                 {id: v1(), title: "HTML&CSS", isDone: true},
                 {id: v1(), title: "JS", isDone: true},
@@ -57,54 +74,66 @@ function App(): JSX.Element {
 
     //CRUD todoLists
     const removeTodoList = (todoListId: string) => {
-        setTodoLists(todoLists.filter(tdl => tdl.id !== todoListId))
-        const newTasks = {...tasks}
-        delete newTasks[todoListId]
-        setTask(newTasks)
+        const action = RemoveTodolistAC(todoListId)
+        dispatchTodoLists(action)
+        dispatchTask(action)
+        // setTodoLists(todoLists.filter(tdl => tdl.id !== todoListId))
+        // const newTasks = {...tasks}
+        // delete newTasks[todoListId]
+        // setTask(newTasks)
     }
     const addTodoList = (title: string) => {
-        const newTodo: TodoListType = {
-            id: v1(),
-            title,
-            filter: 'all'
-        }
-        setTodoLists([...todoLists, newTodo])
-        setTask({[newTodo.id]: [], ...tasks})
+        const action = AddTodolistAC(title)
+        dispatchTodoLists(action)
+        dispatchTask(action)
+        // const newTodo: TodoListType = {
+        //     id: v1(),
+        //     title,
+        //     filter: 'all'
+        // }
+        // setTodoLists([...todoLists, newTodo])
+        // setTask({[newTodo.id]: [], ...tasks})
     }
     const changeTitleTodolist = (todoListId: string, title: string) => {
-        setTodoLists(
-            todoLists.map(tdl => tdl.id === todoListId ? {...tdl, title} : tdl)
-        )
+        dispatchTodoLists(ChangeTodolistTitleAC(title, todoListId))
+        // setTodoLists(
+        //     todoLists.map(tdl => tdl.id === todoListId ? {...tdl, title} : tdl)
+        // )
     }
     const changeFilter = (filterValue: FilterType, todoListId: string) => {
-        const updatedTodoList = todoLists.map(tdl => {
-            return tdl.id === todoListId ? {...tdl, filter: filterValue} : tdl
-        })
-        setTodoLists(updatedTodoList)
+        dispatchTodoLists(ChangeTodolistFilterAC(filterValue, todoListId))
+        // const updatedTodoList = todoLists.map(tdl => {
+        //     return tdl.id === todoListId ? {...tdl, filter: filterValue} : tdl
+        // })
+        // setTodoLists(updatedTodoList)
     }
     //CRUD tasks
     const removeTask = (taskId: string, todoListId: string) => {
-        const updatedTasks = tasks[todoListId].filter(task => task.id !== taskId)
-        setTask(
-            {...tasks, [todoListId]: updatedTasks}
-        )
+        dispatchTask(removeTaskAC(taskId,todoListId))
+        // const updatedTasks = tasks[todoListId].filter(task => task.id !== taskId)
+        // setTask(
+        //     {...tasks, [todoListId]: updatedTasks}
+        // )
     }
     const addTask = (titleTask: string, todoListId: string) => {
-        const newTask = {id: v1(), title: titleTask, isDone: false}
-        const updatedTasks = [newTask, ...tasks[todoListId]]
-        setTask({...tasks, [todoListId]: updatedTasks})
+        dispatchTask(addTaskAC(titleTask, todoListId))
+        // const newTask = {id: v1(), title: titleTask, isDone: false}
+        // const updatedTasks = [newTask, ...tasks[todoListId]]
+        // setTask({...tasks, [todoListId]: updatedTasks})
     }
     const changeIsDoneTask = (taskId: string, newIsDown: boolean, todoListId: string) => {
-        const updatedTasks = tasks[todoListId].map(task => {
-            return task.id === taskId ? {...task, isDone: newIsDown} : task
-        })
-        setTask({...tasks, [todoListId]: updatedTasks})
+        dispatchTask(changeTaskStatusAC(taskId, newIsDown, todoListId))
+        // const updatedTasks = tasks[todoListId].map(task => {
+        //     return task.id === taskId ? {...task, isDone: newIsDown} : task
+        // })
+        // setTask({...tasks, [todoListId]: updatedTasks})
     }
     const changeTitleTask = (taskId: string, title: string, todoListId: string) => {
-        const updatedTasks = tasks[todoListId].map(task => {
-            return task.id === taskId ? {...task, title} : task
-        })
-        setTask({...tasks, [todoListId]: updatedTasks})
+        dispatchTask(changeTaskTitleAC(taskId, title, todoListId))
+        // const updatedTasks = tasks[todoListId].map(task => {
+        //     return task.id === taskId ? {...task, title} : task
+        // })
+        // setTask({...tasks, [todoListId]: updatedTasks})
     }
 
     //UI:
@@ -194,4 +223,4 @@ function App(): JSX.Element {
     );
 }
 
-export default App;
+export default AppWithReducers;

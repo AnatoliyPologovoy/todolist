@@ -1,19 +1,13 @@
-import {TasksStateType, TodoListType} from "../App";
+import {TasksStateType} from "../App";
 import {v1} from "uuid";
-import {FilterType} from "../Todolist";
-import {AddTodolistAT, ChangeTodolistFilterAT, RemoveTodolistAT} from "./todolists-reducers";
+import {AddTodolistAT, RemoveTodolistAT, tdlId_1, tdlId_2} from "./todolists-reducers";
 
 export type RemoveTaskAT = ReturnType<typeof removeTaskAC>
-//     {
-//     type: 'REMOVE-TASK'
-//     id: string
-//     taskId: string
-// }
 
 export type addTaskAT = ReturnType<typeof addTaskAC>
 export type ChangeStatusTask = ReturnType<typeof changeTaskStatusAC>
 export type changeTaskTitle = ReturnType<typeof changeTaskTitleAC>
-export type ActionsType =
+export type ActionsTaskType =
     RemoveTaskAT |
     addTaskAT |
     ChangeStatusTask |
@@ -21,9 +15,22 @@ export type ActionsType =
     AddTodolistAT |
     RemoveTodolistAT
 
+const initialState: TasksStateType = {
+    [tdlId_1]: [
+        {id: v1(), title: "HTML&CSS", isDone: true},
+        {id: v1(), title: "JS", isDone: true},
+        {id: v1(), title: "ReactJS", isDone: false},
+        {id: v1(), title: "Redux", isDone: false},
+        {id: v1(), title: "SQL", isDone: false},
+    ],
+    [tdlId_2]: [
+        {id: v1(), title: "Milk", isDone: false},
+        {id: v1(), title: "Egs", isDone: true},
+        {id: v1(), title: "Bread", isDone: false},
+    ]
+}
 
-
-export const tasksReducer = (state: TasksStateType, action: ActionsType): TasksStateType => {
+export const tasksReducer = (state: TasksStateType = initialState, action: ActionsTaskType): TasksStateType => {
     switch (action.type) {
         case "REMOVE-TASK":
             return {...state,
@@ -53,8 +60,10 @@ export const tasksReducer = (state: TasksStateType, action: ActionsType): TasksS
             const newState = {...state}
             delete newState[action.payload.id]
             return newState
+        default:
+            return state
     }
-    return state
+
 }
 
 export const removeTaskAC = (taskId: string, todolistId: string) => {
