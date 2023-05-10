@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC, KeyboardEvent, useState} from 'react';
+import React, {ChangeEvent, FC, KeyboardEvent, memo, useState} from 'react';
 import s from "./todolist.module.css";
 import {IconButton, TextField} from "@mui/material";
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -8,9 +8,11 @@ type AddItemFormPropsType = {
 }
 
 
-export const AddItemForm: FC<AddItemFormPropsType> = ({addItem}) => {
+export const AddItemForm: FC<AddItemFormPropsType> = memo(({addItem}) => {
     let [inputValue, setInputValue] = useState<string>('')
     let [error, setError] = useState<string | null>(null)
+
+
 
     const onChangeInput = (evt:ChangeEvent<HTMLInputElement>) => {
         setError('') //remove error when we start change input
@@ -66,5 +68,5 @@ export const AddItemForm: FC<AddItemFormPropsType> = ({addItem}) => {
             { error && <div className={s.errorMessage}>{error}</div>}
         </div>
     );
-};
+});
 

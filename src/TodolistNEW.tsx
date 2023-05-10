@@ -1,19 +1,18 @@
-import React, {FormEvent, useRef} from "react";
-import s from "./todolist.module.css";
+import React, {memo, useCallback} from "react";
 import {AddItemForm} from "./addItemForm";
 import EditableSpan from "./EditableSpan";
-import {Button, Checkbox, FormControlLabel, IconButton, List, ListItem, ListItemButton} from "@mui/material";
+import {IconButton, List} from "@mui/material";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./store";
 import {
-    AddTodolistAC,
     ChangeTodolistFilterAC,
     ChangeTodolistTitleAC,
     RemoveTodolistAC
 } from "./reducers/todolists-reducers";
-import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from "./reducers/task-reducers";
-import {TasksStateType, TodoListType} from "./AppWithRedux";
+import {addTaskAC} from "./reducers/task-reducers";
+import {Task} from "./Components/Task";
+import {ButtonWithMemo} from "./Components/ButtonWithMemo";
 
 
 type TodolistPropsType = {
@@ -30,18 +29,17 @@ export type TaskType = {
 
 export type FilterType = 'all' | 'complied' | 'active'
 
-export function TodolistWithRedux(props: TodolistPropsType) {
+export const TodolistWithRedux = memo((props: TodolistPropsType) => {
     const {
         todoListId,
         title,
         filter,
     } = props
-
     const dispatch = useDispatch()
 
-    const changeTitleTodolistCallBack = (newTitle: string) => {
+    const changeTitleTodolistCallBack = useCallback((newTitle: string) => {
         dispatch(ChangeTodolistTitleAC(newTitle, todoListId))
-    }
+    }, [])
 
     let taskFromRedux = useSelector<AppRootStateType, TaskType[]>(state => state.tasks[todoListId])
 
@@ -56,54 +54,35 @@ export function TodolistWithRedux(props: TodolistPropsType) {
 
     //Tasks array
     const renderTasksList = taskFromRedux.map(task => {
-        const changeStatusTaskHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-            dispatch(changeTaskStatusAC(task.id, event.currentTarget.checked, todoListId))
-        }
-
-        const changeTaskTitle = (newTitle: string) => {
-            dispatch(changeTaskTitleAC(task.id, newTitle, todoListId))
-        }
-
         return (
-            <ListItem
-                divider
-                key={task.id}
-                disableGutters={true}
-                disablePadding={true}
-                secondaryAction={
-                    <IconButton
-                        size={"small"}
-                        onClick={() => dispatch(removeTaskAC(task.id, todoListId))}>
-                        <DeleteForeverIcon fontSize={"small"}/>
-                    </IconButton>
-                }
-                className={task.isDone ? s.isDone : ''}
-            >
-                <ListItemButton onClick={(e)=> {
-                    const checkbox = e.currentTarget.children[0].children[0] as HTMLInputElement
-                    dispatch(changeTaskStatusAC(task.id, !checkbox.checked, todoListId))
-                }}>
-                    <Checkbox
-                        checked={task.isDone}
-                        onChange={changeStatusTaskHandler}
-                    />
-                    &nbsp;
-                    <EditableSpan title={task.title} classes={''} changeTitle={changeTaskTitle}/>
-                </ListItemButton>
-            </ListItem>
+            <Task key={task.id}
+                  taskId={task.id}
+                  todoListId={todoListId}
+            />
         )
     })
 
-
     //adding new tasks (button)
-    const addItem = (title: string) => {
+    const addItem = useCallback((title: string) => {
         dispatch(addTaskAC(title, todoListId));
-    }
+    }, [todoListId])
 
     //remove todoList
     const removeTodoListOnClickHandler = () => {
         dispatch(RemoveTodolistAC(todoListId))
     }
+
+    const onClickButtonAll = useCallback(() => {
+        dispatch(ChangeTodolistFilterAC('all', todoListId))
+    }, [todoListId])
+
+    const onClickButtonComplied = useCallback(() => {
+        dispatch(ChangeTodolistFilterAC('complied', todoListId))
+    }, [todoListId])
+
+    const onClickButtonActive = useCallback(() => {
+        dispatch(ChangeTodolistFilterAC('active', todoListId))
+    }, [todoListId])
 
     // @ts-ignore
     return (
@@ -123,35 +102,26 @@ export function TodolistWithRedux(props: TodolistPropsType) {
             >
                 {renderTasksList}
             </List>
-            <Button
-                size={"small"}
-                variant={"contained"}
-                disableElevation
-                color={filter === 'all' ? 'secondary' : 'primary'}
-                onClick={() => {
-                    dispatch(ChangeTodolistFilterAC('all', todoListId))
-                }}>All
-            </Button>
+            <ButtonWithMemo
+                title={'All'}
+                color={'all'}
+                filter={filter}
+                onClickHandler={onClickButtonAll}
+            />
             &nbsp;
-            <Button
-                size={"small"}
-                variant={"contained"}
-                disableElevation
-                color={filter === 'complied' ? 'secondary' : 'primary'}
-                onClick={() => {
-                    dispatch(ChangeTodolistFilterAC('complied', todoListId))
-                }}>Complied
-            </Button>
+            <ButtonWithMemo
+                title={'Complied'}
+                color={'complied'}
+                filter={filter}
+                onClickHandler={onClickButtonComplied}
+            />
             &nbsp;
-            <Button
-                size={"small"}
-                variant={"contained"}
-                disableElevation
-                color={filter === 'active' ? 'secondary' : 'primary'}
-                onClick={() => {
-                    dispatch(ChangeTodolistFilterAC('active', todoListId))
-                }}>Active
-            </Button>
+            <ButtonWithMemo
+                title={'Active'}
+                color={'active'}
+                filter={filter}
+                onClickHandler={onClickButtonActive}
+            />
         </div>
     )
-}
+})
