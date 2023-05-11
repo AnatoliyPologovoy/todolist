@@ -1,4 +1,4 @@
-import {TasksStateType, TodoListType} from "../App";
+import {TasksStateType, TodoListType} from "../AppWithRedux";
 import {AddTodolistAC, RemoveTodolistAC, todolistsReducer} from "./todolists-reducers";
 import {tasksReducer} from "./task-reducers";
 

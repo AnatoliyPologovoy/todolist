@@ -1,6 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import './App.css';
-import {FilterType, TaskType} from "./Todolist";
+import {FilterType, TaskType} from "./TodolistNEW";
 import {AddItemForm} from "./addItemForm";
 import {
     AppBar,
