@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import './App.css';
-import {FilterType, TaskType} from "./Todolist";
+import {FilterType, TaskType} from "./TodolistNEW";
 import {AddItemForm} from "./addItemForm";
 import {
     AppBar,
@@ -40,9 +40,9 @@ function AppWithRedux(): JSX.Element {
 
     const [isDarkMode, setDarkMode] = useState(true)
 
-    const addTodoList = (title: string) => {
+    const addTodoList = useCallback((title: string) => {
         dispatch(AddTodolistAC(title))
-    }
+    }, [])
 
 
     const todoListsComponents = todoLists.map(tdl => {
