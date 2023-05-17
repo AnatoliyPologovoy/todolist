@@ -7,7 +7,7 @@ import {
     RemoveTodolistAT,
     todolistsReducer
 } from "./todolists-reducers";
-import {FilterType} from "../TodolistNEW";
+import {FilterType} from "../TodolistWithRedux";
 
 let todolistId1: string
 let todolistId2: string
