@@ -1,12 +1,12 @@
 import React, {memo, useCallback} from 'react';
 import {Checkbox, IconButton, ListItem, ListItemButton} from "@mui/material";
-import EditableSpan from "../EditableSpan";
+import EditableSpan from "./EditableSpan";
 import {changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from "../reducers/task-reducers";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../store";
-import {TaskType} from "../TodolistWithRedux";
+import {TaskType} from "./TodolistWithRedux";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import s from "../todolist.module.css";
+import s from "./todolist.module.css";
 
 export type TaskPropsType = {
     taskId: string

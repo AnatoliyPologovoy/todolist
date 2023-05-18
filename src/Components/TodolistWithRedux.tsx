@@ -4,15 +4,15 @@ import EditableSpan from "./EditableSpan";
 import {IconButton, List} from "@mui/material";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {useDispatch, useSelector} from "react-redux";
-import {AppRootStateType} from "./store";
+import {AppRootStateType} from "../store";
 import {
     ChangeTodolistFilterAC,
     ChangeTodolistTitleAC,
     RemoveTodolistAC
-} from "./reducers/todolists-reducers";
-import {addTaskAC} from "./reducers/task-reducers";
-import {Task} from "./Components/Task";
-import {ButtonWithMemo} from "./Components/ButtonWithMemo";
+} from "../reducers/todolists-reducers";
+import {addTaskAC} from "../reducers/task-reducers";
+import {Task} from "./Task";
+import {ButtonWithMemo} from "./ButtonWithMemo";
 
 
 type TodolistPropsType = {

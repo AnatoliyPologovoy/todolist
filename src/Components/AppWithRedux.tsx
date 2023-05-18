@@ -14,9 +14,9 @@ import {
 } from '@mui/material';
 import {Menu} from "@mui/icons-material";
 import {lightBlue, orange} from "@mui/material/colors";
-import {AddTodolistAC} from "./reducers/todolists-reducers";
+import {AddTodolistAC} from "../reducers/todolists-reducers";
 import {useDispatch, useSelector} from "react-redux";
-import {AppRootStateType} from "./store";
+import {AppRootStateType} from "../store";
 import {TodolistWithRedux} from "./TodolistWithRedux";
 
 export type TodoListType = {

@@ -1,7 +1,7 @@
 import React, {memo} from 'react';
 import {Button} from "@mui/material";
 import {ChangeTodolistFilterAC} from "../reducers/todolists-reducers";
-import {FilterType} from "../TodolistWithRedux";
+import {FilterType} from "./TodolistWithRedux";
 import {useDispatch} from "react-redux";
 
 export type ButtonWithMemoPropsType = {
