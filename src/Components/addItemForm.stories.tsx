@@ -17,8 +17,9 @@ const meta: Meta<typeof AddItemForm> = {
     argTypes: {
         // backgroundColor: { control: 'color' },
         addItem: {
-            description: 'Button clicked inside form',
-            action: 'clicked'
+            description: 'Button clicked inside form11',
+            action: 'clicked',
+            type: 'boolean'
         }
     },
 };
@@ -26,10 +27,10 @@ const meta: Meta<typeof AddItemForm> = {
 export default meta;
 type Story = StoryObj<typeof AddItemForm>;
 
-// More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
+
 //first way create story
 export const AddItemFormStory: Story = {
-    // More on args: https://storybook.js.org/docs/react/writing-stories/args
+
     args: {
         addItem: action('Button clicked inside form')
     },
@@ -37,7 +38,7 @@ export const AddItemFormStory: Story = {
 
 //second way create story
 export const AddItemFormStoryWithRender: Story = {
-    // More on args: https://storybook.js.org/docs/react/writing-stories/args
+
     render: args => <AddItemForm addItem={args.addItem} />
 };
 
