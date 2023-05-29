@@ -84,7 +84,6 @@ export const TodolistWithRedux = memo((props: TodolistPropsType) => {
         dispatch(ChangeTodolistFilterAC('active', todoListId))
     }, [todoListId])
 
-    // @ts-ignore
     return (
         <div className={'todolist'}>
             <div>

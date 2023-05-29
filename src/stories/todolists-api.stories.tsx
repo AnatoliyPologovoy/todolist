@@ -1,13 +1,12 @@
 import React, {useEffect, useState} from 'react'
-import axios from "axios";
-import {TodolistApi} from "../api/todolist-api";
+import {TodolistApi, TodoListType} from "../api/todolist-api";
 
 export default {
     title: 'API'
 }
 
 export const GetTodolists = () => {
-    const [state, setState] = useState<any>(null)
+    const [state, setState] = useState<TodoListType[] | null>(null)
     useEffect(() => {
         // здесь мы будем делать запрос и ответ закидывать в стейт.
         // который в виде строки будем отображать в div-ке
@@ -17,7 +16,23 @@ export const GetTodolists = () => {
                 setState(res.data)
             })
     }, [])
-    return <div>{JSON.stringify(state)}</div>
+
+    const styleWrapper = {
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '20px'
+    } as const
+    // return <div>{JSON.stringify(state)}</div>
+    return <div style={styleWrapper}>
+        {state && state.map(t => {
+            return (
+                <div>
+                    <h1>{t.title}</h1>
+                    <p>{t.id}</p>
+                </div>
+            )
+        })}
+    </div>
 }
 export const CreateTodolist = () => {
     const [state, setState] = useState<any>(null)

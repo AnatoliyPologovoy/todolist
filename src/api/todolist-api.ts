@@ -22,7 +22,7 @@ export const TodolistApi = {
     }
 }
 
-type TodoListType = {
+export type TodoListType = {
     id: string
     title: string
     addedData: Date
