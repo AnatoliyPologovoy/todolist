@@ -36,45 +36,119 @@ export const GetTodolists = () => {
 }
 export const CreateTodolist = () => {
     const [state, setState] = useState<any>(null)
+    const [isFetch, setFetch] = useState(false)
+    const [inputTitle, setInputTitle] = useState<string>('')
+
     useEffect(() => {
-        TodolistApi.createTodoList('Redux')
-            .then(res => {
+        if (isFetch) {
 
-                setState(res.data)
-            })
+            TodolistApi.createTodoList(inputTitle)
+                .then(res => {
+                    setState(res.data)
+                    setFetch(false)
+                    setInputTitle('')
+                })
+        }
 
-    }, [])
 
-    return <div>{JSON.stringify(state)}</div>
+    }, [isFetch])
+
+    const onClickButtonHandler = () => {
+        setFetch(true)
+    }
+
+    const isDisableButton = !(inputTitle.length > 0 && !isFetch)
+
+    return <div>
+        <label htmlFor="">
+            Title:
+            <input type="text" value={inputTitle} onChange={(e) => setInputTitle(e.currentTarget.value)}/>
+        </label>
+        <button disabled={isDisableButton} onClick={onClickButtonHandler}>Create todoList</button>
+        {JSON.stringify(state)}
+        {/*<div>*/}
+        {/*    {state && state.data.item.title}*/}
+        {/*</div>*/}
+    </div>
 }
 export const DeleteTodolist = () => {
     const [state, setState] = useState<any>(null)
+    const [isFetch, setFetch] = useState(false)
+    const [inputId, setInputId] = useState<string>('')
+
     useEffect(() => {
         const todoId = 'cd52da72-f747-4231-bf51-b0f36d84754e'
+        if (isFetch) {
+            TodolistApi.deleteTodoList(inputId)
+                .then(res => {
 
-        TodolistApi.deleteTodoList(todoId)
-            .then(res => {
+                    setState(res.data)
+                    setInputId('')
+                })
 
-                setState(res.data)
-            })
-    }, [])
+        }
+    }, [isFetch])
 
-    return <div>{JSON.stringify(state)}</div>
+    const isDisableButton = !(inputId.length > 0 && !isFetch)
+
+    const onClickButtonHandler = () => {
+        setFetch(true)
+    }
+
+    return <div>
+        <label htmlFor="">
+            ID:
+            <input type="text" value={inputId} onChange={(e) => setInputId(e.currentTarget.value)}/>
+        </label>
+        <button disabled={isDisableButton} onClick={onClickButtonHandler}>Delete todoList</button>
+        {JSON.stringify(state)}
+    </div>
 }
+
+
 export const UpdateTodolistTitle = () => {
     const [state, setState] = useState<any>(null)
+    const [isFetch, setFetch] = useState(false)
+    const [inputId, setInputId] = useState<string>('')
+    const [inputTitle, setInputTitle] = useState<string>('')
+
+
     useEffect(() => {
 
-        const todoId = '23f1fa4a-b061-4f9d-853b-33ccb40999f2'
-        const title = 'JS -----------00'
-        TodolistApi.changeTitleTodoList(title, todoId)
-            .then(res => {
+        // const todoId = '23f1fa4a-b061-4f9d-853b-33ccb40999f2'
+        // const title = 'JS -----------00'
+        if (isFetch) {
 
-                setState(res.data)
-            })
+            TodolistApi.changeTitleTodoList(inputTitle, inputId)
+                .then(res => {
 
-    }, [])
+                    setState(res.data)
+                    setInputId('')
+                    setInputTitle('')
 
-    return <div>{JSON.stringify(state)}</div>
+                })
+        }
+
+    }, [isFetch])
+
+    const onClickButtonHandler = () => {
+        setFetch(true)
+    }
+
+    const isDisableButton = !(inputId.length > 0 && inputTitle.length > 0 && !isFetch)
+
+
+    return <div>
+        <label htmlFor="">
+            TodoListID:
+            <input type="text" value={inputId} onChange={(e) => setInputId(e.currentTarget.value)}/>
+        </label>
+        <label htmlFor="">
+            Title:
+            <input type="text" value={inputTitle} onChange={(e) => setInputTitle(e.currentTarget.value)}/>
+        </label>
+        <button disabled={isDisableButton} onClick={onClickButtonHandler}>Update todoList</button>
+        {JSON.stringify(state)}
+    </div>
 }
 
