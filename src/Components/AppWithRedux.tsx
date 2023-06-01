@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import './App.css';
 import {FilterType, TaskType} from "./TodolistWithRedux";
 import {AddItemForm} from "./addItemForm";
@@ -14,16 +14,17 @@ import {
 } from '@mui/material';
 import {Menu} from "@mui/icons-material";
 import {lightBlue, orange} from "@mui/material/colors";
-import {AddTodolistAC} from "../reducers/todolists-reducers";
+import {AddTodolistAC, setTodoList} from "../reducers/todolists-reducers";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../store";
 import {TodolistWithRedux} from "./TodolistWithRedux";
+import {TodolistApi, TodoListDomainType} from "../api/todolist-api";
 
 export type TodoListType = {
     id: string
     title: string
     filter: FilterType
-}
+} & TodoListDomainType
 
 export type TasksStateType = {
     [key: string]: TaskType[]
@@ -37,6 +38,13 @@ function AppWithRedux(): JSX.Element {
     // const tasks =
     //     useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
     const dispatch = useDispatch()
+
+    useEffect(() => {
+        TodolistApi.getTodoLists()
+            .then((res) => {
+                dispatch(setTodoList(res.data))
+            })
+    }, [])
 
     const [isDarkMode, setDarkMode] = useState(true)
 
