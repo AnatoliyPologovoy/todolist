@@ -32,7 +32,8 @@ export const Task:React.FC<TaskPropsType> = memo((props) => {
     const dispatch = useDispatch()
 
     const changeStatusTaskHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch(changeTaskStatusAC(taskId, event.currentTarget.checked, todoListId))
+        const statusChecked = event.currentTarget.checked ? TaskStatues.Completed : TaskStatues.New
+        dispatch(changeTaskStatusAC(taskId, statusChecked, todoListId))
     } // нет нужды в useCallBack потому что чекбокс из matherial UI
 
     const changeTaskTitle = useCallback ( (newTitle: string) => {
@@ -58,7 +59,9 @@ export const Task:React.FC<TaskPropsType> = memo((props) => {
 
         <ListItemButton onClick={(e)=> {
             const checkbox = e.currentTarget.children[0].children[0] as HTMLInputElement
-            dispatch(changeTaskStatusAC(taskId, !checkbox.checked, todoListId))
+            const statusChecked = checkbox.checked ? TaskStatues.New : TaskStatues.Completed
+
+            dispatch(changeTaskStatusAC(taskId, statusChecked, todoListId))
         }}>
             <Checkbox
                 checked={taskIsDone}

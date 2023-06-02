@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react'
-import {TodolistApi, TodoListType} from "../api/todolist-api";
+import {TodolistApi, TodoListDomainType} from "../api/todolist-api";
 
 export default {
     title: 'API'
 }
 
 export const GetTodolists = () => {
-    const [state, setState] = useState<TodoListType[] | null>(null)
+    const [state, setState] = useState<TodoListDomainType[] | null>(null)
     useEffect(() => {
         // здесь мы будем делать запрос и ответ закидывать в стейт.
         // который в виде строки будем отображать в div-ке
