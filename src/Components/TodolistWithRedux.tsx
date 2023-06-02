@@ -5,14 +5,11 @@ import {IconButton, List} from "@mui/material";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../store";
-import {
-    ChangeTodolistFilterAC,
-    ChangeTodolistTitleAC,
-    RemoveTodolistAC
-} from "../reducers/todolists-reducers";
-import {addTaskAC} from "../reducers/task-reducers";
+import {ChangeTodolistFilterAC, ChangeTodolistTitleAC, RemoveTodolistAC} from "../reducers/todolists-reducers";
+import {addTaskAC, FilterType} from "../reducers/task-reducers";
 import {Task} from "./Task";
 import {ButtonWithMemo} from "./ButtonWithMemo";
+import {TaskResponseType, TaskStatues} from "../api/todolist-api";
 
 
 type TodolistPropsType = {
@@ -21,13 +18,6 @@ type TodolistPropsType = {
     filter: FilterType
 }
 
-export type TaskType = {
-    id: string,
-    title: string,
-    isDone: boolean
-}
-
-export type FilterType = 'all' | 'complied' | 'active'
 
 export const TodolistWithRedux = memo((props: TodolistPropsType) => {
     const {
@@ -41,14 +31,14 @@ export const TodolistWithRedux = memo((props: TodolistPropsType) => {
         dispatch(ChangeTodolistTitleAC(newTitle, todoListId))
     }, [])
 
-    let taskFromRedux = useSelector<AppRootStateType, TaskType[]>(state => state.tasks[todoListId])
+    let taskFromRedux = useSelector<AppRootStateType, TaskResponseType[]>(state => state.tasks[todoListId])
 
     switch (filter) {
         case "active":
-            taskFromRedux = taskFromRedux.filter(task => !task.isDone)
+            taskFromRedux = taskFromRedux.filter(task => task.status === TaskStatues.New)
             break
         case "complied":
-            taskFromRedux = taskFromRedux.filter(task => task.isDone)
+            taskFromRedux = taskFromRedux.filter(task => task.status === TaskStatues.Completed)
             break
     }
 

@@ -4,9 +4,9 @@ import EditableSpan from "./EditableSpan";
 import {changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from "../reducers/task-reducers";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../store";
-import {TaskType} from "./TodolistWithRedux";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import s from "./todolist.module.css";
+import {TaskResponseType, TaskStatues} from "../api/todolist-api";
 
 export type TaskPropsType = {
     taskId: string
@@ -17,15 +17,16 @@ export const Task:React.FC<TaskPropsType> = memo((props) => {
 
     const {taskId, todoListId} = props
 
-    const task = useSelector<AppRootStateType, TaskType | undefined>(state => {
-        return state.tasks[todoListId].find(t => t.id === taskId) //as TaskType
+    const task =
+        useSelector<AppRootStateType, TaskResponseType | undefined>(state => {
+        return state.tasks[todoListId].find(t => t.id === taskId)
     })
     let taskTitle = 'undefined'
     let taskIsDone = false
 
     if (task) {
         taskTitle = task.title
-        taskIsDone = task.isDone
+        taskIsDone = task.status === TaskStatues.Completed
     }
 
     const dispatch = useDispatch()

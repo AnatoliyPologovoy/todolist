@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import './App.css';
-import {FilterType, TaskType} from "./TodolistWithRedux";
 import {AddItemForm} from "./addItemForm";
 import {
     AppBar,
@@ -14,21 +13,12 @@ import {
 } from '@mui/material';
 import {Menu} from "@mui/icons-material";
 import {lightBlue, orange} from "@mui/material/colors";
-import {AddTodolistAC, setTodoList} from "../reducers/todolists-reducers";
+import {AddTodolistAC, setTodoList, TodoListType} from "../reducers/todolists-reducers";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../store";
 import {TodolistWithRedux} from "./TodolistWithRedux";
-import {TodolistApi, TodoListDomainType} from "../api/todolist-api";
+import {TodolistApi} from "../api/todolist-api";
 
-export type TodoListType = {
-    id: string
-    title: string
-    filter: FilterType
-} & TodoListDomainType
-
-export type TasksStateType = {
-    [key: string]: TaskType[]
-}
 
 function AppWithRedux(): JSX.Element {
     //BLL:

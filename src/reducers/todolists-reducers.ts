@@ -1,7 +1,6 @@
-import {TodoListType} from "../Components/AppWithRedux";
 import {v1} from "uuid";
-import {FilterType} from "../Components/TodolistWithRedux";
 import {TodoListDomainType} from "../api/todolist-api";
+import {FilterType} from "./task-reducers";
 
 export type RemoveTodolistAT = {
     type: 'REMOVE-TODOLIST'
@@ -41,8 +40,12 @@ export type ActionsType =
     | ChangeTodolistFilterAT
     | setTodoListTypeAction
 
-export const tdlId_1 = v1()
-export const tdlId_2 = v1()
+export type TodoListType = {
+    id: string
+    title: string
+    filter: FilterType
+} & TodoListDomainType
+
 
 const initialState: TodoListType[] = [
     // {id: tdlId_1, title: 'What to learn',  addedData: '',  order: 0},
@@ -61,7 +64,9 @@ export const todolistsReducer = (state: TodoListType[] = initialState, action: A
             const newTdl: TodoListType = {
                 id: action.payload.todolistId,
                 title: action.payload.title,
-                filter: "all"
+                filter: "all",
+                addedData: (new Date),
+                order: 0
             }
             return [...state, newTdl]
         case "CHANGE-TODOLIST-TITLE":
@@ -117,7 +122,7 @@ export const ChangeTodolistFilterAC =
     }
 
 export const setTodoList =
-    (todos: TodoListType[]): setTodoListTypeAction => {
+    (todos: TodoListDomainType[]): setTodoListTypeAction => {
     return {
         type: 'SET-TODOLIST',
         todos
@@ -126,6 +131,6 @@ export const setTodoList =
 
 export type setTodoListTypeAction = {
     type: 'SET-TODOLIST'
-    todos: TodoListType[]
+    todos: TodoListDomainType[]
 }
 

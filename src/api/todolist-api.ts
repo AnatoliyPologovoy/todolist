@@ -12,7 +12,7 @@ export const TodolistApi = {
         return instance.get<TodoListDomainType[]>('todo-lists')
     },
     createTodoList(title: string) {
-        return instance.post<ResponseType<{item: TodoListDomainType}>>('todo-lists', {title})
+        return instance.post<ResponseType<{ item: TodoListDomainType }>>('todo-lists', {title})
     },
     deleteTodoList(todoId: string) {
         return instance.delete<ResponseType>('todo-lists/' + todoId)
@@ -31,14 +31,14 @@ export const TodolistApi = {
                 title
             })
     },
-    changeTask(todoListId: string,taskId: string, title: string) {
+    changeTask(todoListId: string, taskId: string, title: string) {
         return instance
             .put<CreateTaskResponseType>
             (`/todo-lists/${todoListId}/tasks/${taskId}`, {
                 title
             })
     },
-    deleteTask(todoListId: string,taskId: string) {
+    deleteTask(todoListId: string, taskId: string) {
         return instance
             .delete<ResponseType>
             (`/todo-lists/${todoListId}/tasks/${taskId}`)
@@ -67,16 +67,31 @@ export type CreateTaskResponseType = {
     messages: string[]
 }
 
+export enum TaskStatues {
+    New = 0,
+    inProgress = 1,
+    Completed = 2,
+    Draft = 3
+}
 
-type TaskResponseType = {
-    description: string
+export enum TaskPriorities {
+    Low = 0,
+    Middle = 1,
+    Hi = 2,
+    Urgently = 3,
+    Later = 4
+}
+
+
+export type TaskResponseType = {
+    id: string
     title: string
+    status: TaskStatues
+    description: string
     completed: boolean
-    status: number
-    priority: number
+    priority: TaskPriorities
     startDate: Date
     deadline: Date
-    id: string
     todoListId: string
     order: number
     addedDate: Date
