@@ -1,4 +1,4 @@
-import React, {memo, useCallback} from "react";
+import React, {memo, useCallback, useEffect} from "react";
 import {AddItemForm} from "./addItemForm";
 import EditableSpan from "./EditableSpan";
 import {IconButton, List} from "@mui/material";
@@ -6,10 +6,11 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../store";
 import {ChangeTodolistFilterAC, ChangeTodolistTitleAC, RemoveTodolistAC} from "../reducers/todolists-reducers";
-import {addTaskAC, FilterType} from "../reducers/task-reducers";
+import {createTaskAC, createTaskTC, FilterType, setTasksTC} from "../reducers/task-reducers";
 import {Task} from "./Task";
 import {ButtonWithMemo} from "./ButtonWithMemo";
 import {TaskResponseType, TaskStatues} from "../api/todolist-api";
+import {useAppDispatch} from "../hooks/useAppDispatch";
 
 
 type TodolistPropsType = {
@@ -25,7 +26,11 @@ export const TodolistWithRedux = memo((props: TodolistPropsType) => {
         title,
         filter,
     } = props
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        dispatch(setTasksTC(todoListId))
+    }, [])
 
     const changeTitleTodolistCallBack = useCallback((newTitle: string) => {
         dispatch(ChangeTodolistTitleAC(newTitle, todoListId))
@@ -53,8 +58,8 @@ export const TodolistWithRedux = memo((props: TodolistPropsType) => {
     })
 
     //adding new tasks (button)
-    const addItem = useCallback((title: string) => {
-        dispatch(addTaskAC(title, todoListId));
+    const createTask = useCallback((title: string) => {
+        dispatch(createTaskTC(todoListId, title));
     }, [todoListId])
 
     //remove todoList
@@ -85,7 +90,7 @@ export const TodolistWithRedux = memo((props: TodolistPropsType) => {
                     </IconButton>
                 </h2>
             </div>
-            <AddItemForm addItem={addItem}/>
+            <AddItemForm addItem={createTask}/>
             <List sx={{width: '100%', maxWidth: 360}}
                   subheader
             >

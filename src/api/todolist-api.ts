@@ -29,14 +29,24 @@ export const TodolistApi = {
                 title
             })
     },
-    changeTask(todoListId: string, taskId: string, title: string) {
+    changeTask(todoListId: string, taskId: string, changeValue: TaskRequestType) {
+        const d1 = new Date(2011, 0, 1)
+        const d2 = new Date(2031, 0, 1)
+
+        const requestBody = {
+            title: 'CHANGED',
+            description: 'required(string)',
+            completed: false,
+            status: TaskStatues.Completed,
+            priority: TaskPriorities.Low,
+            startDate: d1,
+            deadline: d2
+        }
         return instance
             .put<CreateTaskResponseType>
-            (`/todo-lists/${todoListId}/tasks/${taskId}`, {
-                title
-            })
+            (`/todo-lists/${todoListId}/tasks/${taskId}`, requestBody)
     },
-    deleteTask(todoListId: string, taskId: string) {
+    removeTask(todoListId: string, taskId: string) {
         return instance
             .delete<ResponseType>
             (`/todo-lists/${todoListId}/tasks/${taskId}`)
@@ -94,6 +104,12 @@ export type TaskResponseType = {
     order: number
     addedDate: Date
 }
+
+export type TaskRequestType = {
+    title?: string
+    status?: TaskStatues
+}
+
 
 export type GetTasksRequestType = {
     items: TaskResponseType[]

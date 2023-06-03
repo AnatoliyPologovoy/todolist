@@ -92,7 +92,7 @@ export const ChangeTask = () => {
     useEffect(() => {
 
         if (isFetch) {
-            TodolistApi.changeTask(inputId, inputTaskId, inputTitle)
+            TodolistApi.changeTask(inputId, inputTaskId, {title:inputTitle})
                 .then(res => {
                     setState(res.data)
                     setFetch(false)
@@ -140,7 +140,7 @@ export const DeleteTask = () => {
     useEffect(() => {
 
         if (isFetch) {
-            TodolistApi.deleteTask(inputId, inputTaskId)
+            TodolistApi.removeTask(inputId, inputTaskId)
                 .then(res => {
                     setState(res.data)
                     setFetch(false)

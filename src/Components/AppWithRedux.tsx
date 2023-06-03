@@ -13,11 +13,11 @@ import {
 } from '@mui/material';
 import {Menu} from "@mui/icons-material";
 import {lightBlue, orange} from "@mui/material/colors";
-import {AddTodolistAC, setTodoList, TodoListType} from "../reducers/todolists-reducers";
+import {AddTodolistAC, fetchTodoListsTC, setTodoList, TodoListType} from "../reducers/todolists-reducers";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../store";
 import {TodolistWithRedux} from "./TodolistWithRedux";
-import {TodolistApi} from "../api/todolist-api";
+import {useAppDispatch} from "../hooks/useAppDispatch";
 
 
 function AppWithRedux(): JSX.Element {
@@ -27,13 +27,10 @@ function AppWithRedux(): JSX.Element {
     //
     // const tasks =
     //     useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
 
     useEffect(() => {
-        TodolistApi.getTodoLists()
-            .then((res) => {
-                dispatch(setTodoList(res.data))
-            })
+        dispatch(fetchTodoListsTC())
     }, [])
 
     const [isDarkMode, setDarkMode] = useState(true)

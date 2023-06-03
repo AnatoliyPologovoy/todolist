@@ -1,12 +1,19 @@
 import React, {memo, useCallback} from 'react';
 import {Checkbox, IconButton, ListItem, ListItemButton} from "@mui/material";
 import EditableSpan from "./EditableSpan";
-import {changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from "../reducers/task-reducers";
+import {
+    changeTaskStatusAC,
+    changeTaskTC,
+    changeTaskTitleAC,
+    removeTaskAC,
+    removeTaskTC
+} from "../reducers/task-reducers";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../store";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import s from "./todolist.module.css";
 import {TaskResponseType, TaskStatues} from "../api/todolist-api";
+import {useAppDispatch} from "../hooks/useAppDispatch";
 
 export type TaskPropsType = {
     taskId: string
@@ -29,7 +36,7 @@ export const Task:React.FC<TaskPropsType> = memo((props) => {
         taskIsDone = task.status === TaskStatues.Completed
     }
 
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
 
     const changeStatusTaskHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         const statusChecked = event.currentTarget.checked ? TaskStatues.Completed : TaskStatues.New
@@ -37,9 +44,15 @@ export const Task:React.FC<TaskPropsType> = memo((props) => {
     } // нет нужды в useCallBack потому что чекбокс из matherial UI
 
     const changeTaskTitle = useCallback ( (newTitle: string) => {
-        dispatch(changeTaskTitleAC(taskId, newTitle, todoListId))
+        const changeValue = {
+            title: newTitle
+        }
+        dispatch(changeTaskTC(todoListId, taskId, changeValue))
     }, [taskId, todoListId])
 
+    const onClickRemoveTask = () => {
+        dispatch(removeTaskTC(todoListId, taskId))
+    }
 
     return (
         <ListItem
@@ -50,7 +63,7 @@ export const Task:React.FC<TaskPropsType> = memo((props) => {
             secondaryAction={
                 <IconButton
                     size={"small"}
-                    onClick={() => dispatch(removeTaskAC(taskId, todoListId))}>
+                    onClick={onClickRemoveTask}>
                     <DeleteForeverIcon fontSize={"small"}/>
                 </IconButton>
             }
