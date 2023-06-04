@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react'
-import {CreateTaskResponseType, GetTasksRequestType, TodolistApi} from "../api/todolist-api";
+import {
+    CreateTaskResponseType,
+    GetTasksRequestType,
+    TaskPriorities,
+    TaskStatues,
+    TodolistApi
+} from "../api/todolist-api";
 
 export default {
     title: 'API'
@@ -91,8 +97,22 @@ export const ChangeTask = () => {
 
     useEffect(() => {
 
+        const changingTask = {
+            todoListId: inputId,
+            id: inputTaskId,
+            title: inputTitle,
+            status: TaskStatues.Completed,
+            description: '',
+            completed: false,
+            priority: TaskPriorities.Low,
+            startDate: new Date(2011, 0, 1),
+            addedDate: new Date(2011, 0, 1),
+            order: 0,
+            deadline: new Date(2011, 0, 1),
+        }
+
         if (isFetch) {
-            TodolistApi.changeTask(inputId, inputTaskId, {title:inputTitle})
+            TodolistApi.changeTask(inputId, inputTaskId, changingTask)
                 .then(res => {
                     setState(res.data)
                     setFetch(false)

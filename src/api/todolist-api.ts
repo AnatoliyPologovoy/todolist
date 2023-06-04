@@ -12,7 +12,7 @@ export const TodolistApi = {
     createTodoList(title: string) {
         return instance.post<ResponseType<{ item: TodoListDomainType }>>('todo-lists', {title})
     },
-    deleteTodoList(todoId: string) {
+    removeTodoList(todoId: string) {
         return instance.delete<ResponseType>('todo-lists/' + todoId)
     },
     changeTitleTodoList(title: string, todoId: string) {
@@ -29,22 +29,10 @@ export const TodolistApi = {
                 title
             })
     },
-    changeTask(todoListId: string, taskId: string, changeValue: TaskRequestType) {
-        const d1 = new Date(2011, 0, 1)
-        const d2 = new Date(2031, 0, 1)
-
-        const requestBody = {
-            title: 'CHANGED',
-            description: 'required(string)',
-            completed: false,
-            status: TaskStatues.Completed,
-            priority: TaskPriorities.Low,
-            startDate: d1,
-            deadline: d2
-        }
+    changeTask(todoListId: string, taskId: string, task: TaskResponseType) {
         return instance
             .put<CreateTaskResponseType>
-            (`/todo-lists/${todoListId}/tasks/${taskId}`, requestBody)
+            (`/todo-lists/${todoListId}/tasks/${taskId}`, task)
     },
     removeTask(todoListId: string, taskId: string) {
         return instance

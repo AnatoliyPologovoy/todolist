@@ -1,19 +1,14 @@
-import React, {memo, useCallback} from 'react';
-import {Checkbox, IconButton, ListItem, ListItemButton} from "@mui/material";
+import React, {memo, useCallback, MouseEvent, MouseEventHandler, useState} from 'react';
+import {ButtonGroup, Checkbox, IconButton, ListItem, ListItemButton} from "@mui/material";
 import EditableSpan from "./EditableSpan";
-import {
-    changeTaskStatusAC,
-    changeTaskTC,
-    changeTaskTitleAC,
-    removeTaskAC,
-    removeTaskTC
-} from "../reducers/task-reducers";
-import {useDispatch, useSelector} from "react-redux";
+import {changeTaskStatusAC, changeTaskTC, removeTaskTC} from "../reducers/task-reducers";
+import {useSelector} from "react-redux";
 import {AppRootStateType} from "../store";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import s from "./todolist.module.css";
-import {TaskResponseType, TaskStatues} from "../api/todolist-api";
+import {TaskRequestType, TaskResponseType, TaskStatues} from "../api/todolist-api";
 import {useAppDispatch} from "../hooks/useAppDispatch";
+import EditIcon from '@mui/icons-material/Edit';
 
 export type TaskPropsType = {
     taskId: string
@@ -21,6 +16,7 @@ export type TaskPropsType = {
 }
 
 export const Task:React.FC<TaskPropsType> = memo((props) => {
+    const [isEditMode, setIsEditMode] = useState(false)
 
     const {taskId, todoListId} = props
 
@@ -38,14 +34,13 @@ export const Task:React.FC<TaskPropsType> = memo((props) => {
 
     const dispatch = useAppDispatch()
 
-    const changeStatusTaskHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const statusChecked = event.currentTarget.checked ? TaskStatues.Completed : TaskStatues.New
-        dispatch(changeTaskStatusAC(taskId, statusChecked, todoListId))
-    } // нет нужды в useCallBack потому что чекбокс из matherial UI
+
 
     const changeTaskTitle = useCallback ( (newTitle: string) => {
-        const changeValue = {
-            title: newTitle
+        setIsEditMode(false)
+        const changeValue: TaskRequestType = {
+            title: newTitle,
+            // status: TaskStatues.Completed
         }
         dispatch(changeTaskTC(todoListId, taskId, changeValue))
     }, [taskId, todoListId])
@@ -54,6 +49,30 @@ export const Task:React.FC<TaskPropsType> = memo((props) => {
         dispatch(removeTaskTC(todoListId, taskId))
     }
 
+    // changing status
+    const onClickItem = (e:React.MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
+        const checkbox = e.currentTarget.children[0].children[0] as HTMLInputElement
+        //convert status from boolean on TaskStatues type
+        const statusChecked = checkbox.checked
+            ? TaskStatues.New
+            : TaskStatues.Completed
+        //changing value must be status or title
+        const changingValue = {
+            status: statusChecked
+        }
+        dispatch(changeTaskTC(todoListId, taskId, changingValue))
+    }
+
+    const onClickCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const statusChecked = event.currentTarget.checked
+            ? TaskStatues.Completed
+            : TaskStatues.New
+        const changingValue = {
+            status: statusChecked
+        }
+        dispatch(changeTaskTC(todoListId, taskId, changingValue))
+    } // нет нужды в useCallBack потому что чекбокс из matherial UI
+
     return (
         <ListItem
             divider
@@ -61,27 +80,37 @@ export const Task:React.FC<TaskPropsType> = memo((props) => {
             disableGutters={true}
             disablePadding={true}
             secondaryAction={
+            <ButtonGroup   >
+                <IconButton
+                    size={"small"}
+                    onClick={()=>{setIsEditMode(true)}}>
+                    <EditIcon fontSize={"small"}/>
+                </IconButton>
                 <IconButton
                     size={"small"}
                     onClick={onClickRemoveTask}>
                     <DeleteForeverIcon fontSize={"small"}/>
                 </IconButton>
+                </ButtonGroup>
             }
             className={taskIsDone ? s.isDone : ''}
         >
 
-        <ListItemButton onClick={(e)=> {
-            const checkbox = e.currentTarget.children[0].children[0] as HTMLInputElement
-            const statusChecked = checkbox.checked ? TaskStatues.New : TaskStatues.Completed
-
-            dispatch(changeTaskStatusAC(taskId, statusChecked, todoListId))
-        }}>
+        <ListItemButton
+            // onClick={onClickItem}
+        >
             <Checkbox
                 checked={taskIsDone}
-                onChange={changeStatusTaskHandler}
+                onChange={onClickCheckbox}
             />
             &nbsp;
-            <EditableSpan title={taskTitle} classes={''} changeTitle={changeTaskTitle}/>
+            <EditableSpan
+                isEditMode={isEditMode}
+                title={taskTitle}
+                classes={''}
+                changeTitle={changeTaskTitle}
+            />
+
         </ListItemButton>
         </ListItem>
 

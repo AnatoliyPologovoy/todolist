@@ -79,7 +79,7 @@ export const DeleteTodolist = () => {
     useEffect(() => {
         const todoId = 'cd52da72-f747-4231-bf51-b0f36d84754e'
         if (isFetch) {
-            TodolistApi.deleteTodoList(inputId)
+            TodolistApi.removeTodoList(inputId)
                 .then(res => {
 
                     setState(res.data)

@@ -13,7 +13,13 @@ import {
 } from '@mui/material';
 import {Menu} from "@mui/icons-material";
 import {lightBlue, orange} from "@mui/material/colors";
-import {AddTodolistAC, fetchTodoListsTC, setTodoList, TodoListType} from "../reducers/todolists-reducers";
+import {
+    createTodolistAC,
+    createTodoListTC,
+    fetchTodoListsTC,
+    setTodoList,
+    TodoListType
+} from "../reducers/todolists-reducers";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../store";
 import {TodolistWithRedux} from "./TodolistWithRedux";
@@ -24,9 +30,7 @@ function AppWithRedux(): JSX.Element {
     //BLL:
     const todoLists =
         useSelector<AppRootStateType, TodoListType[]>(state => state.todolists)
-    //
-    // const tasks =
-    //     useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
+
     const dispatch = useAppDispatch()
 
     useEffect(() => {
@@ -35,8 +39,8 @@ function AppWithRedux(): JSX.Element {
 
     const [isDarkMode, setDarkMode] = useState(true)
 
-    const addTodoList = useCallback((title: string) => {
-        dispatch(AddTodolistAC(title))
+    const createTodoList = useCallback((title: string) => {
+        dispatch(createTodoListTC(title))
     }, [])
 
 
@@ -93,7 +97,7 @@ function AppWithRedux(): JSX.Element {
                     </AppBar>
                     <Container fixed>
                         <Grid container sx={{p: '15px 0'}}>
-                            <AddItemForm addItem={addTodoList}/>
+                            <AddItemForm addItem={createTodoList}/>
                         </Grid>
                         <Grid container spacing={4}>
                             {todoListsComponents}

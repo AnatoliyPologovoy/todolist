@@ -5,7 +5,12 @@ import {IconButton, List} from "@mui/material";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../store";
-import {ChangeTodolistFilterAC, ChangeTodolistTitleAC, RemoveTodolistAC} from "../reducers/todolists-reducers";
+import {
+    ChangeTodolistFilterAC, changeTodoListTitleTC,
+    changeTodolistTitleAC,
+    RemoveTodolistAC,
+    removeTodoListTC
+} from "../reducers/todolists-reducers";
 import {createTaskAC, createTaskTC, FilterType, setTasksTC} from "../reducers/task-reducers";
 import {Task} from "./Task";
 import {ButtonWithMemo} from "./ButtonWithMemo";
@@ -32,8 +37,8 @@ export const TodolistWithRedux = memo((props: TodolistPropsType) => {
         dispatch(setTasksTC(todoListId))
     }, [])
 
-    const changeTitleTodolistCallBack = useCallback((newTitle: string) => {
-        dispatch(ChangeTodolistTitleAC(newTitle, todoListId))
+    const changeTitleTodolist = useCallback((newTitle: string) => {
+        dispatch(changeTodoListTitleTC(newTitle, todoListId))
     }, [])
 
     let taskFromRedux = useSelector<AppRootStateType, TaskResponseType[]>(state => state.tasks[todoListId])
@@ -64,7 +69,7 @@ export const TodolistWithRedux = memo((props: TodolistPropsType) => {
 
     //remove todoList
     const removeTodoListOnClickHandler = () => {
-        dispatch(RemoveTodolistAC(todoListId))
+        dispatch(removeTodoListTC(todoListId))
     }
 
     const onClickButtonAll = useCallback(() => {
@@ -83,7 +88,7 @@ export const TodolistWithRedux = memo((props: TodolistPropsType) => {
         <div className={'todolist'}>
             <div>
                 <h2>
-                    <EditableSpan title={title} classes={''} changeTitle={changeTitleTodolistCallBack}/>
+                    <EditableSpan title={title} classes={''} changeTitle={changeTitleTodolist}/>
                     <IconButton
                         onClick={removeTodoListOnClickHandler}>
                         <DeleteForeverIcon fontSize={"medium"}/>

@@ -8,6 +8,7 @@ import {
     TodolistApi
 } from "../api/todolist-api";
 import {Dispatch} from "redux";
+import {AppRootStateType} from "../store";
 
 export type RemoveTaskAT = ReturnType<typeof removeTaskAC>
 
@@ -77,6 +78,7 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
         case "CHANGE-TASK":
             return {
                 ...state, [action.task.todoListId]: state[action.task.todoListId].map(t => {
+
                     return t.id === action.task.id ? action.task : t
                 })
             }
@@ -91,7 +93,7 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
                     .map(t => t.id === action.taskId ? {...t, title: action.newTitle} : t)
             }
         case "ADD-TODOLIST":
-            return {...state, [action.payload.todolistId]: []}
+            return {...state, [action.payload.id]: []}
         case "REMOVE-TODOLIST":
             const newState = {...state}
             delete newState[action.payload.id]
@@ -144,11 +146,9 @@ export const setTasksAC = (todoListId: string, tasks: TaskResponseType[]) => {
 }
 
 export const changeTaskAC =
-    (todoListId: string, taskId: string, task: TaskResponseType) => {
+    (task: TaskResponseType) => {
         return {
             type: 'CHANGE-TASK',
-            todoListId,
-            taskId,
             task
         } as const
     }
@@ -174,11 +174,16 @@ export const createTaskTC = (todoListId: string, title: string) => (dispatch: Di
 export const changeTaskTC =
     (todoListId: string, taskId: string, changeValue: TaskRequestType) => {
 
-        return (dispatch: Dispatch) => {
-
-            TodolistApi.changeTask(todoListId, taskId, changeValue).then(res => {
-                dispatch(createTaskAC(res.data.data.item))
-
-            })
+        return (dispatch: Dispatch, getState: () => AppRootStateType) => {
+            let requestBody = getState()
+                .tasks[todoListId].find(t => t.id === taskId)
+            if (requestBody) {
+                requestBody = {...requestBody, ...changeValue}
+                TodolistApi.changeTask(todoListId, taskId, requestBody).then(res => {
+                    dispatch(changeTaskAC(res.data.data.item))
+                })
+            }
         }
     }
+
+
