@@ -1,21 +1,21 @@
 import React, {memo, useCallback, useEffect} from "react";
-import {AddItemForm} from "./addItemForm";
-import EditableSpan from "./EditableSpan";
+import {AddItemForm} from "../AddItemForm/AddItemForm";
+import EditableSpan from "../EditableSpan/EditableSpan";
 import {IconButton, List} from "@mui/material";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {useDispatch, useSelector} from "react-redux";
-import {AppRootStateType} from "../store";
+import {AppRootStateType} from "../../app/store";
 import {
     ChangeTodolistFilterAC, changeTodoListTitleTC,
     changeTodolistTitleAC,
     RemoveTodolistAC,
     removeTodoListTC
-} from "../reducers/todolists-reducers";
-import {createTaskAC, createTaskTC, FilterType, setTasksTC} from "../reducers/task-reducers";
-import {Task} from "./Task";
-import {ButtonWithMemo} from "./ButtonWithMemo";
-import {TaskResponseType, TaskStatues} from "../api/todolist-api";
-import {useAppDispatch} from "../hooks/useAppDispatch";
+} from "../../reducers/todolists-reducers";
+import {createTaskAC, createTaskTC, FilterType, setTasksTC} from "../../reducers/task-reducers";
+import {Task} from "../Task/Task";
+import {ButtonWithMemo} from "../ButtonWithMemo";
+import {TaskResponseType, TaskStatues} from "../../api/todolist-api";
+import {useAppDispatch} from "../../hooks/useAppDispatch";
 
 
 type TodolistPropsType = {
@@ -25,7 +25,7 @@ type TodolistPropsType = {
 }
 
 
-export const TodolistWithRedux = memo((props: TodolistPropsType) => {
+export const Todolist = memo((props: TodolistPropsType) => {
     const {
         todoListId,
         title,

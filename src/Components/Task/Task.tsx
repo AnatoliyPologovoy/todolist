@@ -1,13 +1,13 @@
 import React, {memo, useCallback, MouseEvent, MouseEventHandler, useState} from 'react';
 import {ButtonGroup, Checkbox, IconButton, ListItem, ListItemButton} from "@mui/material";
-import EditableSpan from "./EditableSpan";
-import {changeTaskStatusAC, changeTaskTC, removeTaskTC} from "../reducers/task-reducers";
+import EditableSpan from "../EditableSpan/EditableSpan";
+import {changeTaskStatusAC, changeTaskTC, removeTaskTC} from "../../reducers/task-reducers";
 import {useSelector} from "react-redux";
-import {AppRootStateType} from "../store";
+import {AppRootStateType} from "../../app/store";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import s from "./todolist.module.css";
-import {TaskRequestType, TaskResponseType, TaskStatues} from "../api/todolist-api";
-import {useAppDispatch} from "../hooks/useAppDispatch";
+import s from "../TodoList/todolist.module.css";
+import {TaskRequestType, TaskResponseType, TaskStatues} from "../../api/todolist-api";
+import {useAppDispatch} from "../../hooks/useAppDispatch";
 import EditIcon from '@mui/icons-material/Edit';
 
 export type TaskPropsType = {

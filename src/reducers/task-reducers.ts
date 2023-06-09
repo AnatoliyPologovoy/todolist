@@ -8,7 +8,7 @@ import {
     TodolistApi
 } from "../api/todolist-api";
 import {Dispatch} from "redux";
-import {AppRootStateType} from "../store";
+import {AppRootStateType} from "../app/store";
 
 export type RemoveTaskAT = ReturnType<typeof removeTaskAC>
 
