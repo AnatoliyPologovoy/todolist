@@ -9,6 +9,7 @@ import {
 } from "../api/todolist-api";
 import {Dispatch} from "redux";
 import {AppRootStateType} from "../app/store";
+import {AppActionsType, setAppStatus} from "./app-reducer";
 
 export type RemoveTaskAT = ReturnType<typeof removeTaskAC>
 
@@ -153,34 +154,47 @@ export const changeTaskAC =
         } as const
     }
 //thunk
-export const setTasksTC = (todoListId: string) => (dispatch: Dispatch) => {
-    TodolistApi.getTasks(todoListId).then(res => {
-        dispatch(setTasksAC(todoListId, res.data.items))
-    })
-}
+export const setTasksTC =
+    (todoListId: string) => (dispatch: Dispatch<ActionsTaskType | AppActionsType>) => {
+        dispatch(setAppStatus('loading'))
+        TodolistApi.getTasks(todoListId).then(res => {
+            dispatch(setTasksAC(todoListId, res.data.items))
+            dispatch(setAppStatus('succeeded'))
+        })
+    }
 
-export const removeTaskTC = (todoListId: string, taskId: string) => (dispatch: Dispatch) => {
-    TodolistApi.removeTask(todoListId, taskId).then(res => {
-        dispatch(removeTaskAC(taskId, todoListId))
-    })
-}
+export const removeTaskTC
+    = (todoListId: string, taskId: string) =>
+    (dispatch: Dispatch<ActionsTaskType | AppActionsType>) => {
+        dispatch(setAppStatus('loading'))
+        TodolistApi.removeTask(todoListId, taskId).then(res => {
+            dispatch(removeTaskAC(taskId, todoListId))
+            dispatch(setAppStatus('succeeded'))
+        })
+    }
 
-export const createTaskTC = (todoListId: string, title: string) => (dispatch: Dispatch) => {
-    TodolistApi.createTask(todoListId, title).then(res => {
-        dispatch(createTaskAC(res.data.data.item))
-    })
-}
+export const createTaskTC = (todoListId: string, title: string) =>
+    (dispatch: Dispatch<ActionsTaskType | AppActionsType>) => {
+        dispatch(setAppStatus('loading'))
+
+        TodolistApi.createTask(todoListId, title).then(res => {
+            dispatch(createTaskAC(res.data.data.item))
+            dispatch(setAppStatus('succeeded'))
+        })
+    }
 
 export const changeTaskTC =
     (todoListId: string, taskId: string, changeValue: TaskRequestType) => {
-
-        return (dispatch: Dispatch, getState: () => AppRootStateType) => {
+        return (dispatch: Dispatch<ActionsTaskType | AppActionsType>,
+                getState: () => AppRootStateType) => {
             let requestBody = getState()
                 .tasks[todoListId].find(t => t.id === taskId)
             if (requestBody) {
                 requestBody = {...requestBody, ...changeValue}
+                dispatch(setAppStatus('loading'))
                 TodolistApi.changeTask(todoListId, taskId, requestBody).then(res => {
                     dispatch(changeTaskAC(res.data.data.item))
+                    dispatch(setAppStatus('succeeded'))
                 })
             }
         }

@@ -35,6 +35,9 @@ const EditableSpan: FC<EditableSpanPropsType> = memo(({title, classes, changeTit
     //render
     const textEditableMode =
         <TextField
+            sx={{
+                width: 140
+            }}
             size={'small'}
             variant="standard"
             onBlur={offEditMode}

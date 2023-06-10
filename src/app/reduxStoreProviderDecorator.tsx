@@ -6,10 +6,12 @@ import {tasksReducer} from "../reducers/task-reducers";
 import {todolistsReducer} from "../reducers/todolists-reducers";
 import {v1} from "uuid";
 import {TaskPriorities, TaskStatues} from "../api/todolist-api";
+import {appReducer} from "../reducers/app-reducer";
 
 const rootReducer = combineReducers({
     tasks: tasksReducer,
-    todolists: todolistsReducer
+    todolists: todolistsReducer,
+    app: appReducer
 })
 
 const todolistId1 = v1();
@@ -45,6 +47,9 @@ const initialGlobalState = {
                 completed: false, priority: TaskPriorities.Low, startDate: (new Date),
                 addedDate: (new Date), order: 0, deadline: (new Date), todoListId: 'todolistId2'}
         ]
+    },
+    app: {
+        status: 'idle'
     }
 };
 

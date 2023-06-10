@@ -1,7 +1,7 @@
-import React, {memo, useCallback, MouseEvent, MouseEventHandler, useState} from 'react';
+import React, {memo, useCallback, useState} from 'react';
 import {ButtonGroup, Checkbox, IconButton, ListItem, ListItemButton} from "@mui/material";
 import EditableSpan from "../EditableSpan/EditableSpan";
-import {changeTaskStatusAC, changeTaskTC, removeTaskTC} from "../../reducers/task-reducers";
+import {changeTaskTC, removeTaskTC} from "../../reducers/task-reducers";
 import {useSelector} from "react-redux";
 import {AppRootStateType} from "../../app/store";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -9,6 +9,7 @@ import s from "../TodoList/todolist.module.css";
 import {TaskRequestType, TaskResponseType, TaskStatues} from "../../api/todolist-api";
 import {useAppDispatch} from "../../hooks/useAppDispatch";
 import EditIcon from '@mui/icons-material/Edit';
+import cl from "./task.module.css"
 
 export type TaskPropsType = {
     taskId: string
@@ -107,7 +108,7 @@ export const Task:React.FC<TaskPropsType> = memo((props) => {
             <EditableSpan
                 isEditMode={isEditMode}
                 title={taskTitle}
-                classes={''}
+                classes={cl.title}
                 changeTitle={changeTaskTitle}
             />
 

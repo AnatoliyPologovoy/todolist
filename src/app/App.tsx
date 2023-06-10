@@ -16,9 +16,16 @@ import {
 import {Menu} from "@mui/icons-material";
 import {lightBlue, orange} from "@mui/material/colors";
 import {AllTodoLists} from "../Components/AllTodoLists/AllTodoLists";
+import {LinearLoader} from "../Components/LinearLoader/LinearLoader";
+import {useAppSelector} from "./store";
 
 
 function App(): JSX.Element {
+    const appStatus
+        = useAppSelector(state => state.app.status)
+
+    const isLoadingStatus = appStatus === 'loading'
+
     const [isDarkMode, setDarkMode] = useState(true)
 
     const mode = isDarkMode ? 'dark' : 'light'
@@ -60,6 +67,8 @@ function App(): JSX.Element {
                             <Button color="inherit">Login</Button>
                         </Toolbar>
                     </AppBar>
+                    {/*// Loader*/}
+                    {isLoadingStatus && <LinearLoader/>}
                     {/*------TodoLists:*/}
                     <AllTodoLists/>
                 </div>
