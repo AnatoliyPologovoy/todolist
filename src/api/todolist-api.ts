@@ -51,7 +51,7 @@ export type TodoListDomainType = {
 type ResponseType<T = {}> = {
     resultCode: number
     fieldsErrors: []
-    message: string[]
+    messages: string[]
     data: T
 }
 
@@ -76,6 +76,11 @@ export enum TaskPriorities {
     Hi = 2,
     Urgently = 3,
     Later = 4
+}
+
+export enum ResponseCode {
+    Ok = 0,
+    Error = 1
 }
 
 

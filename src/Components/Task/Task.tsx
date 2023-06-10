@@ -1,69 +1,37 @@
-import React, {memo, useCallback, useState} from 'react';
-import {ButtonGroup, Checkbox, IconButton, ListItem, ListItemButton} from "@mui/material";
+import React, {memo, useCallback} from 'react';
+import {Checkbox, ListItem} from "@mui/material";
 import EditableSpan from "../EditableSpan/EditableSpan";
 import {changeTaskTC, removeTaskTC} from "../../reducers/task-reducers";
-import {useSelector} from "react-redux";
-import {AppRootStateType} from "../../app/store";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import s from "../TodoList/todolist.module.css";
 import {TaskRequestType, TaskResponseType, TaskStatues} from "../../api/todolist-api";
 import {useAppDispatch} from "../../hooks/useAppDispatch";
-import EditIcon from '@mui/icons-material/Edit';
 import cl from "./task.module.css"
 
 export type TaskPropsType = {
-    taskId: string
-    todoListId: string
+    task: TaskResponseType
 }
 
-export const Task:React.FC<TaskPropsType> = memo((props) => {
-    const [isEditMode, setIsEditMode] = useState(false)
-
-    const {taskId, todoListId} = props
-
-    const task =
-        useSelector<AppRootStateType, TaskResponseType | undefined>(state => {
-        return state.tasks[todoListId].find(t => t.id === taskId)
-    })
-    let taskTitle = 'undefined'
-    let taskIsDone = false
-
-    if (task) {
-        taskTitle = task.title
-        taskIsDone = task.status === TaskStatues.Completed
-    }
+export const Task: React.FC<TaskPropsType> = memo((props) => {
+    const taskId = props.task.id
+    const taskTitle = props.task.title
+    const taskIsDone = props.task.status === TaskStatues.Completed
+    const todoListId = props.task.todoListId
 
     const dispatch = useAppDispatch()
 
-
-
-    const changeTaskTitle = useCallback ( (newTitle: string) => {
-        setIsEditMode(false)
+    const changeTaskTitle = useCallback((newTitle: string) => {
         const changeValue: TaskRequestType = {
             title: newTitle,
-            // status: TaskStatues.Completed
         }
         dispatch(changeTaskTC(todoListId, taskId, changeValue))
     }, [taskId, todoListId])
 
-    const onClickRemoveTask = () => {
+
+    const removeTask = () => {
         dispatch(removeTaskTC(todoListId, taskId))
     }
 
     // changing status
-    const onClickItem = (e:React.MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
-        const checkbox = e.currentTarget.children[0].children[0] as HTMLInputElement
-        //convert status from boolean on TaskStatues type
-        const statusChecked = checkbox.checked
-            ? TaskStatues.New
-            : TaskStatues.Completed
-        //changing value must be status or title
-        const changingValue = {
-            status: statusChecked
-        }
-        dispatch(changeTaskTC(todoListId, taskId, changingValue))
-    }
-
     const onClickCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
         const statusChecked = event.currentTarget.checked
             ? TaskStatues.Completed
@@ -80,25 +48,7 @@ export const Task:React.FC<TaskPropsType> = memo((props) => {
             key={taskId}
             disableGutters={true}
             disablePadding={true}
-            secondaryAction={
-            <ButtonGroup   >
-                <IconButton
-                    size={"small"}
-                    onClick={()=>{setIsEditMode(true)}}>
-                    <EditIcon fontSize={"small"}/>
-                </IconButton>
-                <IconButton
-                    size={"small"}
-                    onClick={onClickRemoveTask}>
-                    <DeleteForeverIcon fontSize={"small"}/>
-                </IconButton>
-                </ButtonGroup>
-            }
             className={taskIsDone ? s.isDone : ''}
-        >
-
-        <ListItemButton
-            // onClick={onClickItem}
         >
             <Checkbox
                 checked={taskIsDone}
@@ -106,15 +56,14 @@ export const Task:React.FC<TaskPropsType> = memo((props) => {
             />
             &nbsp;
             <EditableSpan
-                isEditMode={isEditMode}
+                sizeButtons={'small'}
+                disabled={false}
                 title={taskTitle}
                 classes={cl.title}
                 changeTitle={changeTaskTitle}
+                removeItem={removeTask}
             />
-
-        </ListItemButton>
         </ListItem>
-
     )
 })
 

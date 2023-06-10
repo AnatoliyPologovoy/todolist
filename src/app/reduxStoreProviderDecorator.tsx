@@ -20,15 +20,16 @@ const todolistId2 = v1();
 const initialGlobalState = {
     todolists: [
         {id: todolistId1, title: "What to learn", filter: "all", addedData: (new Date),
-            order: 0},
+            order: 0, entityStatus: 'idle'},
         {id: todolistId2, title: "What to buy", filter: "all",  addedData: (new Date),
-            order: 0}
+            order: 0, entityStatus: 'idle'}
     ] ,
     tasks: {
         'todolistId1': [
             {id: '1', title: 'CSS', status: TaskStatues.New, description: '',
                 completed: false, priority: TaskPriorities.Low, startDate: (new Date),
-                addedDate: (new Date), order: 0, deadline: (new Date), todoListId: 'todolistId1'},
+                addedDate: (new Date), order: 0, deadline: (new Date), todoListId: 'todolistId1',
+            },
             {id: '2', title: 'JS', status: TaskStatues.Completed, description: '',
                 completed: false, priority: TaskPriorities.Low, startDate: (new Date),
                 addedDate: (new Date), order: 0, deadline: (new Date), todoListId: 'todolistId1'},
@@ -49,8 +50,11 @@ const initialGlobalState = {
         ]
     },
     app: {
-        status: 'idle'
+        status: 'idle',
+        error: null,
+        rejectedRequestTitle: {}
     }
+
 };
 
 export const storyBookStore = legacy_createStore

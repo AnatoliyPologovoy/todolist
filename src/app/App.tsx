@@ -18,6 +18,7 @@ import {lightBlue, orange} from "@mui/material/colors";
 import {AllTodoLists} from "../Components/AllTodoLists/AllTodoLists";
 import {LinearLoader} from "../Components/LinearLoader/LinearLoader";
 import {useAppSelector} from "./store";
+import {ErrorSnackbar} from "../Components/ErrorSnackBar/ErrorSnackBar";
 
 
 function App(): JSX.Element {
@@ -67,7 +68,9 @@ function App(): JSX.Element {
                             <Button color="inherit">Login</Button>
                         </Toolbar>
                     </AppBar>
-                    {/*// Loader*/}
+                    {/*Error messages*/}
+                    <ErrorSnackbar/>
+                    {/* Loader*/}
                     {isLoadingStatus && <LinearLoader/>}
                     {/*------TodoLists:*/}
                     <AllTodoLists/>

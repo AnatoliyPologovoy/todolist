@@ -3,45 +3,54 @@ import {AddItemForm} from "../AddItemForm/AddItemForm";
 import EditableSpan from "../EditableSpan/EditableSpan";
 import {IconButton, List} from "@mui/material";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import {useDispatch, useSelector} from "react-redux";
-import {AppRootStateType} from "../../app/store";
+import {useAppSelector} from "../../app/store";
 import {
-    ChangeTodolistFilterAC, changeTodoListTitleTC,
-    changeTodolistTitleAC,
-    RemoveTodolistAC,
-    removeTodoListTC
+    changeTodolistFilter,
+    changeTodoListTitleTC,
+    removeTodoListTC,
+    TodoListType
 } from "../../reducers/todolists-reducers";
-import {createTaskAC, createTaskTC, FilterType, setTasksTC} from "../../reducers/task-reducers";
+import {createTaskTC, FilterType, setTasksTC} from "../../reducers/task-reducers";
 import {Task} from "../Task/Task";
 import {ButtonWithMemo} from "../ButtonWithMemo";
-import {TaskResponseType, TaskStatues} from "../../api/todolist-api";
+import {TaskStatues} from "../../api/todolist-api";
 import {useAppDispatch} from "../../hooks/useAppDispatch";
 
 
 type TodolistPropsType = {
-    todoListId: string
-    title: string,
-    filter: FilterType
+    // todoListId: string
+    // title: string,
+    // filter: FilterType
+    todoList: TodoListType
 }
 
 
 export const Todolist = memo((props: TodolistPropsType) => {
     const {
-        todoListId,
+        id: todoListId,
         title,
         filter,
-    } = props
+        entityStatus
+    } = props.todoList
+
     const dispatch = useAppDispatch()
+
+    let taskFromRedux =
+        useAppSelector(state => state.tasks[todoListId])
+    const allRejectedRequestTitles =
+        useAppSelector(state => state.app.rejectedRequestTitle)
+    //check for rejected request title
+    const rejectedRequestTitle = allRejectedRequestTitles[todoListId] || ''
 
     useEffect(() => {
         dispatch(setTasksTC(todoListId))
     }, [])
 
+
     const changeTitleTodolist = useCallback((newTitle: string) => {
         dispatch(changeTodoListTitleTC(newTitle, todoListId))
     }, [])
 
-    let taskFromRedux = useSelector<AppRootStateType, TaskResponseType[]>(state => state.tasks[todoListId])
 
     switch (filter) {
         case "active":
@@ -52,12 +61,13 @@ export const Todolist = memo((props: TodolistPropsType) => {
             break
     }
 
+    const isDisableButton = entityStatus === 'loading'
+
     //Tasks array
     const renderTasksList = taskFromRedux.map(task => {
         return (
             <Task key={task.id}
-                  taskId={task.id}
-                  todoListId={todoListId}
+                  task={task}
             />
         )
     })
@@ -68,36 +78,38 @@ export const Todolist = memo((props: TodolistPropsType) => {
     }, [todoListId])
 
     //remove todoList
-    const removeTodoListOnClickHandler = () => {
+    const removeTodoList = () => {
         dispatch(removeTodoListTC(todoListId))
     }
 
     const onClickButtonAll = useCallback(() => {
-        dispatch(ChangeTodolistFilterAC('all', todoListId))
+        dispatch(changeTodolistFilter('all', todoListId))
     }, [todoListId])
 
     const onClickButtonComplied = useCallback(() => {
-        dispatch(ChangeTodolistFilterAC('complied', todoListId))
+        dispatch(changeTodolistFilter('complied', todoListId))
     }, [todoListId])
 
     const onClickButtonActive = useCallback(() => {
-        dispatch(ChangeTodolistFilterAC('active', todoListId))
+        dispatch(changeTodolistFilter('active', todoListId))
     }, [todoListId])
 
     return (
         <div className={'todolist'}>
             <div>
                 <h2>
-                    <EditableSpan title={title} classes={''} changeTitle={changeTitleTodolist}/>
-                    <IconButton
-                        onClick={removeTodoListOnClickHandler}>
-                        <DeleteForeverIcon fontSize={"medium"}/>
-                    </IconButton>
+                    <EditableSpan
+                        disabled={isDisableButton}
+                        sizeButtons={"medium"}
+                        title={title} classes={''}
+                        changeTitle={changeTitleTodolist}
+                        removeItem={removeTodoList}
+                    />
                 </h2>
             </div>
-            <AddItemForm addItem={createTask}/>
+            <AddItemForm addItem={createTask} value={rejectedRequestTitle}/>
             <List sx={{width: '100%', maxWidth: 360}}
-                  subheader
+                  subheader={false}
             >
                 {renderTasksList}
             </List>

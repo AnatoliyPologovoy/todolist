@@ -3,10 +3,11 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {useSelector} from "react-redux";
-import {AppRootStateType} from "../../app/store";
-import {createTodoListTC, fetchTodoListsTC, TodoListType} from "../../reducers/todolists-reducers";
+import {AppRootStateType, useAppSelector} from "../../app/store";
+import {createTodoListTC, fetchTodoListsTC, tempIdTodo, TodoListType} from "../../reducers/todolists-reducers";
 import {useAppDispatch} from "../../hooks/useAppDispatch";
 import {Todolist} from "../TodoList/Todolist";
+
 
 export const AllTodoLists = () => {
 
@@ -19,6 +20,12 @@ export const AllTodoLists = () => {
         dispatch(fetchTodoListsTC())
     }, [])
 
+    const allRejectedRequestTitles =
+        useAppSelector(state => state.app.rejectedRequestTitle)
+    //check for rejected request title
+    //tempIdTodo - temporary id for save title
+    // before success request for create todoList
+    const rejectedRequestTitle = allRejectedRequestTitles[tempIdTodo] || ''
 
     const createTodoList = useCallback((title: string) => {
         dispatch(createTodoListTC(title))
@@ -27,12 +34,10 @@ export const AllTodoLists = () => {
 
     const todoListsComponents = todoLists.map(tdl => {
         return (
-            <Grid item>
+            <Grid item key={tdl.id}>
                 <Todolist
                     key={tdl.id}
-                    todoListId={tdl.id}
-                    title={tdl.title}
-                    filter={tdl.filter}
+                    todoList={tdl}
                 />
             </Grid>
         )
@@ -41,7 +46,7 @@ export const AllTodoLists = () => {
     return (
         <Container fixed>
             <Grid container sx={{p: '15px 0'}}>
-                <AddItemForm addItem={createTodoList}/>
+                <AddItemForm addItem={createTodoList} value={rejectedRequestTitle}/>
             </Grid>
             <Grid container spacing={4}>
                 {todoListsComponents}

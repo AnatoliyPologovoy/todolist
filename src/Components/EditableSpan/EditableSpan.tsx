@@ -2,28 +2,31 @@ import React, {ChangeEvent, FC, memo, useLayoutEffect, useState} from 'react';
 import {IconButton, TextField} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import BeenhereIcon from '@mui/icons-material/Beenhere';
 
 type EditableSpanPropsType = {
-    isEditMode?: boolean
+    disabled: boolean
     title: string
     classes: string
     changeTitle: (newTitle: string) => void
+    removeItem: () => void
+    sizeButtons: 'small' | 'medium' | 'large'
 }
 
-const EditableSpan: FC<EditableSpanPropsType> = memo(({title, classes, changeTitle, ...props}) => {
+const EditableSpan: FC<EditableSpanPropsType> = memo((props) => {
+    const {
+        title, classes, changeTitle, removeItem, sizeButtons, disabled
+    } = props
     const [isEditMode, setIsEditMode] = useState(false)
     const [inputValue, setInputValue] = useState<string>(title)
 
-    useLayoutEffect(() => {
-        if (props.isEditMode) {
-            setIsEditMode(true)
-        }
-    }, [props.isEditMode])
+
 
     const onEditMode = () => {
         setIsEditMode(true)
     }
-    const offEditMode = () => {
+    const saveTitle = () => {
         setIsEditMode(false)
         changeTitle(inputValue)
     }
@@ -32,7 +35,7 @@ const EditableSpan: FC<EditableSpanPropsType> = memo(({title, classes, changeTit
         setInputValue(evt.currentTarget.value)
     }
 
-    //render
+    //render title
     const textEditableMode =
         <TextField
             sx={{
@@ -40,7 +43,7 @@ const EditableSpan: FC<EditableSpanPropsType> = memo(({title, classes, changeTit
             }}
             size={'small'}
             variant="standard"
-            onBlur={offEditMode}
+            onBlur={saveTitle}
             autoFocus
             value={inputValue}
             onChange={onChangeInput}
@@ -55,11 +58,50 @@ const EditableSpan: FC<EditableSpanPropsType> = memo(({title, classes, changeTit
 
     const renderTitle = isEditMode ? textEditableMode : textViewMode
 
+    // render buttons
+    const editButton =
+        <IconButton
+            size={"small"}
+            onClick={onEditMode}
+            disabled={disabled}
+        >
+            <EditIcon fontSize={sizeButtons}/>
+        </IconButton>
+
+    const saveButton =
+        <IconButton
+            size={"small"}
+            onClick={saveTitle}
+        >
+            <BeenhereIcon fontSize={sizeButtons}/>
+        </IconButton>
+
+    const renderUpdateButton = isEditMode ? saveButton : editButton
 
     return (
-        <>
-            {renderTitle}
-        </>
+        <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '100%'
+        }}>
+            <div>
+                {renderTitle}
+            </div>
+            <ButtonGroup>
+                {renderUpdateButton}
+
+                {/*----Delete button-----*/}
+
+                <IconButton
+                    size={"small"}
+                    onClick={removeItem}
+                    disabled={disabled}
+                >
+                    <DeleteForeverIcon fontSize={sizeButtons}/>
+                </IconButton>
+            </ButtonGroup>
+        </div>
     );
 });
 

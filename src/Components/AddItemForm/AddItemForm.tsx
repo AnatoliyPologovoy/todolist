@@ -1,24 +1,27 @@
-import React, {ChangeEvent, FC, KeyboardEvent, memo, useState} from 'react';
+import React, {ChangeEvent, FC, KeyboardEvent, memo, useLayoutEffect, useState} from 'react';
 import s from "../TodoList/todolist.module.css";
 import {IconButton, TextField} from "@mui/material";
 import AddBoxIcon from '@mui/icons-material/AddBox';
 
 export type AddItemFormPropsType = {
     addItem: (title: string) => void
+    value: string
 }
 
 
-export const AddItemForm: FC<AddItemFormPropsType> = memo(({addItem}) => {
+export const AddItemForm: FC<AddItemFormPropsType> = memo(({addItem, value}) => {
     let [inputValue, setInputValue] = useState<string>('')
     let [error, setError] = useState<string | null>(null)
-
-
+    console.log('add item form render')
+    useLayoutEffect(() => {
+        setInputValue(value)
+    }, [value])
 
     const onChangeInput = (evt:ChangeEvent<HTMLInputElement>) => {
         setError('') //remove error when we start change input
         setInputValue(evt.currentTarget.value)
     }
-    const maxLengthTitle = 20
+    const maxLengthTitle = 9999
     const minLengthTitle = 5
 
     const addItemHandler = () => {

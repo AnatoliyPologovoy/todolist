@@ -1,6 +1,6 @@
 import {AddTodolistAT, RemoveTodolistAT, setTodoListTypeAction} from "./todolists-reducers";
 import {
-    CreateTaskResponseType,
+    CreateTaskResponseType, ResponseCode,
     TaskPriorities,
     TaskRequestType,
     TaskResponseType,
@@ -9,7 +9,7 @@ import {
 } from "../api/todolist-api";
 import {Dispatch} from "redux";
 import {AppRootStateType} from "../app/store";
-import {AppActionsType, setAppStatus} from "./app-reducer";
+import {AppActionsType, setAppError, setAppStatus, setRejectedRequestTitle} from "./app-reducer";
 
 export type RemoveTaskAT = ReturnType<typeof removeTaskAC>
 
@@ -153,6 +153,7 @@ export const changeTaskAC =
             task
         } as const
     }
+
 //thunk
 export const setTasksTC =
     (todoListId: string) => (dispatch: Dispatch<ActionsTaskType | AppActionsType>) => {
@@ -176,10 +177,23 @@ export const removeTaskTC
 export const createTaskTC = (todoListId: string, title: string) =>
     (dispatch: Dispatch<ActionsTaskType | AppActionsType>) => {
         dispatch(setAppStatus('loading'))
-
+        //clearing rejectedRequestTitle:
+        dispatch(setRejectedRequestTitle(todoListId, ''))
         TodolistApi.createTask(todoListId, title).then(res => {
-            dispatch(createTaskAC(res.data.data.item))
-            dispatch(setAppStatus('succeeded'))
+            if (res.data.resultCode === ResponseCode.Ok) {
+                dispatch(createTaskAC(res.data.data.item))
+                dispatch(setAppStatus('succeeded'))
+            } else {
+                if (res.data.messages.length) {
+                    dispatch(setAppError(res.data.messages[0]))
+                }
+                else {
+                    dispatch(setAppError('Some error occurred'))
+                }
+                dispatch(setAppStatus('failed'))
+                //Saved title
+                dispatch(setRejectedRequestTitle(todoListId, title))
+            }
         })
     }
 
