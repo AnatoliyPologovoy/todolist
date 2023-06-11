@@ -6,13 +6,13 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 export type AddItemFormPropsType = {
     addItem: (title: string) => void
     value: string
+    disabled: boolean
 }
 
-
-export const AddItemForm: FC<AddItemFormPropsType> = memo(({addItem, value}) => {
+export const AddItemForm: FC<AddItemFormPropsType> = memo(({addItem, value, disabled}) => {
     let [inputValue, setInputValue] = useState<string>('')
     let [error, setError] = useState<string | null>(null)
-    console.log('add item form render')
+
     useLayoutEffect(() => {
         setInputValue(value)
     }, [value])
@@ -21,7 +21,7 @@ export const AddItemForm: FC<AddItemFormPropsType> = memo(({addItem, value}) => 
         setError('') //remove error when we start change input
         setInputValue(evt.currentTarget.value)
     }
-    const maxLengthTitle = 9999
+    const maxLengthTitle = 900
     const minLengthTitle = 5
 
     const addItemHandler = () => {
@@ -57,6 +57,7 @@ export const AddItemForm: FC<AddItemFormPropsType> = memo(({addItem, value}) => 
     return (
         <div>
             <TextField
+                disabled={disabled}
                 value={inputValue}
                 type="text"
                 onChange={onChangeInput}
@@ -65,7 +66,10 @@ export const AddItemForm: FC<AddItemFormPropsType> = memo(({addItem, value}) => 
                 multiline={false}
                 size={"small"}
             />
-            <IconButton onClick={addItemHandler}>
+            <IconButton
+                disabled={disabled}
+                onClick={addItemHandler}
+            >
                 <AddBoxIcon/>
             </IconButton>
             { error && <div className={s.errorMessage}>{error}</div>}

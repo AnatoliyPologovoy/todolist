@@ -36,7 +36,7 @@ export const Task: React.FC<TaskPropsType> = memo((props) => {
         const statusChecked = event.currentTarget.checked
             ? TaskStatues.Completed
             : TaskStatues.New
-        const changingValue = {
+        const changingValue: TaskRequestType = {
             status: statusChecked
         }
         dispatch(changeTaskTC(todoListId, taskId, changingValue))
@@ -56,6 +56,7 @@ export const Task: React.FC<TaskPropsType> = memo((props) => {
             />
             &nbsp;
             <EditableSpan
+                rejectedRequestUpdateTitle={null}
                 sizeButtons={'small'}
                 disabled={false}
                 title={taskTitle}

@@ -1,7 +1,15 @@
 import {ResponseCode, TodolistApi, TodoListDomainType} from "../api/todolist-api";
 import {FilterType} from "./task-reducers";
 import {Dispatch} from "redux";
-import {AppActionsType, RequestStatusType, setAppError, setAppStatus, setRejectedRequestTitle} from "./app-reducer";
+import {
+    AppActionsType,
+    RequestStatusType,
+    setAppError,
+    setAppStatus,
+    setRejectedRequestChangeTitle,
+    setRejectedRequestNewTitle
+} from "./app-reducer";
+import {handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
 
 export type RemoveTodolistAT = {
     type: 'REMOVE-TODOLIST'
@@ -146,7 +154,9 @@ export const fetchTodoListsTC =
             .then((res) => {
                 dispatch(setTodoList(res.data))
                 dispatch(setAppStatus('succeeded'))
-            })
+            }).catch((er) => {
+            handleServerNetworkError(er, dispatch)
+        })
     }
 
 export const removeTodoListTC = (todoListId: string) => {
@@ -155,10 +165,18 @@ export const removeTodoListTC = (todoListId: string) => {
         dispatch(changeTodolistEntityStatus('loading', todoListId))
         TodolistApi.removeTodoList(todoListId)
             .then(res => {
-                dispatch(RemoveTodolistAC(todoListId))
-                dispatch(setAppStatus('succeeded'))
-                dispatch(changeTodolistEntityStatus('succeeded', todoListId))
-            })
+                if (res.data.resultCode === ResponseCode.Ok) {
+                    dispatch(RemoveTodolistAC(todoListId))
+                    dispatch(setAppStatus('succeeded'))
+                    dispatch(changeTodolistEntityStatus('succeeded', todoListId))
+                } else {
+                    handleServerAppError(res.data, dispatch)
+                    dispatch(changeTodolistEntityStatus('failed', todoListId))
+                }
+            }).catch((er) => {
+            handleServerNetworkError(er, dispatch)
+            dispatch(changeTodolistEntityStatus('failed', todoListId))
+        })
     }
 }
 
@@ -168,7 +186,7 @@ export const createTodoListTC = (title: string) => {
     return (dispatch: Dispatch<ActionsTodoListType | AppActionsType>) => {
         dispatch(setAppStatus('loading'))
         //clearing rejectedRequestTitle:
-        dispatch(setRejectedRequestTitle(tempIdTodo, ''))
+        dispatch(setRejectedRequestNewTitle(tempIdTodo, ''))
         TodolistApi.createTodoList(title)
             .then(res => {
                 if (res.data.resultCode === ResponseCode.Ok) {
@@ -176,27 +194,43 @@ export const createTodoListTC = (title: string) => {
                     dispatch(createTodolistAC(res.data.data.item))
                     dispatch(setAppStatus('succeeded'))
                 } else {
-                    if (res.data.messages.length) {
-                        dispatch(setAppError(res.data.messages[0]))
-                    } else {
-                        dispatch(setAppError('Some error occurred'))
-                    }
-                    dispatch(setAppStatus('failed'))
+                    handleServerAppError(res.data, dispatch)
                     //Saved title
-                    dispatch(setRejectedRequestTitle(tempIdTodo, title))
+                    dispatch(setRejectedRequestNewTitle(tempIdTodo, title))
                 }
-            })
+            }).catch((er) => {
+            handleServerNetworkError(er, dispatch)
+            //Saved title
+            dispatch(setRejectedRequestNewTitle(tempIdTodo, title))
+        })
     }
 }
 
 export const changeTodoListTitleTC = (title: string, todoId: string) => {
     return (dispatch: Dispatch<ActionsTodoListType | AppActionsType>) => {
         dispatch(setAppStatus('loading'))
+        dispatch(changeTodolistEntityStatus('loading', todoId))
+        //clearing rejectedRequestTitle:
+        dispatch(setRejectedRequestChangeTitle(todoId, ''))
+
         TodolistApi.changeTitleTodoList(title, todoId)
             .then(res => {
-                dispatch(changeTodolistTitleAC(title, todoId))
-                dispatch(setAppStatus('succeeded'))
+                if (res.data.resultCode === ResponseCode.Ok) {
+                    dispatch(changeTodolistTitleAC(title, todoId))
+                    dispatch(setAppStatus('succeeded'))
+                    dispatch(changeTodolistEntityStatus('succeeded', todoId))
 
-            })
+                } else {
+                    handleServerAppError(res.data, dispatch)
+                    dispatch(changeTodolistEntityStatus('failed', todoId))
+                    //Saved title
+                    dispatch(setRejectedRequestChangeTitle(todoId, title))
+                }
+            }).catch((er) => {
+            handleServerNetworkError(er, dispatch)
+            dispatch(changeTodolistEntityStatus('failed', todoId))
+            //Saved title
+            dispatch(setRejectedRequestChangeTitle(todoId, title))
+        })
     }
 }

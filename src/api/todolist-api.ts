@@ -24,14 +24,14 @@ export const TodolistApi = {
     },
     createTask(todoListId: string, title: string) {
         return instance
-            .post<CreateTaskResponseType>
+            .post<ResponseType<{item: TaskResponseType}>>
             (`/todo-lists/${todoListId}/tasks`, {
                 title
             })
     },
     changeTask(todoListId: string, taskId: string, task: TaskResponseType) {
         return instance
-            .put<CreateTaskResponseType>
+            .put<ResponseType<{item: TaskResponseType}>>
             (`/todo-lists/${todoListId}/tasks/${taskId}`, task)
     },
     removeTask(todoListId: string, taskId: string) {
@@ -48,7 +48,7 @@ export type TodoListDomainType = {
     order: number
 }
 
-type ResponseType<T = {}> = {
+export type ResponseType<T = {}> = {
     resultCode: number
     fieldsErrors: []
     messages: string[]

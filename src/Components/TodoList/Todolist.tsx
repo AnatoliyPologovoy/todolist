@@ -1,8 +1,7 @@
 import React, {memo, useCallback, useEffect} from "react";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import EditableSpan from "../EditableSpan/EditableSpan";
-import {IconButton, List} from "@mui/material";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import {List} from "@mui/material";
 import {useAppSelector} from "../../app/store";
 import {
     changeTodolistFilter,
@@ -10,7 +9,7 @@ import {
     removeTodoListTC,
     TodoListType
 } from "../../reducers/todolists-reducers";
-import {createTaskTC, FilterType, setTasksTC} from "../../reducers/task-reducers";
+import {createTaskTC, setTasksTC} from "../../reducers/task-reducers";
 import {Task} from "../Task/Task";
 import {ButtonWithMemo} from "../ButtonWithMemo";
 import {TaskStatues} from "../../api/todolist-api";
@@ -18,9 +17,6 @@ import {useAppDispatch} from "../../hooks/useAppDispatch";
 
 
 type TodolistPropsType = {
-    // todoListId: string
-    // title: string,
-    // filter: FilterType
     todoList: TodoListType
 }
 
@@ -40,7 +36,8 @@ export const Todolist = memo((props: TodolistPropsType) => {
     const allRejectedRequestTitles =
         useAppSelector(state => state.app.rejectedRequestTitle)
     //check for rejected request title
-    const rejectedRequestTitle = allRejectedRequestTitles[todoListId] || ''
+    const rejectedRequestNewTitle = allRejectedRequestTitles[todoListId]?.newTitle || ''
+    const rejectedRequestUpdateTitle = allRejectedRequestTitles[todoListId]?.updateTitle || null
 
     useEffect(() => {
         dispatch(setTasksTC(todoListId))
@@ -99,6 +96,7 @@ export const Todolist = memo((props: TodolistPropsType) => {
             <div>
                 <h2>
                     <EditableSpan
+                        rejectedRequestUpdateTitle={rejectedRequestUpdateTitle}
                         disabled={isDisableButton}
                         sizeButtons={"medium"}
                         title={title} classes={''}
@@ -107,7 +105,11 @@ export const Todolist = memo((props: TodolistPropsType) => {
                     />
                 </h2>
             </div>
-            <AddItemForm addItem={createTask} value={rejectedRequestTitle}/>
+            <AddItemForm
+                addItem={createTask}
+                value={rejectedRequestNewTitle}
+                disabled={isDisableButton}
+            />
             <List sx={{width: '100%', maxWidth: 360}}
                   subheader={false}
             >

@@ -9,7 +9,8 @@ import {
 } from "../api/todolist-api";
 import {Dispatch} from "redux";
 import {AppRootStateType} from "../app/store";
-import {AppActionsType, setAppError, setAppStatus, setRejectedRequestTitle} from "./app-reducer";
+import {AppActionsType, setAppError, setAppStatus, setRejectedRequestNewTitle} from "./app-reducer";
+import {handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
 
 export type RemoveTaskAT = ReturnType<typeof removeTaskAC>
 
@@ -158,9 +159,12 @@ export const changeTaskAC =
 export const setTasksTC =
     (todoListId: string) => (dispatch: Dispatch<ActionsTaskType | AppActionsType>) => {
         dispatch(setAppStatus('loading'))
-        TodolistApi.getTasks(todoListId).then(res => {
-            dispatch(setTasksAC(todoListId, res.data.items))
-            dispatch(setAppStatus('succeeded'))
+        TodolistApi.getTasks(todoListId)
+            .then(res => {
+                dispatch(setTasksAC(todoListId, res.data.items))
+                dispatch(setAppStatus('succeeded'))
+            }).catch((er) => {
+            handleServerNetworkError(er, dispatch)
         })
     }
 
@@ -168,34 +172,41 @@ export const removeTaskTC
     = (todoListId: string, taskId: string) =>
     (dispatch: Dispatch<ActionsTaskType | AppActionsType>) => {
         dispatch(setAppStatus('loading'))
-        TodolistApi.removeTask(todoListId, taskId).then(res => {
-            dispatch(removeTaskAC(taskId, todoListId))
-            dispatch(setAppStatus('succeeded'))
-        })
+        TodolistApi.removeTask(todoListId, taskId)
+            .then(res => {
+                if (res.data.resultCode === ResponseCode.Ok) {
+                    dispatch(removeTaskAC(taskId, todoListId))
+                    dispatch(setAppStatus('succeeded'))
+                } else {
+                    handleServerAppError(res.data, dispatch)
+                }
+            })
+            .catch((er) => {
+                handleServerNetworkError(er, dispatch)
+            })
     }
 
 export const createTaskTC = (todoListId: string, title: string) =>
     (dispatch: Dispatch<ActionsTaskType | AppActionsType>) => {
         dispatch(setAppStatus('loading'))
         //clearing rejectedRequestTitle:
-        dispatch(setRejectedRequestTitle(todoListId, ''))
-        TodolistApi.createTask(todoListId, title).then(res => {
-            if (res.data.resultCode === ResponseCode.Ok) {
-                dispatch(createTaskAC(res.data.data.item))
-                dispatch(setAppStatus('succeeded'))
-            } else {
-                if (res.data.messages.length) {
-                    dispatch(setAppError(res.data.messages[0]))
+        dispatch(setRejectedRequestNewTitle(todoListId, ''))
+        TodolistApi.createTask(todoListId, title)
+            .then(res => {
+                if (res.data.resultCode === ResponseCode.Ok) {
+                    dispatch(createTaskAC(res.data.data.item))
+                    dispatch(setAppStatus('succeeded'))
+                } else {
+                    handleServerAppError(res.data, dispatch)
+                    //Saved title
+                    dispatch(setRejectedRequestNewTitle(todoListId, title))
                 }
-                else {
-                    dispatch(setAppError('Some error occurred'))
-                }
-                dispatch(setAppStatus('failed'))
-                //Saved title
-                dispatch(setRejectedRequestTitle(todoListId, title))
-            }
-        })
+            })
+            .catch((er) => {
+                handleServerNetworkError(er, dispatch)
+            })
     }
+
 
 export const changeTaskTC =
     (todoListId: string, taskId: string, changeValue: TaskRequestType) => {
@@ -206,10 +217,21 @@ export const changeTaskTC =
             if (requestBody) {
                 requestBody = {...requestBody, ...changeValue}
                 dispatch(setAppStatus('loading'))
-                TodolistApi.changeTask(todoListId, taskId, requestBody).then(res => {
-                    dispatch(changeTaskAC(res.data.data.item))
-                    dispatch(setAppStatus('succeeded'))
-                })
+                TodolistApi.changeTask(todoListId, taskId, requestBody)
+                    .then(res => {
+                        if (res.data.resultCode === ResponseCode.Ok) {
+                            dispatch(changeTaskAC(res.data.data.item))
+                            dispatch(setAppStatus('succeeded'))
+                        } else {
+                            handleServerAppError(res.data, dispatch)
+                            //Saved title
+                            // changeValue?.title &&
+                            //диспатч в таску отклоненный новый заголовок
+                        }
+                    })
+                    .catch((er) => {
+                        handleServerNetworkError(er, dispatch)
+                    })
             }
         }
     }

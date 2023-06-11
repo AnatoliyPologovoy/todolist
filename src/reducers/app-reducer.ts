@@ -3,13 +3,17 @@ import {RemoveTodolistAT} from "./todolists-reducers";
 export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed'
 export type AppErrorType = string | null
 type rejectedRequestTitleType = {
-    [key: string]: string
+    [key: string]: {
+        newTitle: string,
+        updateTitle: string
+    }
 }
 
 const initialState = {
     status: 'loading' as RequestStatusType,
     error: null as AppErrorType,
-    rejectedRequestTitle: {} as rejectedRequestTitleType
+    rejectedRequestTitle: {} as rejectedRequestTitleType,
+    // rejectedRequestChangeTitle: {} as rejectedRequestTitleType
 }
 
 //значение перед as RequestStatusType дополняет(расширяет) RequestStatusType
@@ -23,11 +27,24 @@ export const appReducer = (state: InitialAppStateType = initialState, action: Ap
             return {...state, status: action.status}
         case 'APP/SET-ERROR':
             return {...state, error: action.error}
-        case "APP/SET-REJECTED-REQUEST_TITLE":
+        case "APP/SET-REJECTED-REQUEST-TITLE":
             return {
                 ...state, rejectedRequestTitle: {
                     ...state.rejectedRequestTitle,
-                    [action.id]: action.title
+                    [action.id]: {
+                        ...state.rejectedRequestTitle[action.id],
+                        newTitle: action.title
+                    }
+                }
+            }
+        case "APP/SET-REJECTED-REQUEST-CHANGE-TITLE":
+            return {
+                ...state, rejectedRequestTitle: {
+                    ...state.rejectedRequestTitle,
+                    [action.id]: {
+                        ...state.rejectedRequestTitle[action.id],
+                        updateTitle: action.title
+                    }
                 }
             }
         case "REMOVE-TODOLIST":
@@ -49,18 +66,31 @@ export const setAppError = (error: AppErrorType) => ({
     error
 } as const)
 
-export const setRejectedRequestTitle = (id: string, title: string) => ({
-    type: 'APP/SET-REJECTED-REQUEST_TITLE',
+export const setRejectedRequestNewTitle = (id: string, title: string) => ({
+    type: 'APP/SET-REJECTED-REQUEST-TITLE',
     id,
     title
 } as const)
 
+export const setRejectedRequestChangeTitle = (id: string, title: string) => ({
+    type: 'APP/SET-REJECTED-REQUEST-CHANGE-TITLE',
+    id,
+    title
+} as const)
+
+
+
 export type setAppStatusType = ReturnType<typeof setAppStatus>
 export type setAppErrorType = ReturnType<typeof setAppError>
-export type setRejectedRequestTitleType =
-    ReturnType<typeof setRejectedRequestTitle>
+export type setRejectedRequestNewTitleType =
+    ReturnType<typeof setRejectedRequestNewTitle>
+export type setRejectedRequestChangeTitleType =
+    ReturnType<typeof setRejectedRequestChangeTitle>
+
 export type AppActionsType =
     | setAppStatusType
     | setAppErrorType
-    | setRejectedRequestTitleType
+    | setRejectedRequestNewTitleType
+    | setRejectedRequestChangeTitleType
     | RemoveTodolistAT
+

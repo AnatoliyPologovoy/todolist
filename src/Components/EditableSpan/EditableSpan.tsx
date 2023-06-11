@@ -12,19 +12,29 @@ type EditableSpanPropsType = {
     changeTitle: (newTitle: string) => void
     removeItem: () => void
     sizeButtons: 'small' | 'medium' | 'large'
+    rejectedRequestUpdateTitle: string | null
 }
 
 const EditableSpan: FC<EditableSpanPropsType> = memo((props) => {
     const {
-        title, classes, changeTitle, removeItem, sizeButtons, disabled
+        title, classes, changeTitle, removeItem, sizeButtons, disabled,
+        rejectedRequestUpdateTitle
     } = props
     const [isEditMode, setIsEditMode] = useState(false)
     const [inputValue, setInputValue] = useState<string>(title)
 
+    useLayoutEffect(() => {
+        if (rejectedRequestUpdateTitle) {
+            setIsEditMode(true)
+            setInputValue(rejectedRequestUpdateTitle)
+        }
+    }, [rejectedRequestUpdateTitle])
 
 
     const onEditMode = () => {
-        setIsEditMode(true)
+        if (!disabled) { // if not disable
+            setIsEditMode(true)
+        }
     }
     const saveTitle = () => {
         setIsEditMode(false)

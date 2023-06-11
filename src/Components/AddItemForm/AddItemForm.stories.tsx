@@ -39,7 +39,10 @@ export const AddItemFormStory: Story = {
 //second way create story
 export const AddItemFormStoryWithRender: Story = {
 
-    render: args => <AddItemForm addItem={args.addItem} value={''}/>
+    render: args => <AddItemForm
+        addItem={args.addItem}
+        value={''}
+        disabled={false}/>
 };
 
 //thirteen way create story - new component

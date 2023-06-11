@@ -52,7 +52,8 @@ const initialGlobalState = {
     app: {
         status: 'idle',
         error: null,
-        rejectedRequestTitle: {}
+        rejectedRequestTitle: {},
+        // rejectedRequestChangeTitle: {}
     }
 
 };

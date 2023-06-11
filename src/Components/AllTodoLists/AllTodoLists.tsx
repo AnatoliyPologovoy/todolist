@@ -25,7 +25,7 @@ export const AllTodoLists = () => {
     //check for rejected request title
     //tempIdTodo - temporary id for save title
     // before success request for create todoList
-    const rejectedRequestTitle = allRejectedRequestTitles[tempIdTodo] || ''
+    const rejectedRequestTitle = allRejectedRequestTitles[tempIdTodo]?.newTitle || ''
 
     const createTodoList = useCallback((title: string) => {
         dispatch(createTodoListTC(title))
@@ -46,7 +46,11 @@ export const AllTodoLists = () => {
     return (
         <Container fixed>
             <Grid container sx={{p: '15px 0'}}>
-                <AddItemForm addItem={createTodoList} value={rejectedRequestTitle}/>
+                <AddItemForm
+                    disabled={false}
+                    addItem={createTodoList}
+                    value={rejectedRequestTitle}
+                />
             </Grid>
             <Grid container spacing={4}>
                 {todoListsComponents}
