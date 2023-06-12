@@ -1,17 +1,10 @@
 import {AddTodolistAT, RemoveTodolistAT, setTodoListTypeAction} from "./todolists-reducers";
-import {
-    CreateTaskResponseType, ResponseCode,
-    TaskPriorities,
-    TaskRequestType,
-    TaskResponseType,
-    TaskStatues,
-    TodolistApi
-} from "../api/todolist-api";
+import {ResponseCode, TaskRequestType, TaskResponseType, TaskStatues, TodolistApi} from "../api/todolist-api";
 import {Dispatch} from "redux";
 import {AppRootStateType} from "../app/store";
 import {
     AppActionsType,
-    setAppError,
+    RequestStatusType,
     setAppStatus,
     setRejectedRequestChangeTaskTitle,
     setRejectedRequestNewTitle
@@ -25,6 +18,7 @@ export type ChangeStatusTask = ReturnType<typeof changeTaskStatusAC>
 export type changeTaskTitle = ReturnType<typeof changeTaskTitleAC>
 export type SetTasks = ReturnType<typeof setTasksAC>
 export type ChangeTask = ReturnType<typeof changeTaskAC>
+export type  changeTaskEntityStatusType = ReturnType<typeof changeTaskEntityStatus>
 
 export type ActionsTaskType =
     RemoveTaskAT |
@@ -35,17 +29,16 @@ export type ActionsTaskType =
     RemoveTodolistAT |
     setTodoListTypeAction |
     SetTasks |
-    ChangeTask
+    ChangeTask |
+    changeTaskEntityStatusType
 
 export type TasksStateType = {
-    [key: string]: TaskResponseType[]
+    [key: string]: TaskType[]
 }
 
-// export type TaskType = {
-//     id: string,
-//     title: string,
-//     isDone: boolean
-// }
+export type TaskType = TaskResponseType & {
+    entityStatus: RequestStatusType
+}
 
 export type FilterType = 'all' | 'complied' | 'active'
 
@@ -67,7 +60,8 @@ const initialState: TasksStateType = {
 export const tasksReducer = (state: TasksStateType = initialState, action: ActionsTaskType): TasksStateType => {
     switch (action.type) {
         case "SET-TASKS":
-            return {...state, [action.todoListId]: action.tasks}
+            return {...state, [action.todoListId]: action.tasks.map(t => (
+                {...t, entityStatus: 'idle'}))}
         case "SET-TODOLIST":
             const copyState = {...state}
             action.todos.forEach(t => {
@@ -81,13 +75,13 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
             }
         case "CREATE-TASK":
             return {
-                ...state, [action.task.todoListId]: [action.task, ...state[action.task.todoListId]]
+                ...state, [action.task.todoListId]: [{...action.task, entityStatus: 'idle'}, ...state[action.task.todoListId]]
             }
         case "CHANGE-TASK":
             return {
                 ...state, [action.task.todoListId]: state[action.task.todoListId].map(t => {
 
-                    return t.id === action.task.id ? action.task : t
+                    return t.id === action.task.id ? {...action.task, entityStatus: 'idle'} : t
                 })
             }
         case "CHANGE-TASK-STATUS":
@@ -99,6 +93,11 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
             return {
                 ...state, [action.todolistId]: state[action.todolistId]
                     .map(t => t.id === action.taskId ? {...t, title: action.newTitle} : t)
+            }
+        case "CHANGE-TASK-ENTITY-STATUS":
+            return {
+                ...state, [action.todolistId]: state[action.todolistId]
+                    .map(t => t.id === action.taskId ? {...t, entityStatus: action.entityStatus} : t)
             }
         case "ADD-TODOLIST":
             return {...state, [action.payload.id]: []}
@@ -145,6 +144,16 @@ export const changeTaskTitleAC = (taskId: string, newTitle: string, todolistId: 
     } as const
 }
 
+export const changeTaskEntityStatus
+    = (taskId: string, entityStatus: RequestStatusType, todolistId: string) => {
+    return {
+        type: 'CHANGE-TASK-ENTITY-STATUS',
+        taskId,
+        entityStatus,
+        todolistId
+    } as const
+}
+
 export const setTasksAC = (todoListId: string, tasks: TaskResponseType[]) => {
     return {
         type: 'SET-TASKS',
@@ -178,6 +187,7 @@ export const removeTaskTC
     = (todoListId: string, taskId: string) =>
     (dispatch: Dispatch<ActionsTaskType | AppActionsType>) => {
         dispatch(setAppStatus('loading'))
+        dispatch(changeTaskEntityStatus(taskId, 'loading', todoListId))
         TodolistApi.removeTask(todoListId, taskId)
             .then(res => {
                 if (res.data.resultCode === ResponseCode.Ok) {
@@ -185,10 +195,12 @@ export const removeTaskTC
                     dispatch(setAppStatus('succeeded'))
                 } else {
                     handleServerAppError(res.data, dispatch)
+                    dispatch(changeTaskEntityStatus(taskId, 'failed', todoListId))
                 }
             })
             .catch((er) => {
                 handleServerNetworkError(er, dispatch)
+                dispatch(changeTaskEntityStatus(taskId, 'failed', todoListId))
             })
     }
 
@@ -223,6 +235,7 @@ export const changeTaskTC =
             if (requestBody) {
                 requestBody = {...requestBody, ...changeValue}
                 dispatch(setAppStatus('loading'))
+                dispatch(changeTaskEntityStatus(taskId, 'loading', todoListId))
                 //clear saved task title
                 changeValue?.title &&
                 dispatch(setRejectedRequestChangeTaskTitle(todoListId, taskId, ''))
@@ -237,6 +250,7 @@ export const changeTaskTC =
                             //Saved title
                             changeValue?.title &&
                             dispatch(setRejectedRequestChangeTaskTitle(todoListId, taskId, changeValue.title))
+                            dispatch(changeTaskEntityStatus(taskId, 'failed', todoListId))
                         }
                     })
                     .catch((er) => {
@@ -244,6 +258,8 @@ export const changeTaskTC =
                         //Saved title
                         changeValue?.title &&
                         dispatch(setRejectedRequestChangeTaskTitle(todoListId, taskId, changeValue.title))
+                        dispatch(changeTaskEntityStatus(taskId, 'failed', todoListId))
+
                     })
             }
         }

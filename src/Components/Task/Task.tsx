@@ -1,14 +1,14 @@
 import React, {memo, useCallback} from 'react';
 import {Checkbox, ListItem} from "@mui/material";
 import EditableSpan from "../EditableSpan/EditableSpan";
-import {changeTaskTC, removeTaskTC} from "../../reducers/task-reducers";
+import {changeTaskTC, removeTaskTC, TaskType} from "../../reducers/task-reducers";
 import s from "../TodoList/todolist.module.css";
 import {TaskRequestType, TaskResponseType, TaskStatues} from "../../api/todolist-api";
 import {useAppDispatch} from "../../hooks/useAppDispatch";
 import cl from "./task.module.css"
 
 export type TaskPropsType = {
-    task: TaskResponseType
+    task: TaskType
     rejectedRequestUpdateTaskTitle: string | null
 }
 
@@ -18,6 +18,8 @@ export const Task: React.FC<TaskPropsType> = memo((props) => {
     const taskIsDone = props.task.status === TaskStatues.Completed
     const todoListId = props.task.todoListId
     const rejectedRequestUpdateTaskTitle = props.rejectedRequestUpdateTaskTitle
+
+    const isDisable = props.task.entityStatus === 'loading'
 
     const dispatch = useAppDispatch()
 
@@ -60,7 +62,7 @@ export const Task: React.FC<TaskPropsType> = memo((props) => {
             <EditableSpan
                 rejectedRequestUpdateTitle={rejectedRequestUpdateTaskTitle}
                 sizeButtons={'small'}
-                disabled={false}
+                disabled={isDisable}
                 title={taskTitle}
                 classes={cl.title}
                 changeTitle={changeTaskTitle}
