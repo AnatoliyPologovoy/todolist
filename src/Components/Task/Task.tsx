@@ -9,6 +9,7 @@ import cl from "./task.module.css"
 
 export type TaskPropsType = {
     task: TaskResponseType
+    rejectedRequestUpdateTaskTitle: string | null
 }
 
 export const Task: React.FC<TaskPropsType> = memo((props) => {
@@ -16,6 +17,7 @@ export const Task: React.FC<TaskPropsType> = memo((props) => {
     const taskTitle = props.task.title
     const taskIsDone = props.task.status === TaskStatues.Completed
     const todoListId = props.task.todoListId
+    const rejectedRequestUpdateTaskTitle = props.rejectedRequestUpdateTaskTitle
 
     const dispatch = useAppDispatch()
 
@@ -56,7 +58,7 @@ export const Task: React.FC<TaskPropsType> = memo((props) => {
             />
             &nbsp;
             <EditableSpan
-                rejectedRequestUpdateTitle={null}
+                rejectedRequestUpdateTitle={rejectedRequestUpdateTaskTitle}
                 sizeButtons={'small'}
                 disabled={false}
                 title={taskTitle}

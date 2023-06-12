@@ -5,7 +5,10 @@ export type AppErrorType = string | null
 type rejectedRequestTitleType = {
     [key: string]: {
         newTitle: string,
-        updateTitle: string
+        updateTitle: string,
+        taskTitle: {
+            [key: string]: string
+        }
     }
 }
 
@@ -21,7 +24,8 @@ const initialState = {
 
 export type InitialAppStateType = typeof initialState
 
-export const appReducer = (state: InitialAppStateType = initialState, action: AppActionsType): InitialAppStateType => {
+export const appReducer =
+    (state: InitialAppStateType = initialState, action: AppActionsType): InitialAppStateType => {
     switch (action.type) {
         case 'APP/SET-STATUS':
             return {...state, status: action.status}
@@ -44,6 +48,19 @@ export const appReducer = (state: InitialAppStateType = initialState, action: Ap
                     [action.id]: {
                         ...state.rejectedRequestTitle[action.id],
                         updateTitle: action.title
+                    }
+                }
+            }
+        case "APP/SET-REJECTED-REQUEST-CHANGE-TASK-TITLE":
+            return {
+                ...state, rejectedRequestTitle: {
+                    ...state.rejectedRequestTitle,
+                    [action.todoId]: {
+                        ...state.rejectedRequestTitle[action.todoId],
+                        taskTitle: {
+                            ...state.rejectedRequestTitle[action.todoId]?.taskTitle,
+                            [action.taskID]: action.title
+                        }
                     }
                 }
             }
@@ -78,6 +95,13 @@ export const setRejectedRequestChangeTitle = (id: string, title: string) => ({
     title
 } as const)
 
+export const setRejectedRequestChangeTaskTitle = (todoId: string,taskID: string, title: string) => ({
+    type: 'APP/SET-REJECTED-REQUEST-CHANGE-TASK-TITLE',
+    todoId,
+    taskID,
+    title
+} as const)
+
 
 
 export type setAppStatusType = ReturnType<typeof setAppStatus>
@@ -86,11 +110,14 @@ export type setRejectedRequestNewTitleType =
     ReturnType<typeof setRejectedRequestNewTitle>
 export type setRejectedRequestChangeTitleType =
     ReturnType<typeof setRejectedRequestChangeTitle>
+export type setRejectedRequestChangeTaskTitleType =
+    ReturnType<typeof setRejectedRequestChangeTaskTitle>
 
 export type AppActionsType =
     | setAppStatusType
     | setAppErrorType
     | setRejectedRequestNewTitleType
     | setRejectedRequestChangeTitleType
+    | setRejectedRequestChangeTaskTitleType
     | RemoveTodolistAT
 

@@ -9,7 +9,13 @@ import {
 } from "../api/todolist-api";
 import {Dispatch} from "redux";
 import {AppRootStateType} from "../app/store";
-import {AppActionsType, setAppError, setAppStatus, setRejectedRequestNewTitle} from "./app-reducer";
+import {
+    AppActionsType,
+    setAppError,
+    setAppStatus,
+    setRejectedRequestChangeTaskTitle,
+    setRejectedRequestNewTitle
+} from "./app-reducer";
 import {handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
 
 export type RemoveTaskAT = ReturnType<typeof removeTaskAC>
@@ -217,6 +223,10 @@ export const changeTaskTC =
             if (requestBody) {
                 requestBody = {...requestBody, ...changeValue}
                 dispatch(setAppStatus('loading'))
+                //clear saved task title
+                changeValue?.title &&
+                dispatch(setRejectedRequestChangeTaskTitle(todoListId, taskId, ''))
+
                 TodolistApi.changeTask(todoListId, taskId, requestBody)
                     .then(res => {
                         if (res.data.resultCode === ResponseCode.Ok) {
@@ -225,12 +235,15 @@ export const changeTaskTC =
                         } else {
                             handleServerAppError(res.data, dispatch)
                             //Saved title
-                            // changeValue?.title &&
-                            //диспатч в таску отклоненный новый заголовок
+                            changeValue?.title &&
+                            dispatch(setRejectedRequestChangeTaskTitle(todoListId, taskId, changeValue.title))
                         }
                     })
                     .catch((er) => {
                         handleServerNetworkError(er, dispatch)
+                        //Saved title
+                        changeValue?.title &&
+                        dispatch(setRejectedRequestChangeTaskTitle(todoListId, taskId, changeValue.title))
                     })
             }
         }

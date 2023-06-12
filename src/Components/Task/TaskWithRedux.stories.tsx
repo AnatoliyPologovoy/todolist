@@ -31,7 +31,7 @@ type Story = StoryObj<typeof Task>;
 const Task1 = () => {
   let task = useAppSelector(state => state.tasks['todolistId1'][0])
 
-  return <Task task={task} />
+  return <Task task={task} rejectedRequestUpdateTaskTitle={null} />
 }
 
 export const TaskStory: Story = {

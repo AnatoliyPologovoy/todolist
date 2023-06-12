@@ -62,9 +62,14 @@ export const Todolist = memo((props: TodolistPropsType) => {
 
     //Tasks array
     const renderTasksList = taskFromRedux.map(task => {
+
+        const rejectedRequestChangeTaskTitle
+            = allRejectedRequestTitles[todoListId]?.taskTitle?.[task.id] || null
+
         return (
             <Task key={task.id}
                   task={task}
+                  rejectedRequestUpdateTaskTitle={rejectedRequestChangeTaskTitle}
             />
         )
     })

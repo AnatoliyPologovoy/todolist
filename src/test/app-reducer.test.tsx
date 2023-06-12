@@ -1,7 +1,7 @@
 import {v1} from "uuid";
 import {
     appReducer,
-    InitialAppStateType,
+    InitialAppStateType, setRejectedRequestChangeTaskTitle,
     setRejectedRequestChangeTitle,
     setRejectedRequestNewTitle
 } from "../reducers/app-reducer";
@@ -45,6 +45,28 @@ test('rejected request change title should be saved', () => {
 
     expect(keys.length).toBe(1)
     expect(keys.includes(testId)).toBe(true)
+    expect(newTitle).toBe(testTitle)
+})
+
+test('rejected request on change title task should be saved', () => {
+
+    const startAppState:InitialAppStateType = {
+        status: 'idle',
+        error: null,
+        rejectedRequestTitle: {},
+    }
+
+    const testTodoId = v1()
+    const testTaskId = v1()
+    const testTitle = 'Test title'
+    const testAction = setRejectedRequestChangeTaskTitle(testTodoId, testTaskId, testTitle)
+
+    const updateAppState = appReducer(startAppState, testAction)
+    const keys = Object.keys(updateAppState.rejectedRequestTitle[testTodoId].taskTitle)
+    const newTitle = updateAppState.rejectedRequestTitle[testTodoId].taskTitle[testTaskId]
+
+    expect(keys.length).toBe(1)
+    expect(keys.includes(testTaskId)).toBe(true)
     expect(newTitle).toBe(testTitle)
 })
 
