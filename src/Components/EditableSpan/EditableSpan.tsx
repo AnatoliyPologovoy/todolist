@@ -9,27 +9,22 @@ type EditableSpanPropsType = {
     disabled: boolean
     title: string
     classes: string
-    changeTitle: (newTitle: string) => void
+    changeTitle: (newTitle: string, setRejectTitle: (title: string) => void) => void
     removeItem: () => void
     sizeButtons: 'small' | 'medium' | 'large'
-    rejectedRequestUpdateTitle: string | null
 }
 
 const EditableSpan: FC<EditableSpanPropsType> = memo((props) => {
     const {
         title, classes, changeTitle, removeItem, sizeButtons, disabled,
-        rejectedRequestUpdateTitle
     } = props
     const [isEditMode, setIsEditMode] = useState(false)
     const [inputValue, setInputValue] = useState<string>(title)
 
-    useLayoutEffect(() => {
-        if (rejectedRequestUpdateTitle) {
-            setIsEditMode(true)
-            setInputValue(rejectedRequestUpdateTitle)
-        }
-    }, [rejectedRequestUpdateTitle])
-
+    const setRejectTitle = (title: string) => {
+        setIsEditMode(true)
+        setInputValue(title)
+    }
 
     const onEditMode = () => {
         if (!disabled) { // if not disable
@@ -38,7 +33,7 @@ const EditableSpan: FC<EditableSpanPropsType> = memo((props) => {
     }
     const saveTitle = () => {
         setIsEditMode(false)
-        changeTitle(inputValue)
+        changeTitle(inputValue, setRejectTitle)
     }
 
     const onChangeInput = (evt: ChangeEvent<HTMLInputElement>) => {

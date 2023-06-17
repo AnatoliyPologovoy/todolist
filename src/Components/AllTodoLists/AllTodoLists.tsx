@@ -20,15 +20,9 @@ export const AllTodoLists = () => {
         dispatch(fetchTodoListsTC())
     }, [])
 
-    const allRejectedRequestTitles =
-        useAppSelector(state => state.app.rejectedRequestTitle)
-    //check for rejected request title
-    //tempIdTodo - temporary id for save title
-    // before success request for create todoList
-    const rejectedRequestTitle = allRejectedRequestTitles[tempIdTodo]?.newTitle || ''
-
-    const createTodoList = useCallback((title: string) => {
-        dispatch(createTodoListTC(title))
+    const createTodoList = useCallback(
+        (title: string, setRejectTitle: (title: string) => void) => {
+        dispatch(createTodoListTC(title, setRejectTitle))
     }, [])
 
 
@@ -49,7 +43,6 @@ export const AllTodoLists = () => {
                 <AddItemForm
                     disabled={false}
                     addItem={createTodoList}
-                    value={rejectedRequestTitle}
                 />
             </Grid>
             <Grid container spacing={4}>

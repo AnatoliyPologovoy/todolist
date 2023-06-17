@@ -4,23 +4,20 @@ import {IconButton, TextField} from "@mui/material";
 import AddBoxIcon from '@mui/icons-material/AddBox';
 
 export type AddItemFormPropsType = {
-    addItem: (title: string) => void
-    value: string
+    addItem: (title: string, setRejectTitle: (title: string) => void) => void
+    // value: string
     disabled: boolean
 }
 
-export const AddItemForm: FC<AddItemFormPropsType> = memo(({addItem, value, disabled}) => {
+export const AddItemForm: FC<AddItemFormPropsType> = memo(({addItem, disabled}) => {
     let [inputValue, setInputValue] = useState<string>('')
     let [error, setError] = useState<string | null>(null)
-
-    useLayoutEffect(() => {
-        setInputValue(value)
-    }, [value])
 
     const onChangeInput = (evt:ChangeEvent<HTMLInputElement>) => {
         setError('') //remove error when we start change input
         setInputValue(evt.currentTarget.value)
     }
+
     const maxLengthTitle = 900
     const minLengthTitle = 5
 
@@ -40,7 +37,7 @@ export const AddItemForm: FC<AddItemFormPropsType> = memo(({addItem, value, disa
             isAddTaskPossible = false
         }
         if (isAddTaskPossible) {
-            addItem(trimmedValue);
+            addItem(trimmedValue, setInputValue);
             setInputValue('');
         }
     }

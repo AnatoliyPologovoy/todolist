@@ -1,8 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type {Meta, StoryObj} from '@storybook/react';
 import {Task} from "./Task";
 import {reduxStoreProviderDecorator} from "../../app/reduxStoreProviderDecorator";
-import {AppRootStateType, useAppSelector} from "../../app/store";
-import {useDispatch, useSelector} from "react-redux";
+import {useAppSelector} from "../../app/store";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof Task> = {
@@ -31,7 +30,7 @@ type Story = StoryObj<typeof Task>;
 const Task1 = () => {
   let task = useAppSelector(state => state.tasks['todolistId1'][0])
 
-  return <Task task={task} rejectedRequestUpdateTaskTitle={null} />
+  return <Task task={task} />
 }
 
 export const TaskStory: Story = {

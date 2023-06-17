@@ -2,13 +2,7 @@ import {AddTodolistAT, RemoveTodolistAT, setTodoListTypeAction} from "./todolist
 import {ResponseCode, TaskRequestType, TaskResponseType, TaskStatues, TodolistApi} from "../api/todolist-api";
 import {Dispatch} from "redux";
 import {AppRootStateType} from "../app/store";
-import {
-    AppActionsType,
-    RequestStatusType,
-    setAppStatus,
-    setRejectedRequestChangeTaskTitle,
-    setRejectedRequestNewTitle
-} from "./app-reducer";
+import {AppActionsType, RequestStatusType, setAppStatus} from "./app-reducer";
 import {handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
 
 export type RemoveTaskAT = ReturnType<typeof removeTaskAC>
@@ -60,8 +54,10 @@ const initialState: TasksStateType = {
 export const tasksReducer = (state: TasksStateType = initialState, action: ActionsTaskType): TasksStateType => {
     switch (action.type) {
         case "SET-TASKS":
-            return {...state, [action.todoListId]: action.tasks.map(t => (
-                {...t, entityStatus: 'idle'}))}
+            return {
+                ...state, [action.todoListId]: action.tasks.map(t => (
+                    {...t, entityStatus: 'idle'}))
+            }
         case "SET-TODOLIST":
             const copyState = {...state}
             action.todos.forEach(t => {
@@ -75,7 +71,8 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
             }
         case "CREATE-TASK":
             return {
-                ...state, [action.task.todoListId]: [{...action.task, entityStatus: 'idle'}, ...state[action.task.todoListId]]
+                ...state,
+                [action.task.todoListId]: [{...action.task, entityStatus: 'idle'}, ...state[action.task.todoListId]]
             }
         case "CHANGE-TASK":
             return {
@@ -204,11 +201,13 @@ export const removeTaskTC
             })
     }
 
-export const createTaskTC = (todoListId: string, title: string) =>
+export const createTaskTC = (
+    todoListId: string,
+    title: string,
+    setRejectTitle: (title: string) => void
+) =>
     (dispatch: Dispatch<ActionsTaskType | AppActionsType>) => {
         dispatch(setAppStatus('loading'))
-        //clearing rejectedRequestTitle:
-        dispatch(setRejectedRequestNewTitle(todoListId, ''))
         TodolistApi.createTask(todoListId, title)
             .then(res => {
                 if (res.data.resultCode === ResponseCode.Ok) {
@@ -216,53 +215,55 @@ export const createTaskTC = (todoListId: string, title: string) =>
                     dispatch(setAppStatus('succeeded'))
                 } else {
                     handleServerAppError(res.data, dispatch)
-                    //Saved title
-                    dispatch(setRejectedRequestNewTitle(todoListId, title))
+                    //Set title in local state AddItemForm
+                    setRejectTitle(title)
                 }
             })
             .catch((er) => {
+                //Set title in local state AddItemForm
+                setRejectTitle(title)
                 handleServerNetworkError(er, dispatch)
             })
     }
 
 
-export const changeTaskTC =
-    (todoListId: string, taskId: string, changeValue: TaskRequestType) => {
-        return (dispatch: Dispatch<ActionsTaskType | AppActionsType>,
-                getState: () => AppRootStateType) => {
-            let requestBody = getState()
-                .tasks[todoListId].find(t => t.id === taskId)
-            if (requestBody) {
-                requestBody = {...requestBody, ...changeValue}
-                dispatch(setAppStatus('loading'))
-                dispatch(changeTaskEntityStatus(taskId, 'loading', todoListId))
-                //clear saved task title
-                changeValue?.title &&
-                dispatch(setRejectedRequestChangeTaskTitle(todoListId, taskId, ''))
+export const changeTaskTC = (
+    todoListId: string,
+    taskId: string,
+    changeValue: TaskRequestType,
+    setRejectTitle: ((title: string) => void) | null = null
+) => {
+    return (dispatch: Dispatch<ActionsTaskType | AppActionsType>,
+            getState: () => AppRootStateType) => {
+        let requestBody = getState()
+            .tasks[todoListId].find(t => t.id === taskId)
+        if (requestBody) {
+            requestBody = {...requestBody, ...changeValue}
+            dispatch(setAppStatus('loading'))
+            dispatch(changeTaskEntityStatus(taskId, 'loading', todoListId))
 
-                TodolistApi.changeTask(todoListId, taskId, requestBody)
-                    .then(res => {
-                        if (res.data.resultCode === ResponseCode.Ok) {
-                            dispatch(changeTaskAC(res.data.data.item))
-                            dispatch(setAppStatus('succeeded'))
-                        } else {
-                            handleServerAppError(res.data, dispatch)
-                            //Saved title
-                            changeValue?.title &&
-                            dispatch(setRejectedRequestChangeTaskTitle(todoListId, taskId, changeValue.title))
-                            dispatch(changeTaskEntityStatus(taskId, 'failed', todoListId))
-                        }
-                    })
-                    .catch((er) => {
-                        handleServerNetworkError(er, dispatch)
-                        //Saved title
-                        changeValue?.title &&
-                        dispatch(setRejectedRequestChangeTaskTitle(todoListId, taskId, changeValue.title))
+            TodolistApi.changeTask(todoListId, taskId, requestBody)
+                .then(res => {
+                    if (res.data.resultCode === ResponseCode.Ok) {
+                        dispatch(changeTaskAC(res.data.data.item))
+                        dispatch(setAppStatus('succeeded'))
+                    } else {
+                        handleServerAppError(res.data, dispatch)
                         dispatch(changeTaskEntityStatus(taskId, 'failed', todoListId))
-
-                    })
-            }
+                        //Saved title
+                        changeValue?.title && setRejectTitle &&
+                        setRejectTitle(changeValue.title)
+                    }
+                })
+                .catch((er) => {
+                    handleServerNetworkError(er, dispatch)
+                    dispatch(changeTaskEntityStatus(taskId, 'failed', todoListId))
+                    //Saved title
+                    changeValue?.title && setRejectTitle &&
+                    setRejectTitle(changeValue.title)
+                })
         }
     }
+}
 
 

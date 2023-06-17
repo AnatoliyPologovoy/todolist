@@ -33,19 +33,15 @@ export const Todolist = memo((props: TodolistPropsType) => {
 
     let taskFromRedux =
         useAppSelector(state => state.tasks[todoListId])
-    const allRejectedRequestTitles =
-        useAppSelector(state => state.app.rejectedRequestTitle)
-    //check for rejected request title
-    const rejectedRequestNewTitle = allRejectedRequestTitles[todoListId]?.newTitle || ''
-    const rejectedRequestUpdateTitle = allRejectedRequestTitles[todoListId]?.updateTitle || null
 
     useEffect(() => {
         dispatch(setTasksTC(todoListId))
     }, [])
 
 
-    const changeTitleTodolist = useCallback((newTitle: string) => {
-        dispatch(changeTodoListTitleTC(newTitle, todoListId))
+    const changeTodoListTitle = useCallback(
+        (newTitle: string, setRejectTitle: (title: string) => void) => {
+        dispatch(changeTodoListTitleTC(newTitle, todoListId, setRejectTitle))
     }, [])
 
 
@@ -63,20 +59,17 @@ export const Todolist = memo((props: TodolistPropsType) => {
     //Tasks array
     const renderTasksList = taskFromRedux.map(task => {
 
-        const rejectedRequestChangeTaskTitle
-            = allRejectedRequestTitles[todoListId]?.taskTitle?.[task.id] || null
-
         return (
             <Task key={task.id}
                   task={task}
-                  rejectedRequestUpdateTaskTitle={rejectedRequestChangeTaskTitle}
             />
         )
     })
 
     //adding new tasks (button)
-    const createTask = useCallback((title: string) => {
-        dispatch(createTaskTC(todoListId, title));
+    const createTask = useCallback(
+        (title: string, setRejectTitle: (title: string) => void) => {
+        dispatch(createTaskTC(todoListId, title, setRejectTitle));
     }, [todoListId])
 
     //remove todoList
@@ -101,18 +94,16 @@ export const Todolist = memo((props: TodolistPropsType) => {
             <div>
                 <h2>
                     <EditableSpan
-                        rejectedRequestUpdateTitle={rejectedRequestUpdateTitle}
                         disabled={isDisableButton}
                         sizeButtons={"medium"}
                         title={title} classes={''}
-                        changeTitle={changeTitleTodolist}
+                        changeTitle={changeTodoListTitle}
                         removeItem={removeTodoList}
                     />
                 </h2>
             </div>
             <AddItemForm
                 addItem={createTask}
-                value={rejectedRequestNewTitle}
                 disabled={isDisableButton}
             />
             <List sx={{width: '100%', maxWidth: 360}}

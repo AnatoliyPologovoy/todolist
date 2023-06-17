@@ -3,13 +3,13 @@ import {Checkbox, ListItem} from "@mui/material";
 import EditableSpan from "../EditableSpan/EditableSpan";
 import {changeTaskTC, removeTaskTC, TaskType} from "../../reducers/task-reducers";
 import s from "../TodoList/todolist.module.css";
-import {TaskRequestType, TaskResponseType, TaskStatues} from "../../api/todolist-api";
+import {TaskRequestType, TaskStatues} from "../../api/todolist-api";
 import {useAppDispatch} from "../../hooks/useAppDispatch";
 import cl from "./task.module.css"
 
 export type TaskPropsType = {
     task: TaskType
-    rejectedRequestUpdateTaskTitle: string | null
+    // rejectedRequestUpdateTaskTitle: string | null
 }
 
 export const Task: React.FC<TaskPropsType> = memo((props) => {
@@ -17,17 +17,18 @@ export const Task: React.FC<TaskPropsType> = memo((props) => {
     const taskTitle = props.task.title
     const taskIsDone = props.task.status === TaskStatues.Completed
     const todoListId = props.task.todoListId
-    const rejectedRequestUpdateTaskTitle = props.rejectedRequestUpdateTaskTitle
-
     const isDisable = props.task.entityStatus === 'loading'
 
     const dispatch = useAppDispatch()
 
-    const changeTaskTitle = useCallback((newTitle: string) => {
+    const changeTaskTitle = useCallback(
+        (newTitle: string, setRejectTitle: (title: string) => void) => {
+
         const changeValue: TaskRequestType = {
             title: newTitle,
         }
-        dispatch(changeTaskTC(todoListId, taskId, changeValue))
+
+        dispatch(changeTaskTC(todoListId, taskId, changeValue, setRejectTitle))
     }, [taskId, todoListId])
 
 
@@ -60,7 +61,6 @@ export const Task: React.FC<TaskPropsType> = memo((props) => {
             />
             &nbsp;
             <EditableSpan
-                rejectedRequestUpdateTitle={rejectedRequestUpdateTaskTitle}
                 sizeButtons={'small'}
                 disabled={isDisable}
                 title={taskTitle}

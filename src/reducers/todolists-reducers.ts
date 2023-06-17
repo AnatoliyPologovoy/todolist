@@ -1,14 +1,7 @@
 import {ResponseCode, TodolistApi, TodoListDomainType} from "../api/todolist-api";
 import {FilterType} from "./task-reducers";
 import {Dispatch} from "redux";
-import {
-    AppActionsType,
-    RequestStatusType,
-    setAppError,
-    setAppStatus,
-    setRejectedRequestChangeTitle,
-    setRejectedRequestNewTitle
-} from "./app-reducer";
+import {AppActionsType, RequestStatusType, setAppStatus} from "./app-reducer";
 import {handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
 
 export type RemoveTodolistAT = {
@@ -182,11 +175,12 @@ export const removeTodoListTC = (todoListId: string) => {
 
 export const tempIdTodo = 'newTodo'
 
-export const createTodoListTC = (title: string) => {
+export const createTodoListTC = (
+    title: string,
+    setRejectTitle: (title: string) => void
+) => {
     return (dispatch: Dispatch<ActionsTodoListType | AppActionsType>) => {
         dispatch(setAppStatus('loading'))
-        //clearing rejectedRequestTitle:
-        dispatch(setRejectedRequestNewTitle(tempIdTodo, ''))
         TodolistApi.createTodoList(title)
             .then(res => {
                 if (res.data.resultCode === ResponseCode.Ok) {
@@ -195,23 +189,25 @@ export const createTodoListTC = (title: string) => {
                     dispatch(setAppStatus('succeeded'))
                 } else {
                     handleServerAppError(res.data, dispatch)
-                    //Saved title
-                    dispatch(setRejectedRequestNewTitle(tempIdTodo, title))
+                    //Set title in local state AddItemForm
+                    setRejectTitle(title)
                 }
             }).catch((er) => {
             handleServerNetworkError(er, dispatch)
-            //Saved title
-            dispatch(setRejectedRequestNewTitle(tempIdTodo, title))
+            //Set title in local state AddItemForm
+            setRejectTitle(title)
         })
     }
 }
 
-export const changeTodoListTitleTC = (title: string, todoId: string) => {
+export const changeTodoListTitleTC = (
+    title: string,
+    todoId: string,
+    setRejectTitle: (title: string) => void
+) => {
     return (dispatch: Dispatch<ActionsTodoListType | AppActionsType>) => {
         dispatch(setAppStatus('loading'))
         dispatch(changeTodolistEntityStatus('loading', todoId))
-        //clearing rejectedRequestTitle:
-        dispatch(setRejectedRequestChangeTitle(todoId, ''))
 
         TodolistApi.changeTitleTodoList(title, todoId)
             .then(res => {
@@ -223,14 +219,14 @@ export const changeTodoListTitleTC = (title: string, todoId: string) => {
                 } else {
                     handleServerAppError(res.data, dispatch)
                     dispatch(changeTodolistEntityStatus('failed', todoId))
-                    //Saved title
-                    dispatch(setRejectedRequestChangeTitle(todoId, title))
+                    //Set title in local state EditableSpan
+                    setRejectTitle(title)
                 }
             }).catch((er) => {
             handleServerNetworkError(er, dispatch)
             dispatch(changeTodolistEntityStatus('failed', todoId))
-            //Saved title
-            dispatch(setRejectedRequestChangeTitle(todoId, title))
+            //Set title in local state EditableSpan
+            setRejectTitle(title)
         })
     }
 }

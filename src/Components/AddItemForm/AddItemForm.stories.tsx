@@ -41,7 +41,6 @@ export const AddItemFormStoryWithRender: Story = {
 
     render: args => <AddItemForm
         addItem={args.addItem}
-        value={''}
         disabled={false}/>
 };
 
@@ -50,7 +49,6 @@ export const AddItemFormStoryWithReactFC: React.FC <AddItemFormPropsType> = (arg
     //possible use react hook
     let [inputValue, setInputValue] = useState<string>('')
     let [error, setError] = useState<string | null>('Error text')
-
 
 
     const onChangeInput = (evt:ChangeEvent<HTMLInputElement>) => {
@@ -76,7 +74,7 @@ export const AddItemFormStoryWithReactFC: React.FC <AddItemFormPropsType> = (arg
             isAddTaskPossible = false
         }
         if (isAddTaskPossible) {
-            args.addItem(trimmedValue);
+            args.addItem(trimmedValue, setInputValue);
             setInputValue('');
         }
     }
@@ -115,6 +113,7 @@ export const AddItemFormErrorStory: Story = {
 
     render: (args) => {
         let error = 'Error text'
+        const rejectTitle = (title: string) => {}
         return (
             <div>
                 <TextField
@@ -126,7 +125,7 @@ export const AddItemFormErrorStory: Story = {
                     multiline={false}
                     size={"small"}
                 />
-                <IconButton onClick={() => args.addItem('')}>
+                <IconButton onClick={() => args.addItem('', rejectTitle)}>
                     <AddBoxIcon/>
                 </IconButton>
                 {error && <div className={s.errorMessage}>{error}</div>}
