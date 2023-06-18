@@ -3,7 +3,7 @@ export type AppErrorType = string | null
 
 
 const initialState = {
-    status: 'loading' as RequestStatusType,
+    status: 'idle' as RequestStatusType,
     error: null as AppErrorType,
 }
 //значение перед as RequestStatusType дополняет(расширяет) RequestStatusType
