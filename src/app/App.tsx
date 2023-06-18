@@ -19,6 +19,8 @@ import {AllTodoLists} from "../Components/AllTodoLists/AllTodoLists";
 import {LinearLoader} from "../Components/LinearLoader/LinearLoader";
 import {useAppSelector} from "./store";
 import {ErrorSnackbar} from "../Components/ErrorSnackBar/ErrorSnackBar";
+import {Navigate, Route, Routes} from "react-router-dom";
+import {Login} from "../Components/Login/Login";
 
 
 function App(): JSX.Element {
@@ -72,8 +74,13 @@ function App(): JSX.Element {
                     <ErrorSnackbar/>
                     {/* Loader*/}
                     {isLoadingStatus && <LinearLoader/>}
-                    {/*------TodoLists:*/}
-                    <AllTodoLists/>
+                    {/*------TodoLists or Login Page*/}
+                    <Routes>
+                        <Route path={'/'} element={<AllTodoLists/>}/>
+                        <Route path={'/login'} element={<Login/>}/>
+                        <Route path='*' element={<Navigate to={'/404'}/>} />
+                        <Route path='/404' element={<h1>404: PAGE NOT FOUND</h1>} />
+                    </Routes>
                 </div>
             </CssBaseline>
         </ThemeProvider>
