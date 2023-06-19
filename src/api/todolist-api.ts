@@ -24,14 +24,14 @@ export const TodolistApi = {
     },
     createTask(todoListId: string, title: string) {
         return instance
-            .post<ResponseType<{item: TaskResponseType}>>
+            .post<ResponseType<{ item: TaskResponseType }>>
             (`todo-lists/${todoListId}/tasks`, {
                 title
             })
     },
     changeTask(todoListId: string, taskId: string, task: TaskResponseType) {
         return instance
-            .put<ResponseType<{item: TaskResponseType}>>
+            .put<ResponseType<{ item: TaskResponseType }>>
             (`todo-lists/${todoListId}/tasks/${taskId}`, task)
     },
     removeTask(todoListId: string, taskId: string) {
@@ -44,9 +44,21 @@ export const TodolistApi = {
 export const authAPI = {
     login(RequestPayload: LoginRequestType) {
         return instance
-            .post<ResponseType<{ userId: number}>,
-                AxiosResponse<ResponseType<{ userId: number}>>,
+            .post<ResponseType<{ userId: number }>,
+                AxiosResponse<ResponseType<{ userId: number }>>,
                 LoginRequestType>('auth/login', RequestPayload)
+    },
+    me() {
+        return instance
+            .get<ResponseType<{
+                id: string,
+                email: string,
+                login: string
+            }>>('auth/me')
+    },
+    logout() {
+        return instance
+            .delete<ResponseType>('auth/login')
     }
 }
 

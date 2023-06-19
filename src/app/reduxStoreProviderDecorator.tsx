@@ -58,7 +58,8 @@ const initialGlobalState = {
         // rejectedRequestChangeTitle: {}
     },
     auth: {
-        isLoginIn: false
+        isLoginIn: false,
+        isInitialized: false
     }
 };
 

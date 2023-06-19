@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import {
     AppBar,
     Button,
-    Checkbox,
+    Checkbox, CircularProgress,
     createTheme,
     CssBaseline,
     FormControlLabel,
@@ -21,15 +21,25 @@ import {useAppSelector} from "./store";
 import {ErrorSnackbar} from "../Components/ErrorSnackBar/ErrorSnackBar";
 import {Navigate, Route, Routes} from "react-router-dom";
 import {Login} from "../Components/Login/Login";
+import {useAppDispatch} from "../hooks/useAppDispatch";
+import {initializeAppTC, logoutTC} from "../reducers/Auth-reducer";
 
 
 function App(): JSX.Element {
+    const dispatch = useAppDispatch()
     const appStatus
         = useAppSelector(state => state.app.status)
-
+    const isInitialized =
+        useAppSelector(state => state.auth.isInitialized)
+    const isLoggedIn =
+        useAppSelector(state => state.auth.isLoginIn)
     const isLoadingStatus = appStatus === 'loading'
 
     const [isDarkMode, setDarkMode] = useState(true)
+
+    useEffect(()=>{
+        dispatch(initializeAppTC())
+    }, [])
 
     const mode = isDarkMode ? 'dark' : 'light'
 
@@ -40,6 +50,17 @@ function App(): JSX.Element {
             mode: mode
         }
     })
+
+    const logoutHandler = () => {
+        isLoggedIn && dispatch(logoutTC())
+    }
+
+    if (!isInitialized) {
+        return <div
+            style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
+            <CircularProgress/>
+        </div>
+    }
 
     return (
         <ThemeProvider theme={customTheme}>
@@ -67,7 +88,13 @@ function App(): JSX.Element {
                                     label={isDarkMode ? "Light mode" : "Dark mode"}
                                 />
                             </FormGroup>
-                            <Button color="inherit">Login</Button>
+
+                            <Button
+                                color="inherit"
+                                onClick = {logoutHandler}
+                            >
+                                {isLoggedIn? 'Logout' : 'Login' }
+                            </Button>
                         </Toolbar>
                     </AppBar>
                     {/*Error messages*/}
