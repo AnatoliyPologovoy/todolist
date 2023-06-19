@@ -33,11 +33,11 @@ export const setAppError = (error: AppErrorType) => ({
     error
 } as const)
 
-export type setAppStatusType = ReturnType<typeof setAppStatus>
-export type setAppErrorType = ReturnType<typeof setAppError>
+export type SetAppStatusType = ReturnType<typeof setAppStatus>
+export type SetAppErrorType = ReturnType<typeof setAppError>
 
 
 export type AppActionsType =
-    | setAppStatusType
-    | setAppErrorType
+    | SetAppStatusType
+    | SetAppErrorType
 

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
 
 const instance = axios.create({
     baseURL: 'https://social-network.samuraijs.com/api/1.1/',
@@ -20,26 +20,36 @@ export const TodolistApi = {
     },
     getTasks(todoListId: string) {
         return instance
-            .get<GetTasksRequestType>(`/todo-lists/${todoListId}/tasks`)
+            .get<GetTasksRequestType>(`todo-lists/${todoListId}/tasks`)
     },
     createTask(todoListId: string, title: string) {
         return instance
             .post<ResponseType<{item: TaskResponseType}>>
-            (`/todo-lists/${todoListId}/tasks`, {
+            (`todo-lists/${todoListId}/tasks`, {
                 title
             })
     },
     changeTask(todoListId: string, taskId: string, task: TaskResponseType) {
         return instance
             .put<ResponseType<{item: TaskResponseType}>>
-            (`/todo-lists/${todoListId}/tasks/${taskId}`, task)
+            (`todo-lists/${todoListId}/tasks/${taskId}`, task)
     },
     removeTask(todoListId: string, taskId: string) {
         return instance
             .delete<ResponseType>
-            (`/todo-lists/${todoListId}/tasks/${taskId}`)
+            (`todo-lists/${todoListId}/tasks/${taskId}`)
     }
 }
+
+export const authAPI = {
+    login(RequestPayload: LoginRequestType) {
+        return instance
+            .post<ResponseType<{ userId: number}>,
+                AxiosResponse<ResponseType<{ userId: number}>>,
+                LoginRequestType>('auth/login', RequestPayload)
+    }
+}
+
 
 export type TodoListDomainType = {
     id: string
@@ -110,3 +120,9 @@ export type GetTasksRequestType = {
     error: string
 }
 
+export type LoginRequestType = {
+    email: string
+    password: string
+    rememberMe?: boolean
+    captcha?: boolean
+}

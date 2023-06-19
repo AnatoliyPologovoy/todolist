@@ -14,7 +14,7 @@ export type SetTasks = ReturnType<typeof setTasksAC>
 export type ChangeTask = ReturnType<typeof changeTaskAC>
 export type  changeTaskEntityStatusType = ReturnType<typeof changeTaskEntityStatus>
 
-export type ActionsTaskType =
+export type TaskActionsType =
     RemoveTaskAT |
     addTaskAT |
     ChangeStatusTask |
@@ -51,7 +51,7 @@ const initialState: TasksStateType = {
     // ]
 }
 
-export const tasksReducer = (state: TasksStateType = initialState, action: ActionsTaskType): TasksStateType => {
+export const tasksReducer = (state: TasksStateType = initialState, action: TaskActionsType): TasksStateType => {
     switch (action.type) {
         case "SET-TASKS":
             return {
@@ -169,7 +169,7 @@ export const changeTaskAC =
 
 //thunk
 export const setTasksTC =
-    (todoListId: string) => (dispatch: Dispatch<ActionsTaskType | AppActionsType>) => {
+    (todoListId: string) => (dispatch: Dispatch<TaskActionsType | AppActionsType>) => {
         dispatch(setAppStatus('loading'))
         TodolistApi.getTasks(todoListId)
             .then(res => {
@@ -182,7 +182,7 @@ export const setTasksTC =
 
 export const removeTaskTC
     = (todoListId: string, taskId: string) =>
-    (dispatch: Dispatch<ActionsTaskType | AppActionsType>) => {
+    (dispatch: Dispatch<TaskActionsType | AppActionsType>) => {
         dispatch(setAppStatus('loading'))
         dispatch(changeTaskEntityStatus(taskId, 'loading', todoListId))
         TodolistApi.removeTask(todoListId, taskId)
@@ -206,7 +206,7 @@ export const createTaskTC = (
     title: string,
     setRejectTitle: (title: string) => void
 ) =>
-    (dispatch: Dispatch<ActionsTaskType | AppActionsType>) => {
+    (dispatch: Dispatch<TaskActionsType | AppActionsType>) => {
         dispatch(setAppStatus('loading'))
         TodolistApi.createTask(todoListId, title)
             .then(res => {
@@ -233,7 +233,7 @@ export const changeTaskTC = (
     changeValue: TaskRequestType,
     setRejectTitle: ((title: string) => void) | null = null
 ) => {
-    return (dispatch: Dispatch<ActionsTaskType | AppActionsType>,
+    return (dispatch: Dispatch<TaskActionsType | AppActionsType>,
             getState: () => AppRootStateType) => {
         let requestBody = getState()
             .tasks[todoListId].find(t => t.id === taskId)

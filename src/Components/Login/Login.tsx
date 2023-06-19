@@ -9,8 +9,15 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import {useFormik} from "formik";
 import {validate} from "../../utils/validateForm";
+import {useAppDispatch} from "../../hooks/useAppDispatch";
+import {loginIn} from "../../reducers/Auth-reducer";
+import {useAppSelector} from "../../app/store";
+import {Navigate} from "react-router-dom";
 
 export const Login = () => {
+    const isLoggedIn = useAppSelector(state => state.auth.isLoginIn)
+    const dispatch = useAppDispatch()
+
     const formik = useFormik({
         initialValues: {
             email: '',
@@ -19,11 +26,13 @@ export const Login = () => {
         },
         validate,
         onSubmit: values => {
-            alert(JSON.stringify(values))
-            formik.resetForm()
+            dispatch(loginIn(values, formik.resetForm))
         }
     })
 
+    if (isLoggedIn) {
+        return <Navigate to={'/'}/>
+    }
 
     return <Grid container justifyContent={'center'}>
         <Grid item justifyContent={'center'}>

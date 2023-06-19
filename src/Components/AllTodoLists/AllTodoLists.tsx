@@ -7,6 +7,7 @@ import {AppRootStateType, useAppSelector} from "../../app/store";
 import {createTodoListTC, fetchTodoListsTC, tempIdTodo, TodoListType} from "../../reducers/todolists-reducers";
 import {useAppDispatch} from "../../hooks/useAppDispatch";
 import {Todolist} from "../TodoList/Todolist";
+import {Navigate} from "react-router-dom";
 
 
 export const AllTodoLists = () => {
@@ -15,15 +16,18 @@ export const AllTodoLists = () => {
         useSelector<AppRootStateType, TodoListType[]>(state => state.todolists)
 
     const dispatch = useAppDispatch()
+    const isLoggedIn = useAppSelector(state => state.auth.isLoginIn)
 
     useEffect(() => {
-        dispatch(fetchTodoListsTC())
+        if (isLoggedIn) {
+            dispatch(fetchTodoListsTC())
+        }
     }, [])
 
     const createTodoList = useCallback(
         (title: string, setRejectTitle: (title: string) => void) => {
-        dispatch(createTodoListTC(title, setRejectTitle))
-    }, [])
+            dispatch(createTodoListTC(title, setRejectTitle))
+        }, [])
 
 
     const todoListsComponents = todoLists.map(tdl => {
@@ -36,6 +40,10 @@ export const AllTodoLists = () => {
             </Grid>
         )
     })
+
+    if (!isLoggedIn) {
+        return <Navigate to={'/login'}/>
+    }
 
     return (
         <Container fixed>

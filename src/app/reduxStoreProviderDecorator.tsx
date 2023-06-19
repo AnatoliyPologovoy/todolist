@@ -7,11 +7,13 @@ import {todolistsReducer} from "../reducers/todolists-reducers";
 import {v1} from "uuid";
 import {TaskPriorities, TaskStatues} from "../api/todolist-api";
 import {appReducer} from "../reducers/app-reducer";
+import {authReducer} from "../reducers/Auth-reducer";
 
 const rootReducer = combineReducers({
     tasks: tasksReducer,
     todolists: todolistsReducer,
-    app: appReducer
+    app: appReducer,
+    auth: authReducer
 })
 
 const todolistId1 = v1();
@@ -52,10 +54,12 @@ const initialGlobalState = {
     app: {
         status: 'idle',
         error: null,
-        rejectedRequestTitle: {},
+        // rejectedRequestTitle: {},
         // rejectedRequestChangeTitle: {}
+    },
+    auth: {
+        isLoginIn: false
     }
-
 };
 
 export const storyBookStore = legacy_createStore

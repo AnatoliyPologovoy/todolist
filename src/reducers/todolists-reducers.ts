@@ -30,7 +30,7 @@ export type ChangeTodolistFilterAT = {
 export type AddTodolistAT = ReturnType<typeof createTodolistAC>
 export type ChangeTodolistEntityStatusType = ReturnType<typeof changeTodolistEntityStatus>
 
-export type ActionsTodoListType =
+export type TodoListActionsType =
     RemoveTodolistAT
     | AddTodolistAT
     | ChangeTodolistTitleAT
@@ -46,7 +46,7 @@ export type TodoListType = {
 
 const initialState: TodoListType[] = []
 
-export const todolistsReducer = (state: TodoListType[] = initialState, action: ActionsTodoListType): TodoListType[] => {
+export const todolistsReducer = (state: TodoListType[] = initialState, action: TodoListActionsType): TodoListType[] => {
     switch (action.type) {
         case "SET-TODOLIST":
             return action.todos.map(t => ({
@@ -141,7 +141,7 @@ export type setTodoListTypeAction = {
 
 //thunk
 export const fetchTodoListsTC =
-    () => (dispatch: Dispatch<ActionsTodoListType | AppActionsType>) => {
+    () => (dispatch: Dispatch<TodoListActionsType | AppActionsType>) => {
         dispatch(setAppStatus('loading'))
         TodolistApi.getTodoLists()
             .then((res) => {
@@ -153,7 +153,7 @@ export const fetchTodoListsTC =
     }
 
 export const removeTodoListTC = (todoListId: string) => {
-    return (dispatch: Dispatch<ActionsTodoListType | AppActionsType>) => {
+    return (dispatch: Dispatch<TodoListActionsType | AppActionsType>) => {
         dispatch(setAppStatus('loading'))
         dispatch(changeTodolistEntityStatus('loading', todoListId))
         TodolistApi.removeTodoList(todoListId)
@@ -179,7 +179,7 @@ export const createTodoListTC = (
     title: string,
     setRejectTitle: (title: string) => void
 ) => {
-    return (dispatch: Dispatch<ActionsTodoListType | AppActionsType>) => {
+    return (dispatch: Dispatch<TodoListActionsType | AppActionsType>) => {
         dispatch(setAppStatus('loading'))
         TodolistApi.createTodoList(title)
             .then(res => {
@@ -205,7 +205,7 @@ export const changeTodoListTitleTC = (
     todoId: string,
     setRejectTitle: (title: string) => void
 ) => {
-    return (dispatch: Dispatch<ActionsTodoListType | AppActionsType>) => {
+    return (dispatch: Dispatch<TodoListActionsType | AppActionsType>) => {
         dispatch(setAppStatus('loading'))
         dispatch(changeTodolistEntityStatus('loading', todoId))
 
