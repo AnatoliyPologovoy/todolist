@@ -1,58 +1,39 @@
 import {SetAppErrorType, setAppStatus, SetAppStatusType} from "./app-reducer";
 import {Dispatch} from "redux";
-import {authAPI, LoginRequestType, ResponseCode} from "../api/todolist-api";
-import {handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
+import {authAPI, LoginRequestType, ResponseCode} from "api/todolist-api";
+import {handleServerAppError, handleServerNetworkError} from "utils/error-utils";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {AppThunk} from "app/store";
 
 const initialState = {
     isLoginIn: false,
     isInitialized: false
 }
 
-type InitialStateType = typeof initialState
-
-export const authReducer = (state: InitialStateType = initialState, action: AuthActionsType): InitialStateType => {
-    switch (action.type) {
-        case "AUTH/SET-IS-LOGIN-IN":
-            return {...state, isLoginIn: action.status}
-        case "AUTH/SET-IS-INITIALIZED":
-            return {...state, isInitialized: action.status}
-        default:
-            return state
+export const slice = createSlice({
+    name: 'auth',
+    initialState,
+    reducers: {
+        setIsLoginIn(state, action: PayloadAction<{status: boolean}>) {
+            state.isLoginIn = action.payload.status
+        },
+        setIsInitialized(state, action: PayloadAction<{status: boolean}>) {
+            state.isInitialized = action.payload.status
+        }
     }
-}
+})
+export const authReducer = slice.reducer
+export const authActions = slice.actions
 
-export const setIsLoginIn = (status: boolean) => {
-    return {
-        type: 'AUTH/SET-IS-LOGIN-IN',
-        status
-    } as const
-}
-
-export const setIsInitialized = (status: boolean) => {
-    return {
-        type: 'AUTH/SET-IS-INITIALIZED',
-        status
-    } as const
-}
-
-
-type SetIsLoginInType = ReturnType<typeof setIsLoginIn>
-type SetIsInitializedType = ReturnType<typeof setIsInitialized>
-
-export type AuthActionsType =
-    | SetIsLoginInType
-    | SetAppStatusType
-    | SetAppErrorType
-    | SetIsInitializedType
 
 //thunks
 export const loginIn =
-    (formData: LoginRequestType, resetForm: Function) => (dispatch: Dispatch) => {
+    (formData: LoginRequestType, resetForm: Function):AppThunk => (dispatch) => {
         dispatch(setAppStatus('loading'))
         authAPI.login(formData)
             .then(res => {
                 if (res.data.resultCode === ResponseCode.Ok) {
-                    dispatch(setIsLoginIn(true))
+                    dispatch(authActions.setIsLoginIn({status: true}))
                     dispatch(setAppStatus('succeeded'))
                     resetForm()
                 } else {
@@ -64,18 +45,18 @@ export const loginIn =
             })
     }
 
-export const initializeAppTC = () => (dispatch: Dispatch) => {
+export const initializeAppTC = ():AppThunk => (dispatch) => {
     dispatch(setAppStatus('loading'))
     authAPI.me().then(res => {
         if (res.data.resultCode === ResponseCode.Ok) {
-            dispatch(setIsLoginIn(true));
+            dispatch(authActions.setIsLoginIn({status: true}))
         } else {
             handleServerAppError(res.data, dispatch)
         }
     }).catch(e => {
         handleServerNetworkError(e, dispatch)
     }).finally(() => {
-        dispatch(setIsInitialized(true));
+        dispatch(authActions.setIsInitialized({status: true}));
     })
 }
 
@@ -84,7 +65,7 @@ export const logoutTC = () => (dispatch: Dispatch) => {
     authAPI.logout()
         .then(res => {
             if (res.data.resultCode === ResponseCode.Ok) {
-                dispatch(setIsLoginIn(false))
+                dispatch(authActions.setIsLoginIn({status: false}))
                 dispatch(setAppStatus('succeeded'))
             } else {
                 handleServerAppError(res.data, dispatch)
