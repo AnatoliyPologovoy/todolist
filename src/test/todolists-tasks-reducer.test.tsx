@@ -1,4 +1,4 @@
-import {createTodolistAC, RemoveTodolistAC, setTodoList, todolistsReducer, TodoListType} from "../reducers/todolists-reducers";
+import {createTodolist, removeTodolist, setTodoList, todoListsReducer, TodoListType} from "../reducers/todolists-reducers";
 import {tasksReducer, TasksStateType} from "../reducers/task-reducers";
 import {TaskPriorities, TaskStatues} from "../api/todolist-api";
 import {v1} from "uuid";
@@ -10,10 +10,10 @@ test('ids should be equals', () => {
     let newTodolistTitle = "New Todolist";
     const testTodoItem = {id: 'todolistId1', title: newTodolistTitle, filter: "all", addedData: (new Date),
         order: 0}
-    const action = createTodolistAC(testTodoItem)
+    const action = createTodolist(testTodoItem)
 
     const endTasksState = tasksReducer(startTasksState, action)
-    const endTodolistsState = todolistsReducer(startTodolistsState, action)
+    const endTodolistsState = todoListsReducer(startTodolistsState, action)
 
     const keys = Object.keys(endTasksState)
     const idFromTasks = keys[0]
@@ -48,7 +48,7 @@ test('property with todolistId should be deleted', () => {
         ]
     }
 
-    const action = RemoveTodolistAC('todolistId2')
+    const action = removeTodolist('todolistId2')
 
     const endState = tasksReducer(startState, action)
 

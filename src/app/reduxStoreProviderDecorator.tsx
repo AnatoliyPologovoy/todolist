@@ -3,7 +3,7 @@ import {Provider} from "react-redux";
 import {AppRootStateType, store} from "./store";
 import {combineReducers, legacy_createStore} from "redux";
 import {tasksReducer} from "../reducers/task-reducers";
-import {todolistsReducer} from "../reducers/todolists-reducers";
+import {todoListsReducer} from "../reducers/todolists-reducers";
 import {v1} from "uuid";
 import {TaskPriorities, TaskStatues} from "../api/todolist-api";
 import {appReducer} from "../reducers/app-reducer";
@@ -11,7 +11,7 @@ import {authReducer} from "../reducers/Auth-reducer";
 
 const rootReducer = combineReducers({
     tasks: tasksReducer,
-    todolists: todolistsReducer,
+    todolists: todoListsReducer,
     app: appReducer,
     auth: authReducer
 })

@@ -6,7 +6,7 @@ import {
     tasksReducer,
     TasksStateType, changeTaskEntityStatus
 } from '../reducers/task-reducers'
-import {createTodolistAC} from "../reducers/todolists-reducers";
+import {createTodolist} from "../reducers/todolists-reducers";
 import {TaskPriorities, TaskStatues} from "../api/todolist-api";
 
 let startState: TasksStateType
@@ -114,7 +114,7 @@ test('entityStatus of specified task should be changed', () => {
 test('new array should be added when new todolist is added', () => {
     const testTodoItem = {id: 'todolistId1', title: 'new todolist', filter: "all", addedData: (new Date),
         order: 0}
-    const action = createTodolistAC(testTodoItem)
+    const action = createTodolist(testTodoItem)
 
     const endState = tasksReducer(startState, action)
 

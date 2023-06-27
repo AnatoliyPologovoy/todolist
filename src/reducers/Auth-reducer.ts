@@ -1,5 +1,4 @@
-import {SetAppErrorType, setAppStatus, SetAppStatusType} from "./app-reducer";
-import {Dispatch} from "redux";
+import {appActions} from "./app-reducer";
 import {authAPI, LoginRequestType, ResponseCode} from "api/todolist-api";
 import {handleServerAppError, handleServerNetworkError} from "utils/error-utils";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
@@ -14,10 +13,10 @@ export const slice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        setIsLoginIn(state, action: PayloadAction<{status: boolean}>) {
+        setIsLoginIn(state, action: PayloadAction<{ status: boolean }>) {
             state.isLoginIn = action.payload.status
         },
-        setIsInitialized(state, action: PayloadAction<{status: boolean}>) {
+        setIsInitialized(state, action: PayloadAction<{ status: boolean }>) {
             state.isInitialized = action.payload.status
         }
     }
@@ -28,13 +27,13 @@ export const authActions = slice.actions
 
 //thunks
 export const loginIn =
-    (formData: LoginRequestType, resetForm: Function):AppThunk => (dispatch) => {
-        dispatch(setAppStatus('loading'))
+    (formData: LoginRequestType, resetForm: Function): AppThunk => (dispatch) => {
+        dispatch(appActions.setAppStatus({status: 'loading'}))
         authAPI.login(formData)
             .then(res => {
                 if (res.data.resultCode === ResponseCode.Ok) {
                     dispatch(authActions.setIsLoginIn({status: true}))
-                    dispatch(setAppStatus('succeeded'))
+                    dispatch(appActions.setAppStatus({status: 'succeeded'}))
                     resetForm()
                 } else {
                     handleServerAppError(res.data, dispatch)
@@ -45,8 +44,8 @@ export const loginIn =
             })
     }
 
-export const initializeAppTC = ():AppThunk => (dispatch) => {
-    dispatch(setAppStatus('loading'))
+export const initializeAppTC = (): AppThunk => (dispatch) => {
+    dispatch(appActions.setAppStatus({status: 'loading'}))
     authAPI.me().then(res => {
         if (res.data.resultCode === ResponseCode.Ok) {
             dispatch(authActions.setIsLoginIn({status: true}))
@@ -60,13 +59,13 @@ export const initializeAppTC = ():AppThunk => (dispatch) => {
     })
 }
 
-export const logoutTC = () => (dispatch: Dispatch) => {
-    dispatch(setAppStatus('loading'))
+export const logoutTC = (): AppThunk => (dispatch) => {
+    dispatch(appActions.setAppStatus({status: 'loading'}))
     authAPI.logout()
         .then(res => {
             if (res.data.resultCode === ResponseCode.Ok) {
                 dispatch(authActions.setIsLoginIn({status: false}))
-                dispatch(setAppStatus('succeeded'))
+                dispatch(appActions.setAppStatus({status: 'succeeded'}))
             } else {
                 handleServerAppError(res.data, dispatch)
             }

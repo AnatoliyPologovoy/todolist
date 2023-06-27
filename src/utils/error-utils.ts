@@ -1,21 +1,21 @@
 import {Dispatch} from 'redux'
-import {ResponseType} from '../api/todolist-api'
-import {setAppError, SetAppErrorType, setAppStatus, SetAppStatusType} from "../reducers/app-reducer";
+import {ResponseType} from 'api/todolist-api'
+import {appActions} from "reducers/app-reducer";
 
 
 // generic function
-export const handleServerAppError = <T>(data: ResponseType<T>, dispatch: ErrorUtilsDispatchType) => {
+export const handleServerAppError = <T>(data: ResponseType<T>, dispatch: Dispatch) => {
     if (data.messages.length) {
-        dispatch(setAppError(data.messages[0]))
+        dispatch(appActions.setAppError({error: data.messages[0]}))
     } else {
-        dispatch(setAppError('Some error occurred'))
+        dispatch(appActions.setAppError({error: 'Some error occurred'}))
     }
-    dispatch(setAppStatus('failed'))
+    dispatch(appActions.setAppStatus({status: 'failed'}))
 }
 
-export const handleServerNetworkError = (error: { message: string }, dispatch: ErrorUtilsDispatchType) => {
-    dispatch(setAppError(error.message))
-    dispatch(setAppStatus('failed'))
+export const handleServerNetworkError = (error: { message: string }, dispatch: Dispatch) => {
+    dispatch(appActions.setAppError({error: error.message}))
+    dispatch(appActions.setAppStatus({status: 'failed'}))
 }
 
-type ErrorUtilsDispatchType = Dispatch<SetAppStatusType | SetAppErrorType>
+// type ErrorUtilsDispatchType = Dispatch<SetAppStatusType | SetAppErrorType>
