@@ -2,18 +2,13 @@ import React, {memo, useCallback, useEffect} from "react";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import EditableSpan from "../EditableSpan/EditableSpan";
 import {List} from "@mui/material";
-import {useAppSelector} from "../../app/store";
-import {
-    changeTodolistFilter,
-    changeTodoListTitleTC,
-    removeTodoListTC,
-    TodoListType
-} from "../../reducers/todolists-reducers";
-import {createTaskTC, setTasksTC} from "../../reducers/task-reducers";
+import {useAppSelector} from "app/store";
+import {changeTodoListTitleTC, removeTodoListTC, todoListsActions, TodoListType} from "reducers/todolists-reducers";
+import {createTaskTC, setTasksTC} from "reducers/task-reducers";
 import {Task} from "../Task/Task";
 import {ButtonWithMemo} from "../ButtonWithMemo";
-import {TaskStatues} from "../../api/todolist-api";
-import {useAppDispatch} from "../../hooks/useAppDispatch";
+import {TaskStatues} from "api/todolist-api";
+import {useAppDispatch} from "hooks/useAppDispatch";
 
 
 type TodolistPropsType = {
@@ -78,15 +73,18 @@ export const Todolist = memo((props: TodolistPropsType) => {
     }
 
     const onClickButtonAll = useCallback(() => {
-        dispatch(changeTodolistFilter('all', todoListId))
+        dispatch(todoListsActions.changeTodolistFilter(
+            {filter: 'all',id: todoListId}))
     }, [todoListId])
 
     const onClickButtonComplied = useCallback(() => {
-        dispatch(changeTodolistFilter('complied', todoListId))
+        dispatch(todoListsActions.changeTodolistFilter(
+            {filter: 'complied',id: todoListId}))
     }, [todoListId])
 
     const onClickButtonActive = useCallback(() => {
-        dispatch(changeTodolistFilter('active', todoListId))
+        dispatch(todoListsActions.changeTodolistFilter(
+            {filter: 'active', id: todoListId}))
     }, [todoListId])
 
     return (

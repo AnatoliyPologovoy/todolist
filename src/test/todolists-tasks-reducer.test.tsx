@@ -1,6 +1,6 @@
-import {createTodolist, removeTodolist, setTodoList, todoListsReducer, TodoListType} from "../reducers/todolists-reducers";
-import {tasksReducer, TasksStateType} from "../reducers/task-reducers";
-import {TaskPriorities, TaskStatues} from "../api/todolist-api";
+import {todoListsActions, todoListsReducer, TodoListType} from "reducers/todolists-reducers";
+import {tasksReducer, TasksStateType} from "reducers/task-reducers";
+import {TaskPriorities, TaskStatues} from "api/todolist-api";
 import {v1} from "uuid";
 
 test('ids should be equals', () => {
@@ -10,7 +10,7 @@ test('ids should be equals', () => {
     let newTodolistTitle = "New Todolist";
     const testTodoItem = {id: 'todolistId1', title: newTodolistTitle, filter: "all", addedData: (new Date),
         order: 0}
-    const action = createTodolist(testTodoItem)
+    const action = todoListsActions.createTodolist({todoItem: testTodoItem})
 
     const endTasksState = tasksReducer(startTasksState, action)
     const endTodolistsState = todoListsReducer(startTodolistsState, action)
@@ -19,8 +19,8 @@ test('ids should be equals', () => {
     const idFromTasks = keys[0]
     const idFromTodolists = endTodolistsState[0].id
 
-    expect(idFromTasks).toBe(action.payload.id)
-    expect(idFromTodolists).toBe(action.payload.id)
+    expect(idFromTasks).toBe(action.payload.todoItem.id)
+    expect(idFromTodolists).toBe(action.payload.todoItem.id)
 })
 test('property with todolistId should be deleted', () => {
     const startState: TasksStateType = {
@@ -48,7 +48,7 @@ test('property with todolistId should be deleted', () => {
         ]
     }
 
-    const action = removeTodolist('todolistId2')
+    const action = todoListsActions.removeTodolist({id: 'todolistId2'})
 
     const endState = tasksReducer(startState, action)
 
@@ -70,7 +70,8 @@ test('empty arrays should be create when add new todolists', () => {
             order: 0}
     ]
 
-    const endState = tasksReducer(startState, setTodoList(testTodoLists))
+    const endState = tasksReducer(startState,
+        todoListsActions.setTodoList({todos: testTodoLists}))
 
     const keys = Object.keys(endState)
 
