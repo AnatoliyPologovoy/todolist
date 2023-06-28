@@ -29,9 +29,10 @@ export const Todolist = memo((props: TodolistPropsType) => {
     let taskFromRedux =
         useAppSelector(state => state.tasks[todoListId])
 
-    useEffect(() => {
-        dispatch(setTasksTC(todoListId))
-    }, [])
+    // useEffect(() => {
+    //     dispatch(setTasksTC(todoListId))
+    // }, [])
+
 
 
     const changeTodoListTitle = useCallback(

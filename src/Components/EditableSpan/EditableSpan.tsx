@@ -32,8 +32,8 @@ const EditableSpan: FC<EditableSpanPropsType> = memo((props) => {
         }
     }
     const saveTitle = () => {
-        setIsEditMode(false)
         changeTitle(inputValue, setRejectTitle)
+        setIsEditMode(false)
     }
 
     const onChangeInput = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +58,7 @@ const EditableSpan: FC<EditableSpanPropsType> = memo((props) => {
         <span className={classes}
               onDoubleClick={onEditMode}
         >
-            {title}
+            {inputValue}
         </span>
 
     const renderTitle = isEditMode ? textEditableMode : textViewMode
