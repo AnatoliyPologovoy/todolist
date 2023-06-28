@@ -52,29 +52,29 @@ test('correct task should be deleted from correct array', () => {
     expect(endState).toEqual({
         'todolistId1': [
             {
-                id: '1', title: 'CSS', status: TaskStatues.New, description: '',
+                id: '1', title: 'CSS', status: TaskStatues.New, description: '', entityStatus: 'idle',
                 completed: false, priority: TaskPriorities.Low, startDate: new Date(2011, 0, 1),
                 addedDate: new Date(2011, 0, 1), order: 0, deadline: new Date(2011, 0, 1), todoListId: 'todolistId1'
             },
             {
-                id: '2', title: 'JS', status: TaskStatues.Completed, description: '',
+                id: '2', title: 'JS', status: TaskStatues.Completed, description: '', entityStatus: 'idle',
                 completed: false, priority: TaskPriorities.Low, startDate: new Date(2011, 0, 1),
                 addedDate: new Date(2011, 0, 1), order: 0, deadline: new Date(2011, 0, 1), todoListId: 'todolistId1'
             },
             {
-                id: '3', title: 'React', status: TaskStatues.Completed, description: '',
+                id: '3', title: 'React', status: TaskStatues.Completed, description: '', entityStatus: 'idle',
                 completed: false, priority: TaskPriorities.Low, startDate: new Date(2011, 0, 1),
                 addedDate: new Date(2011, 0, 1), order: 0, deadline: new Date(2011, 0, 1), todoListId: 'todolistId1'
             }
         ],
         'todolistId2': [
             {
-                id: '1', title: 'bread', status: TaskStatues.Completed, description: '',
+                id: '1', title: 'bread', status: TaskStatues.Completed, description: '', entityStatus: 'idle',
                 completed: false, priority: TaskPriorities.Low, startDate: new Date(2011, 0, 1),
                 addedDate: new Date(2011, 0, 1), order: 0, deadline: new Date(2011, 0, 1), todoListId: 'todolistId2'
             },
             {
-                id: '3', title: 'tea', status: TaskStatues.Completed, description: '',
+                id: '3', title: 'tea', status: TaskStatues.Completed, description: '', entityStatus: 'idle',
                 completed: false, priority: TaskPriorities.Low, startDate: new Date(2011, 0, 1),
                 addedDate: new Date(2011, 0, 1), order: 0, deadline: new Date(2011, 0, 1), todoListId: 'todolistId2'
             }
@@ -134,7 +134,7 @@ test('entityStatus of specified task should be changed', () => {
 
 test('new array should be added when new todolist is added', () => {
     const testTodoItem = {
-        id: 'todolistId1', title: 'new todolist', filter: "all", addedData: (new Date),
+        id: 'todolistId3', title: 'new todolist', filter: "all", addedData: (new Date),
         order: 0
     }
     const action = todoListsActions.createTodolist({todoItem: testTodoItem})

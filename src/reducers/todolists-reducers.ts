@@ -83,8 +83,6 @@ export const removeTodoListTC = (todoListId: string): AppThunk => {
                 if (res.data.resultCode === ResponseCode.Ok) {
                     dispatch(todoListsActions.removeTodolist({id: todoListId}))
                     dispatch(appActions.setAppStatus({status: 'succeeded'}))
-                    dispatch(todoListsActions.changeTodolistEntityStatus(
-                        {entityStatus: 'succeeded',id: todoListId}))
                 } else {
                     handleServerAppError(res.data, dispatch)
                     dispatch(todoListsActions.changeTodolistEntityStatus(
