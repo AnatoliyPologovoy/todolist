@@ -1,14 +1,15 @@
-import React, {memo, useCallback, useEffect} from "react";
+import React, {memo, useCallback} from "react";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import EditableSpan from "../EditableSpan/EditableSpan";
 import {List} from "@mui/material";
 import {useAppSelector} from "app/store";
 import {changeTodoListTitleTC, removeTodoListTC, todoListsActions, TodoListType} from "reducers/todolists-reducers";
-import {createTaskTC, setTasksTC} from "reducers/task-reducers";
+import {createTaskTC} from "reducers/task-reducers";
 import {Task} from "../Task/Task";
 import {ButtonWithMemo} from "../ButtonWithMemo";
 import {TaskStatues} from "api/todolist-api";
 import {useAppDispatch} from "hooks/useAppDispatch";
+import {tasksSelector} from "reducers/app.selectors";
 
 
 type TodolistPropsType = {
@@ -26,14 +27,7 @@ export const Todolist = memo((props: TodolistPropsType) => {
 
     const dispatch = useAppDispatch()
 
-    let taskFromRedux =
-        useAppSelector(state => state.tasks[todoListId])
-
-    // useEffect(() => {
-    //     dispatch(setTasksTC(todoListId))
-    // }, [])
-
-
+    let taskFromRedux = useAppSelector(tasksSelector(todoListId))
 
     const changeTodoListTitle = useCallback(
         (newTitle: string, setRejectTitle: (title: string) => void) => {

@@ -2,21 +2,19 @@ import React, {useCallback, useEffect} from 'react';
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
-import {useSelector} from "react-redux";
-import {AppRootStateType, useAppSelector} from "app/store";
-import {createTodoListTC, fetchTodoListsTC, TodoListType} from "reducers/todolists-reducers";
+import {useAppSelector} from "app/store";
+import {createTodoListTC, fetchTodoListsTC} from "reducers/todolists-reducers";
 import {useAppDispatch} from "hooks/useAppDispatch";
 import {Todolist} from "../TodoList/Todolist";
 import {Navigate} from "react-router-dom";
+import {isLoggedInSelector, todoListsSelector} from "reducers/app.selectors";
 
 
 export const AllTodoLists = () => {
 
-    const todoLists =
-        useSelector<AppRootStateType, TodoListType[]>(state => state.todolists)
-
     const dispatch = useAppDispatch()
-    const isLoggedIn = useAppSelector(state => state.auth.isLoginIn)
+    const todoLists = useAppSelector(todoListsSelector)
+    const isLoggedIn = useAppSelector(isLoggedInSelector)
 
     useEffect(() => {
         if (isLoggedIn) {
