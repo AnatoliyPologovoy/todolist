@@ -3,7 +3,8 @@ import './App.css';
 import {
     AppBar,
     Button,
-    Checkbox, CircularProgress,
+    Checkbox,
+    CircularProgress,
     createTheme,
     CssBaseline,
     FormControlLabel,
@@ -15,29 +16,27 @@ import {
 } from '@mui/material';
 import {Menu} from "@mui/icons-material";
 import {lightBlue, orange} from "@mui/material/colors";
-import {AllTodoLists} from "../Components/AllTodoLists/AllTodoLists";
-import {LinearLoader} from "../Components/LinearLoader/LinearLoader";
+import {AllTodoLists} from "Components/AllTodoLists/AllTodoLists";
+import {LinearLoader} from "Components/LinearLoader/LinearLoader";
 import {useAppSelector} from "./store";
-import {ErrorSnackbar} from "../Components/ErrorSnackBar/ErrorSnackBar";
+import {ErrorSnackbar} from "Components/ErrorSnackBar/ErrorSnackBar";
 import {Navigate, Route, Routes} from "react-router-dom";
-import {Login} from "../Components/Login/Login";
-import {useAppDispatch} from "../hooks/useAppDispatch";
-import {initializeAppTC, logoutTC} from "../reducers/Auth-reducer";
+import {Login} from "Components/Login/Login";
+import {useAppDispatch} from "hooks/useAppDispatch";
+import {initializeAppTC, logoutTC} from "reducers/Auth-reducer";
+import {isInitializedSelector, isLoginInSelector, statusSelector} from "reducers/app.selectors";
 
 
 function App(): JSX.Element {
     const dispatch = useAppDispatch()
-    const appStatus
-        = useAppSelector(state => state.app.status)
-    const isInitialized =
-        useAppSelector(state => state.auth.isInitialized)
-    const isLoggedIn =
-        useAppSelector(state => state.auth.isLoginIn)
+    const appStatus = useAppSelector(statusSelector)
+    const isInitialized = useAppSelector(isInitializedSelector)
+    const isLoggedIn = useAppSelector(isLoginInSelector)
     const isLoadingStatus = appStatus === 'loading'
 
     const [isDarkMode, setDarkMode] = useState(true)
 
-    useEffect(()=>{
+    useEffect(() => {
         dispatch(initializeAppTC())
     }, [])
 
@@ -91,9 +90,9 @@ function App(): JSX.Element {
 
                             <Button
                                 color="inherit"
-                                onClick = {logoutHandler}
+                                onClick={logoutHandler}
                             >
-                                {isLoggedIn? 'Logout' : 'Login' }
+                                {isLoggedIn ? 'Logout' : 'Login'}
                             </Button>
                         </Toolbar>
                     </AppBar>
@@ -105,8 +104,8 @@ function App(): JSX.Element {
                     <Routes>
                         <Route path={'/'} element={<AllTodoLists/>}/>
                         <Route path={'/login'} element={<Login/>}/>
-                        <Route path='*' element={<Navigate to={'/404'}/>} />
-                        <Route path='/404' element={<h1>404: PAGE NOT FOUND</h1>} />
+                        <Route path='*' element={<Navigate to={'/404'}/>}/>
+                        <Route path='/404' element={<h1>404: PAGE NOT FOUND</h1>}/>
                     </Routes>
                 </div>
             </CssBaseline>

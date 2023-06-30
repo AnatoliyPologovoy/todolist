@@ -18,7 +18,7 @@ export const AddItemForm: FC<AddItemFormPropsType> = memo(({addItem, disabled}) 
         setInputValue(evt.currentTarget.value)
     }
 
-    const maxLengthTitle = 900
+    const maxLengthTitle = 200
     const minLengthTitle = 5
 
     const addItemHandler = () => {
