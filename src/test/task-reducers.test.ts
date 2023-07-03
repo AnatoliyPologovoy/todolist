@@ -1,4 +1,4 @@
-import {tasksActions, tasksReducer, TasksStateType} from 'reducers/task-reducers'
+import {tasksActions, tasksReducer, TasksStateType, tasksThunks} from 'reducers/task-reducers'
 import {todoListsActions} from "reducers/todolists-reducers";
 import {TaskPriorities, TaskStatues} from "api/todolist-api";
 
@@ -80,6 +80,25 @@ test('correct task should be deleted from correct array', () => {
             }
         ]
     })
+})
+
+test('tasks should be added for todolist', () => {
+    const action = tasksThunks.fetchTasksTC.fulfilled(
+        {tasks: startState["todolistId1"], todoListId: "todolistId1"},
+        'requestId',
+        "todolistId1"
+    );
+
+    const endState = tasksReducer(
+        {
+            todolistId2: [],
+            todolistId1: [],
+        },
+        action
+    );
+
+    expect(endState["todolistId1"].length).toBe(3);
+    expect(endState["todolistId2"].length).toBe(0);
 })
 
 test('correct task should be added to correct array', () => {

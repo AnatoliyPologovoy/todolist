@@ -1,5 +1,5 @@
 import {ResponseCode, TodolistApi, TodoListDomainType} from "api/todolist-api";
-import {FilterType, setTasksTC} from "./task-reducers";
+import {FilterType, tasksThunks} from "./task-reducers";
 import {appActions, RequestStatusType} from "./app-reducer";
 import {handleServerAppError, handleServerNetworkError} from "utils/error-utils";
 import {AppThunk} from "app/store";
@@ -80,7 +80,7 @@ export const fetchTodoListsTC =
             })
             .then( todo => {
                 todo.forEach(t => {
-                    dispatch(setTasksTC(t.id))
+                    dispatch(tasksThunks.fetchTasksTC(t.id))
                 })
             })
             .catch((er) => {
