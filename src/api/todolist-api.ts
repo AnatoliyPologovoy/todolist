@@ -29,7 +29,7 @@ export const TodolistApi = {
                 title
             })
     },
-    changeTask(todoListId: string, taskId: string, task: TaskResponseType) {
+    changeTask(todoListId: string, taskId: string, task: UpdateTaskModelType) {
         return instance
             .put<ResponseType<{ item: TaskResponseType }>>
             (`todo-lists/${todoListId}/tasks/${taskId}`, task)
@@ -105,6 +105,15 @@ export enum ResponseCode {
     Error = 1
 }
 
+export type UpdateTaskModelType = {
+    title: string
+    description: string
+    completed: boolean
+    status: number
+    priority: number
+    startDate: Date
+    deadline: Date
+}
 
 export type TaskResponseType = {
     id: string
@@ -120,7 +129,7 @@ export type TaskResponseType = {
     addedDate: Date
 }
 
-export type TaskRequestType = {
+export type TaskRequestUpdateType = {
     title?: string
     status?: TaskStatues
 }

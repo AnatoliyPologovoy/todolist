@@ -4,12 +4,12 @@ import EditableSpan from "../EditableSpan/EditableSpan";
 import {List} from "@mui/material";
 import {useAppSelector} from "app/store";
 import {changeTodoListTitleTC, removeTodoListTC, todoListsActions, TodoListType} from "reducers/todolists-reducers";
-import {createTaskTC} from "reducers/task-reducers";
 import {Task} from "../Task/Task";
 import {ButtonWithMemo} from "../ButtonWithMemo";
 import {TaskStatues} from "api/todolist-api";
 import {useAppDispatch} from "hooks/useAppDispatch";
 import {tasksSelector} from "reducers/app.selectors";
+import {tasksThunks} from "reducers/task-reducers";
 
 
 type TodolistPropsType = {
@@ -59,7 +59,7 @@ export const Todolist = memo((props: TodolistPropsType) => {
     //adding new tasks (button)
     const createTask = useCallback(
         (title: string, setRejectTitle: (title: string) => void) => {
-        dispatch(createTaskTC(todoListId, title, setRejectTitle));
+        dispatch(tasksThunks.createTaskTC({todoListId, title, setRejectTitle}));
     }, [todoListId])
 
     //remove todoList

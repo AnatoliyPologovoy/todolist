@@ -1,10 +1,10 @@
 import React, {memo, useCallback} from 'react';
 import {Checkbox, ListItem} from "@mui/material";
 import EditableSpan from "../EditableSpan/EditableSpan";
-import {changeTaskTC, removeTaskTC, TaskType} from "../../reducers/task-reducers";
+import {changeTaskTC, tasksThunks, TaskType} from "reducers/task-reducers";
 import s from "../TodoList/todolist.module.css";
-import {TaskRequestType, TaskStatues} from "../../api/todolist-api";
-import {useAppDispatch} from "../../hooks/useAppDispatch";
+import {TaskRequestUpdateType, TaskStatues} from "api/todolist-api";
+import {useAppDispatch} from "hooks/useAppDispatch";
 import cl from "./task.module.css"
 
 export type TaskPropsType = {
@@ -24,7 +24,7 @@ export const Task: React.FC<TaskPropsType> = memo((props) => {
     const changeTaskTitle = useCallback(
         (newTitle: string, setRejectTitle: (title: string) => void) => {
 
-        const changeValue: TaskRequestType = {
+        const changeValue: TaskRequestUpdateType = {
             title: newTitle,
         }
 
@@ -33,7 +33,7 @@ export const Task: React.FC<TaskPropsType> = memo((props) => {
 
 
     const removeTask = () => {
-        dispatch(removeTaskTC(todoListId, taskId))
+        dispatch(tasksThunks.removeTaskTC({todoListId, taskId}))
     }
 
     // changing status
@@ -41,7 +41,7 @@ export const Task: React.FC<TaskPropsType> = memo((props) => {
         const statusChecked = event.currentTarget.checked
             ? TaskStatues.Completed
             : TaskStatues.New
-        const changingValue: TaskRequestType = {
+        const changingValue: TaskRequestUpdateType = {
             status: statusChecked
         }
         dispatch(changeTaskTC(todoListId, taskId, changingValue))
