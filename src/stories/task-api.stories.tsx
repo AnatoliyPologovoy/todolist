@@ -5,7 +5,7 @@ import {
     TaskPriorities,
     TaskStatues,
     TodolistApi
-} from "../api/todolist-api";
+} from "features/todos/todolist-api";
 
 export default {
     title: 'API'
@@ -54,7 +54,10 @@ export const CreateTask = () => {
         const todoId = '91423609-70a3-4723-8db7-f074ef403852'
         const title = 'Test task333'
         if (isFetch) {
-            TodolistApi.createTask(inputId, inputTitle)
+            TodolistApi.createTask({
+                todoListId: inputId,
+                title: inputTitle
+            })
                 .then(res => {
                     setState(res.data)
                     setFetch(false)
@@ -160,7 +163,10 @@ export const DeleteTask = () => {
     useEffect(() => {
 
         if (isFetch) {
-            TodolistApi.removeTask(inputId, inputTaskId)
+            TodolistApi.removeTask({
+                todoListId: inputId,
+                taskId: inputTaskId
+            })
                 .then(res => {
                     setState(res.data)
                     setFetch(false)

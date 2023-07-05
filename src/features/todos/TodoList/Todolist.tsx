@@ -3,10 +3,10 @@ import {AddItemForm} from "common/components/AddItemForm/AddItemForm";
 import EditableSpan from "common/components/EditableSpan/EditableSpan";
 import {List} from "@mui/material";
 import {useAppSelector} from "app/store";
-import {changeTodoListTitleTC, removeTodoListTC, todoListsActions, TodoListType} from "features/todos/todolists-reducers";
+import {changeTodoListTitleTC, todoListsActions, todoListThunk, TodoListType} from "features/todos/todolists-reducers";
 import {Task} from "features/tasks/Task/Task";
 import {ButtonWithMemo} from "common/components/Button/ButtonWithMemo";
-import {TaskStatues} from "api/todolist-api";
+import {TaskStatues} from "features/todos/todolist-api";
 import {useAppDispatch} from "common/hooks/useAppDispatch";
 import {tasksSelector} from "app/app.selectors";
 import {tasksThunks} from "features/tasks/tasks-reducers";
@@ -64,7 +64,7 @@ export const Todolist = memo((props: TodolistPropsType) => {
 
     //remove todoList
     const removeTodoList = () => {
-        dispatch(removeTodoListTC(todoListId))
+        dispatch(todoListThunk.removeTodoListTC(todoListId))
     }
 
     const onClickButtonAll = useCallback(() => {

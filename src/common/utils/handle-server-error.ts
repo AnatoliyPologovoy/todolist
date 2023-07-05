@@ -1,4 +1,4 @@
-import {ResponseType} from "api/todolist-api";
+import {ResponseType} from "features/todos/todolist-api";
 import {Dispatch} from "redux";
 import {appActions} from "app/app-reducer";
 

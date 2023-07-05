@@ -3,7 +3,7 @@ import {Checkbox, ListItem} from "@mui/material";
 import EditableSpan from "common/components/EditableSpan/EditableSpan";
 import {tasksThunks, TaskType} from "features/tasks/tasks-reducers";
 import s from "features/todos/TodoList/todolist.module.css";
-import {TaskRequestUpdateType, TaskStatues} from "api/todolist-api";
+import {TaskRequestUpdateType, TaskStatues} from "features/todos/todolist-api";
 import {useAppDispatch} from "common/hooks/useAppDispatch";
 import cl from "features/tasks/Task/task.module.css"
 

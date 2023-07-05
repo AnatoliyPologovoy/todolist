@@ -21,7 +21,7 @@ import {LinearLoader} from "common/components/LinearLoader/LinearLoader";
 import {useAppSelector} from "./store";
 import {ErrorSnackbar} from "common/components/ErrorSnackBar/ErrorSnackBar";
 import {Navigate, Route, Routes} from "react-router-dom";
-import {Login} from "app/Login/Login";
+import {Login} from "features/Login/Login";
 import {useAppDispatch} from "common/hooks/useAppDispatch";
 import {initializeAppTC, logoutTC} from "features/auth/auth-reducer";
 import {isInitializedSelector, isLoginInSelector, statusSelector} from "app/app.selectors";

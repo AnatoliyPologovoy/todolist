@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import {AddItemForm} from "common/components/AddItemForm/AddItemForm";
 import {useAppSelector} from "app/store";
-import {createTodoListTC, fetchTodoListsTC} from "features/todos/todolists-reducers";
+import {createTodoListTC, todoListThunk} from "features/todos/todolists-reducers";
 import {useAppDispatch} from "common/hooks";
 import {Todolist} from "features/todos/TodoList/Todolist";
 import {Navigate} from "react-router-dom";
@@ -18,7 +18,7 @@ export const AllTodoLists = () => {
 
     useEffect(() => {
         if (isLoggedIn) {
-            dispatch(fetchTodoListsTC())
+            dispatch(todoListThunk.fetchTodoListsTC())
         }
     }, [])
 

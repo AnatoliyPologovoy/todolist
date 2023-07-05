@@ -5,7 +5,7 @@ import {combineReducers, legacy_createStore} from "redux";
 import {tasksReducer} from "features/tasks/tasks-reducers";
 import {todoListsReducer} from "features/todos/todolists-reducers";
 import {v1} from "uuid";
-import {TaskPriorities, TaskStatues} from "../api/todolist-api";
+import {TaskPriorities, TaskStatues} from "features/todos/todolist-api";
 import {appReducer} from "app/app-reducer";
 import {authReducer} from "features/auth/auth-reducer";
 

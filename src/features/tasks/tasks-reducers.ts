@@ -4,11 +4,11 @@ import {
 		TaskResponseType,
 		TodolistApi,
 		UpdateTaskModelType
-} from "api/todolist-api";
+} from "features/todos/todolist-api";
 import {appActions, RequestStatusType} from "app/app-reducer";
 import {handleServerAppError, handleServerNetworkError} from "common/utils";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {todoListsActions} from "features/todos/todolists-reducers";
+import {todoListsActions, todoListThunk} from "features/todos/todolists-reducers";
 import {authActions} from "features/auth/auth-reducer";
 import {createAppAsyncThunk} from "common/utils/create-app-async-thunk";
 
@@ -33,15 +33,6 @@ const slice = createSlice({
 		name: 'task',
 		initialState,
 		reducers: {
-				// updateTask(state, action: PayloadAction<{ task: TaskResponseType }>) {
-				// 		const tasks = state[action.payload.task.todoListId]
-				// 		const index = tasks.findIndex(t => t.id === action.payload.task.id)
-				// 		if (index !== -1) tasks[index] = {...tasks[index], ...action.payload.task}
-				// },
-				// createTask(state, action: PayloadAction<{ task: TaskResponseType }>) {
-				// 		const tasks = state[action.payload.task.todoListId]
-				// 		tasks.unshift({...action.payload.task, entityStatus: 'idle'})
-				// },
 				changeTaskEntityStatus(state, action: PayloadAction<{ taskId: string, entityStatus: RequestStatusType, todoListId: string }>) {
 						const tasks = state[action.payload.todoListId]
 						const index = tasks.findIndex(t => t.id === action.payload.taskId)
@@ -68,9 +59,9 @@ const slice = createSlice({
 								const index = tasks.findIndex(t => t.id === action.payload.taskId)
 								if (index !== -1) tasks.splice(index, 1)
 						})
-						.addCase(todoListsActions.setTodoList,
+						.addCase(todoListThunk.fetchTodoListsTC.fulfilled,
 								(state, action) => {
-										action.payload.todos.forEach(t => {
+										action.payload.todoLists.forEach(t => {
 												state[t.id] = []
 										})
 								})
@@ -78,9 +69,9 @@ const slice = createSlice({
 								(state, action) => {
 										state[action.payload.todoItem.id] = []
 								})
-						.addCase(todoListsActions.removeTodolist,
+						.addCase(todoListThunk.removeTodoListTC.fulfilled,
 								(state, action) => {
-										delete state[action.payload.id]
+										delete state[action.payload]
 								})
 						//logout case
 						.addCase(authActions.setIsLoginIn, (state, action) => {
@@ -119,7 +110,7 @@ const removeTaskTC = createAppAsyncThunk<removeTaskArgType,
 				dispatch(tasksActions.changeTaskEntityStatus(
 						{taskId, entityStatus: 'loading', todoListId}))
 				try {
-						const res = await TodolistApi.removeTask(todoListId, taskId)
+						const res = await TodolistApi.removeTask({todoListId, taskId})
 						if (res.data.resultCode === ResponseCode.Ok) {
 								dispatch(appActions.setAppStatus({status: 'succeeded'}))
 								return {taskId, todoListId}
@@ -146,7 +137,7 @@ const createTaskTC = createAppAsyncThunk<{ task: TaskResponseType },
 				const {dispatch, rejectWithValue} = thunkAPI
 				dispatch(appActions.setAppStatus({status: 'loading'}))
 				try {
-						const res = await TodolistApi.createTask(todoListId, title)
+						const res = await TodolistApi.createTask({todoListId, title})
 						if (res.data.resultCode === ResponseCode.Ok) {
 								dispatch(appActions.setAppStatus({status: 'succeeded'}))
 								return {task: res.data.data.item}

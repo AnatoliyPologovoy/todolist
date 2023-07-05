@@ -1,9 +1,4 @@
-import axios, {AxiosResponse} from "axios";
-
-const instance = axios.create({
-    baseURL: 'https://social-network.samuraijs.com/api/1.1/',
-    withCredentials: true
-})
+import {instance} from "common/common.api";
 
 export const TodolistApi = {
     getTodoLists() {
@@ -22,7 +17,7 @@ export const TodolistApi = {
         return instance
             .get<GetTasksRequestType>(`todo-lists/${todoListId}/tasks`)
     },
-    createTask(todoListId: string, title: string) {
+    createTask({todoListId, title} : createTaskRequestArgType) {
         return instance
             .post<ResponseType<{ item: TaskResponseType }>>
             (`todo-lists/${todoListId}/tasks`, {
@@ -34,34 +29,22 @@ export const TodolistApi = {
             .put<ResponseType<{ item: TaskResponseType }>>
             (`todo-lists/${todoListId}/tasks/${taskId}`, task)
     },
-    removeTask(todoListId: string, taskId: string) {
+    removeTask({todoListId, taskId}: removeTaskRequestArgType) {
         return instance
             .delete<ResponseType>
             (`todo-lists/${todoListId}/tasks/${taskId}`)
     }
 }
 
-export const authAPI = {
-    login(RequestPayload: LoginRequestType) {
-        return instance
-            .post<ResponseType<{ userId: number }>,
-                AxiosResponse<ResponseType<{ userId: number }>>,
-                LoginRequestType>('auth/login', RequestPayload)
-    },
-    me() {
-        return instance
-            .get<ResponseType<{
-                id: string,
-                email: string,
-                login: string
-            }>>('auth/me')
-    },
-    logout() {
-        return instance
-            .delete<ResponseType>('auth/login')
-    }
+type createTaskRequestArgType = {
+    todoListId: string,
+    title: string
 }
 
+type removeTaskRequestArgType = {
+    todoListId: string,
+    taskId: string
+}
 
 export type TodoListDomainType = {
     id: string

@@ -1,8 +1,9 @@
 import {appActions} from "app/app-reducer";
-import {authAPI, LoginRequestType, ResponseCode} from "api/todolist-api";
+import {LoginRequestType, ResponseCode} from "features/todos/todolist-api";
 import {handleServerAppError, handleServerNetworkError} from "common/utils";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {AppThunk} from "app/store";
+import {authAPI} from "features/auth/auth.api";
 
 const initialState = {
     isLoginIn: false,
