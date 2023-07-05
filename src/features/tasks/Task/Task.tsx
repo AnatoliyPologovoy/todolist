@@ -1,11 +1,11 @@
 import React, {memo, useCallback} from 'react';
 import {Checkbox, ListItem} from "@mui/material";
-import EditableSpan from "../EditableSpan/EditableSpan";
-import {changeTaskTC, tasksThunks, TaskType} from "reducers/task-reducers";
-import s from "../TodoList/todolist.module.css";
+import EditableSpan from "common/components/EditableSpan/EditableSpan";
+import {tasksThunks, TaskType} from "features/tasks/tasks-reducers";
+import s from "features/todos/TodoList/todolist.module.css";
 import {TaskRequestUpdateType, TaskStatues} from "api/todolist-api";
-import {useAppDispatch} from "hooks/useAppDispatch";
-import cl from "./task.module.css"
+import {useAppDispatch} from "common/hooks/useAppDispatch";
+import cl from "features/tasks/Task/task.module.css"
 
 export type TaskPropsType = {
     task: TaskType
@@ -28,7 +28,7 @@ export const Task: React.FC<TaskPropsType> = memo((props) => {
             title: newTitle,
         }
 
-        dispatch(changeTaskTC(todoListId, taskId, changeValue, setRejectTitle))
+        dispatch(tasksThunks.updateTaskTC({todoListId, taskId, changeValue, setRejectTitle}))
     }, [taskId, todoListId])
 
 
@@ -41,10 +41,10 @@ export const Task: React.FC<TaskPropsType> = memo((props) => {
         const statusChecked = event.currentTarget.checked
             ? TaskStatues.Completed
             : TaskStatues.New
-        const changingValue: TaskRequestUpdateType = {
+        const changeValue: TaskRequestUpdateType = {
             status: statusChecked
         }
-        dispatch(changeTaskTC(todoListId, taskId, changingValue))
+        dispatch(tasksThunks.updateTaskTC({todoListId, taskId, changeValue}))
     } // нет нужды в useCallBack потому что чекбокс из matherial UI
 
     return (

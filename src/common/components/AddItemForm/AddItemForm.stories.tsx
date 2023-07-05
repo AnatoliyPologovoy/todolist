@@ -1,9 +1,9 @@
 import type {Meta, StoryObj} from '@storybook/react';
-import {AddItemForm, AddItemFormPropsType} from "./AddItemForm";
+import {AddItemForm, AddItemFormPropsType} from "common/components/AddItemForm/AddItemForm";
 import {action} from "@storybook/addon-actions"
 import {IconButton, TextField} from "@mui/material";
 import AddBoxIcon from "@mui/icons-material/AddBox";
-import s from "../TodoList/todolist.module.css";
+import s from "features/todos/TodoList/todolist.module.css";
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
 
 

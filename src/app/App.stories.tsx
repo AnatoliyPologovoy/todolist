@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import {Task} from "../Components/Task/Task";
-import EditableSpan from "../Components/EditableSpan/EditableSpan";
+import {Task} from "../features/tasks/Task/Task";
+import EditableSpan from "../common/components/EditableSpan/EditableSpan";
 import {action} from "@storybook/addon-actions";
 import App from "./App";
 import {Provider} from "react-redux";

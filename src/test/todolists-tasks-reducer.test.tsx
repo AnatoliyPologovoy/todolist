@@ -1,5 +1,5 @@
-import {todoListsActions, todoListsReducer, TodoListType} from "reducers/todolists-reducers";
-import {tasksReducer, TasksStateType} from "reducers/task-reducers";
+import {todoListsActions, todoListsReducer, TodoListType} from "features/todos/todolists-reducers";
+import {tasksReducer, TasksStateType} from "features/tasks/tasks-reducers";
 import {TaskPriorities, TaskStatues} from "api/todolist-api";
 import {v1} from "uuid";
 

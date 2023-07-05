@@ -100,10 +100,12 @@ export enum TaskPriorities {
     Later = 4
 }
 
-export enum ResponseCode {
-    Ok = 0,
-    Error = 1
-}
+export const ResponseCode = {
+    Ok: 0,
+    Error: 1
+} as const
+
+export type ResponseCodeType = typeof ResponseCode
 
 export type UpdateTaskModelType = {
     title: string

@@ -1,10 +1,10 @@
 import {ResponseCode, TodolistApi, TodoListDomainType} from "api/todolist-api";
-import {FilterType, tasksThunks} from "./task-reducers";
-import {appActions, RequestStatusType} from "./app-reducer";
-import {handleServerAppError, handleServerNetworkError} from "utils/error-utils";
+import {FilterType, tasksThunks} from "features/tasks/tasks-reducers";
+import {appActions, RequestStatusType} from "app/app-reducer";
+import {handleServerAppError, handleServerNetworkError} from "common/utils";
 import {AppThunk} from "app/store";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {authActions} from "reducers/Auth-reducer";
+import {authActions} from "features/auth/auth-reducer";
 
 export type TodoListType = {
     filter: FilterType

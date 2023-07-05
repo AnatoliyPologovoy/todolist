@@ -1,6 +1,6 @@
-import {appActions} from "./app-reducer";
+import {appActions} from "app/app-reducer";
 import {authAPI, LoginRequestType, ResponseCode} from "api/todolist-api";
-import {handleServerAppError, handleServerNetworkError} from "utils/error-utils";
+import {handleServerAppError, handleServerNetworkError} from "common/utils";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {AppThunk} from "app/store";
 

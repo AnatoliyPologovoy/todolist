@@ -1,15 +1,15 @@
 import React, {memo, useCallback} from "react";
-import {AddItemForm} from "../AddItemForm/AddItemForm";
-import EditableSpan from "../EditableSpan/EditableSpan";
+import {AddItemForm} from "common/components/AddItemForm/AddItemForm";
+import EditableSpan from "common/components/EditableSpan/EditableSpan";
 import {List} from "@mui/material";
 import {useAppSelector} from "app/store";
-import {changeTodoListTitleTC, removeTodoListTC, todoListsActions, TodoListType} from "reducers/todolists-reducers";
-import {Task} from "../Task/Task";
-import {ButtonWithMemo} from "../ButtonWithMemo";
+import {changeTodoListTitleTC, removeTodoListTC, todoListsActions, TodoListType} from "features/todos/todolists-reducers";
+import {Task} from "features/tasks/Task/Task";
+import {ButtonWithMemo} from "common/components/Button/ButtonWithMemo";
 import {TaskStatues} from "api/todolist-api";
-import {useAppDispatch} from "hooks/useAppDispatch";
-import {tasksSelector} from "reducers/app.selectors";
-import {tasksThunks} from "reducers/task-reducers";
+import {useAppDispatch} from "common/hooks/useAppDispatch";
+import {tasksSelector} from "app/app.selectors";
+import {tasksThunks} from "features/tasks/tasks-reducers";
 
 
 type TodolistPropsType = {

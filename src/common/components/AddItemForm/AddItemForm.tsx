@@ -1,5 +1,5 @@
 import React, {ChangeEvent, FC, KeyboardEvent, memo, useLayoutEffect, useState} from 'react';
-import s from "../TodoList/todolist.module.css";
+import s from "features/todos/TodoList/todolist.module.css";
 import {IconButton, TextField} from "@mui/material";
 import AddBoxIcon from '@mui/icons-material/AddBox';
 
@@ -18,7 +18,7 @@ export const AddItemForm: FC<AddItemFormPropsType> = memo(({addItem, disabled}) 
         setInputValue(evt.currentTarget.value)
     }
 
-    const maxLengthTitle = 200
+    const maxLengthTitle = 200 //serverAPI - 100
     const minLengthTitle = 5
 
     const addItemHandler = () => {

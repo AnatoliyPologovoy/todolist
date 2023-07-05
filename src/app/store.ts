@@ -1,9 +1,9 @@
 import {AnyAction, combineReducers} from 'redux';
-import {tasksReducer} from "reducers/task-reducers";
-import {todoListsReducer} from "reducers/todolists-reducers";
-import {appReducer} from "reducers/app-reducer";
+import {tasksReducer} from "features/tasks/tasks-reducers";
+import {todoListsReducer} from "features/todos/todolists-reducers";
+import {appReducer} from "app/app-reducer";
 import {TypedUseSelectorHook, useSelector} from "react-redux";
-import {authReducer} from "reducers/Auth-reducer";
+import {authReducer} from "features/auth/auth-reducer";
 import {configureStore, ThunkAction} from "@reduxjs/toolkit";
 
 // объединяя reducer-ы с помощью combineReducers,

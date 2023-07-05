@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import {Task} from "../Task/Task";
-import EditableSpan from "./EditableSpan";
+import {Task} from "features/tasks/Task/Task";
+import EditableSpan from "common/components/EditableSpan/EditableSpan";
 import {action} from "@storybook/addon-actions";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export

@@ -16,15 +16,15 @@ import {
 } from '@mui/material';
 import {Menu} from "@mui/icons-material";
 import {lightBlue, orange} from "@mui/material/colors";
-import {AllTodoLists} from "Components/AllTodoLists/AllTodoLists";
-import {LinearLoader} from "Components/LinearLoader/LinearLoader";
+import {AllTodoLists} from "features/todos/AllTodoLists/AllTodoLists";
+import {LinearLoader} from "common/components/LinearLoader/LinearLoader";
 import {useAppSelector} from "./store";
-import {ErrorSnackbar} from "Components/ErrorSnackBar/ErrorSnackBar";
+import {ErrorSnackbar} from "common/components/ErrorSnackBar/ErrorSnackBar";
 import {Navigate, Route, Routes} from "react-router-dom";
-import {Login} from "Components/Login/Login";
-import {useAppDispatch} from "hooks/useAppDispatch";
-import {initializeAppTC, logoutTC} from "reducers/Auth-reducer";
-import {isInitializedSelector, isLoginInSelector, statusSelector} from "reducers/app.selectors";
+import {Login} from "app/Login/Login";
+import {useAppDispatch} from "common/hooks/useAppDispatch";
+import {initializeAppTC, logoutTC} from "features/auth/auth-reducer";
+import {isInitializedSelector, isLoginInSelector, statusSelector} from "app/app.selectors";
 
 
 function App(): JSX.Element {
