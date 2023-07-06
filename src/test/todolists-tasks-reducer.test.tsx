@@ -12,7 +12,11 @@ test('ids should be equals', () => {
 				id: 'todolistId1', title: newTodolistTitle, filter: "all", addedData: (new Date),
 				order: 0
 		}
-		const action = todoListsActions.createTodolist({todoItem: testTodoItem})
+		const action = todoListThunk.createTodoListTC.fulfilled(
+				testTodoItem,
+				'requestId',
+				{title: newTodolistTitle, setRejectTitle: (t) => {}}
+				)
 
 		const endTasksState = tasksReducer(startTasksState, action)
 		const endTodolistsState = todoListsReducer(startTodolistsState, action)
@@ -21,8 +25,8 @@ test('ids should be equals', () => {
 		const idFromTasks = keys[0]
 		const idFromTodolists = endTodolistsState[0].id
 
-		expect(idFromTasks).toBe(action.payload.todoItem.id)
-		expect(idFromTodolists).toBe(action.payload.todoItem.id)
+		expect(idFromTasks).toBe(action.payload.id)
+		expect(idFromTodolists).toBe(action.payload.id)
 })
 test('property with todolistId should be deleted', () => {
 		const startState: TasksStateType = {

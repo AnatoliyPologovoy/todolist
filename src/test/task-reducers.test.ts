@@ -1,5 +1,5 @@
 import {tasksActions, tasksReducer, TasksStateType, tasksThunks} from 'features/tasks/tasks-reducers'
-import {todoListsActions} from "features/todos/todolists-reducers";
+import {todoListsActions, todoListThunk} from "features/todos/todolists-reducers";
 import {TaskPriorities, TaskStatues} from "features/todos/todolist-api";
 
 let startState: TasksStateType
@@ -176,7 +176,11 @@ test('new array should be added when new todolist is added', () => {
 				id: 'todolistId3', title: 'new todolist', filter: "all", addedData: (new Date),
 				order: 0
 		}
-		const action = todoListsActions.createTodolist({todoItem: testTodoItem})
+		const action = todoListThunk.createTodoListTC.fulfilled(
+				testTodoItem,
+				'requestId',
+				{title: 'new todolist', setRejectTitle: (t: string) => {}}
+		)
 
 		const endState = tasksReducer(startState, action)
 

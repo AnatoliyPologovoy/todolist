@@ -50,8 +50,13 @@ test('correct todolist should be added', () => {
         id: 'todolistId1', title: newTodolistTitle, filter: "all", addedData: (new Date),
         order: 0
     }
+    const action = todoListThunk.createTodoListTC.fulfilled(
+        testTodoItem,
+        'requestId',
+        {title: newTodolistTitle, setRejectTitle: (t) => {}}
+    )
     const endState = todoListsReducer(startState,
-        todoListsActions.createTodolist({todoItem: testTodoItem}))
+        action)
 
     expect(endState.length).toBe(3);
     expect(endState[0].title).toBe(newTodolistTitle);
@@ -59,9 +64,13 @@ test('correct todolist should be added', () => {
 test('correct todolist should change its name', () => {
 
     let newTodolistTitle = "New Todolist";
+    const action = todoListThunk.updateTodoListTitleTC.fulfilled(
+        {title: newTodolistTitle, todoListId: todolistId2},
+        'requestId',
+        {title: newTodolistTitle, todoListId: todolistId2, setRejectTitle: (t) => {}}
+    )
+    const endState = todoListsReducer(startState,action)
 
-    const endState = todoListsReducer(startState,
-        todoListsActions.changeTodolistTitle({title: newTodolistTitle,id: todolistId2}));
 
     expect(endState[0].title).toBe("What to learn");
     expect(endState[1].title).toBe(newTodolistTitle);

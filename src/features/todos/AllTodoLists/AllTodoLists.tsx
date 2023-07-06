@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import {AddItemForm} from "common/components/AddItemForm/AddItemForm";
 import {useAppSelector} from "app/store";
-import {createTodoListTC, todoListThunk} from "features/todos/todolists-reducers";
+import {todoListThunk} from "features/todos/todolists-reducers";
 import {useAppDispatch} from "common/hooks";
 import {Todolist} from "features/todos/TodoList/Todolist";
 import {Navigate} from "react-router-dom";
@@ -24,7 +24,7 @@ export const AllTodoLists = () => {
 
     const createTodoList = useCallback(
         (title: string, setRejectTitle: (title: string) => void) => {
-            dispatch(createTodoListTC(title, setRejectTitle))
+            dispatch(todoListThunk.createTodoListTC({title, setRejectTitle}))
         }, [])
 
 

@@ -3,7 +3,7 @@ import {AddItemForm} from "common/components/AddItemForm/AddItemForm";
 import EditableSpan from "common/components/EditableSpan/EditableSpan";
 import {List} from "@mui/material";
 import {useAppSelector} from "app/store";
-import {changeTodoListTitleTC, todoListsActions, todoListThunk, TodoListType} from "features/todos/todolists-reducers";
+import {todoListsActions, todoListThunk, TodoListType} from "features/todos/todolists-reducers";
 import {Task} from "features/tasks/Task/Task";
 import {ButtonWithMemo} from "common/components/Button/ButtonWithMemo";
 import {TaskStatues} from "features/todos/todolist-api";
@@ -31,7 +31,7 @@ export const Todolist = memo((props: TodolistPropsType) => {
 
     const changeTodoListTitle = useCallback(
         (newTitle: string, setRejectTitle: (title: string) => void) => {
-        dispatch(changeTodoListTitleTC(newTitle, todoListId, setRejectTitle))
+        dispatch(todoListThunk.updateTodoListTitleTC({title: newTitle, todoListId, setRejectTitle}))
     }, [])
 
 
