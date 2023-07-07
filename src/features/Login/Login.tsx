@@ -26,7 +26,7 @@ export const Login = () => {
         },
         validate,
         onSubmit: values => {
-            dispatch(loginIn(values, formik.resetForm))
+            dispatch(loginIn(values))
         }
     })
 

@@ -28,14 +28,13 @@ export const authActions = slice.actions
 
 //thunks
 export const loginIn =
-    (formData: LoginRequestType, resetForm: Function): AppThunk => (dispatch) => {
+    (formData: LoginRequestType): AppThunk => (dispatch) => {
         dispatch(appActions.setAppStatus({status: 'loading'}))
         authAPI.login(formData)
             .then(res => {
                 if (res.data.resultCode === ResponseCode.Ok) {
                     dispatch(authActions.setIsLoginIn({status: true}))
                     dispatch(appActions.setAppStatus({status: 'succeeded'}))
-                    resetForm()
                 } else {
                     handleServerAppError(res.data, dispatch)
                 }
