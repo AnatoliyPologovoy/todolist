@@ -4,7 +4,7 @@ import {appActions, RequestStatusType} from "app/app-reducer";
 import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "common/utils";
 import {AppThunk} from "app/store";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {authActions} from "features/auth/auth-reducer";
+import {authActions, authThunk} from "features/auth/auth-reducer";
 
 export type TodoListType = {
 		filter: FilterType
@@ -42,9 +42,9 @@ const slice = createSlice({
 		},
 		extraReducers: builder => {
 				builder
-						//logout case
-						.addCase(authActions.setIsLoginIn, (state, action) => {
-								if (!action.payload.status) return initialState
+						//logout case - clean state
+						.addCase(authThunk.logout.fulfilled, (state, action) => {
+								if (!action.payload.isLoginIn) return initialState
 						})
 						.addCase(fetchTodoListsTC.fulfilled, (state, action) => {
 								return action.payload.todoLists.map(t => ({

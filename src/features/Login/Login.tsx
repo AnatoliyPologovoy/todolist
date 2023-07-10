@@ -10,9 +10,9 @@ import Button from '@mui/material/Button';
 import {useFormik} from "formik";
 import {validate} from "common/utils";
 import {useAppDispatch} from "common/hooks/useAppDispatch";
-import {loginIn} from "features/auth/auth-reducer";
 import {useAppSelector} from "app/store";
 import {Navigate} from "react-router-dom";
+import {authThunk} from "features/auth/auth-reducer";
 
 export const Login = () => {
     const isLoggedIn = useAppSelector(state => state.auth.isLoginIn)
@@ -26,7 +26,7 @@ export const Login = () => {
         },
         validate,
         onSubmit: values => {
-            dispatch(loginIn(values))
+            dispatch(authThunk.loginIn(values))
         }
     })
 

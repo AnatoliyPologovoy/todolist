@@ -30,21 +30,5 @@ export const slice = createSlice({
 export const appReducer = slice.reducer
 export const appActions = slice.actions
 
-// export const setAppStatus = (status: RequestStatusType) => ({
-//     type: 'APP/SET-STATUS',
-//     status
-// } as const)
-//
-// export const setAppError = (error: AppErrorType) => ({
-//     type: 'APP/SET-ERROR',
-//     error
-// } as const)
-//
-// export type SetAppStatusType = ReturnType<typeof setAppStatus>
-// export type SetAppErrorType = ReturnType<typeof setAppError>
-//
-//
-// export type AppActionsType =
-//     | SetAppStatusType
-//     | SetAppErrorType
+
 

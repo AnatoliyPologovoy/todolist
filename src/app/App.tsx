@@ -23,7 +23,7 @@ import {ErrorSnackbar} from "common/components/ErrorSnackBar/ErrorSnackBar";
 import {Navigate, Route, Routes} from "react-router-dom";
 import {Login} from "features/Login/Login";
 import {useAppDispatch} from "common/hooks/useAppDispatch";
-import {initializeAppTC, logoutTC} from "features/auth/auth-reducer";
+import {authThunk} from "features/auth/auth-reducer";
 import {isInitializedSelector, isLoginInSelector, statusSelector} from "app/app.selectors";
 
 
@@ -37,7 +37,7 @@ function App(): JSX.Element {
     const [isDarkMode, setDarkMode] = useState(true)
 
     useEffect(() => {
-        dispatch(initializeAppTC())
+        dispatch(authThunk.initializeApp())
     }, [])
 
     const mode = isDarkMode ? 'dark' : 'light'
@@ -51,7 +51,7 @@ function App(): JSX.Element {
     })
 
     const logoutHandler = () => {
-        isLoggedIn && dispatch(logoutTC())
+        isLoggedIn && dispatch(authThunk.logout())
     }
 
     if (!isInitialized) {

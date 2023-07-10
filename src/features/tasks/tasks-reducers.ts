@@ -9,7 +9,7 @@ import {appActions, RequestStatusType} from "app/app-reducer";
 import {handleServerAppError, handleServerNetworkError} from "common/utils";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {todoListsActions, todoListThunk} from "features/todos/todolists-reducers";
-import {authActions} from "features/auth/auth-reducer";
+import {authActions, authThunk} from "features/auth/auth-reducer";
 import {createAppAsyncThunk} from "common/utils/create-app-async-thunk";
 
 
@@ -73,9 +73,9 @@ const slice = createSlice({
 								(state, action) => {
 										delete state[action.payload]
 								})
-						//logout case
-						.addCase(authActions.setIsLoginIn, (state, action) => {
-								if (!action.payload.status) return initialState
+						//logout case - clean state
+						.addCase(authThunk.logout.fulfilled, (state, action) => {
+								if (!action.payload.isLoginIn) return initialState
 						})
 		}
 })
