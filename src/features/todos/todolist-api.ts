@@ -53,9 +53,14 @@ export type TodoListDomainType = {
     order: number
 }
 
+type FieldErrorType = {
+    error: string
+    field: string
+}
+
 export type ResponseType<T = {}> = {
     resultCode: number
-    fieldsErrors: []
+    fieldsErrors: FieldErrorType[]
     messages: string[]
     data: T
 }

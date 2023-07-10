@@ -43,7 +43,7 @@ const login = createAppAsyncThunk<{ isLoginIn: true }, LoginRequestType>(
 								return {isLoginIn: true}
 						} else {
 								handleServerAppError(res.data, dispatch)
-								return rejectWithValue(null)
+								return rejectWithValue(res.data)
 						}
 				} catch (e) {
 						handleServerNetworkError(e, dispatch)
@@ -96,4 +96,4 @@ const logout = createAppAsyncThunk<{isLoginIn: false}, void>(
 		}
 )
 
-export const authThunk = {loginIn: login, initializeApp, logout}
+export const authThunk = {login, initializeApp, logout}
