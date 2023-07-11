@@ -27,12 +27,10 @@ export const Login = () => {
         },
         validate,
         onSubmit: (values, formikHelpers) => {
-						debugger
             dispatch(authThunk.login(values))
 								.unwrap()
 								.catch((data: ResponseType) => {
-										debugger
-										data.fieldsErrors.forEach(el => {
+										data.fieldsErrors?.forEach(el => {
 												formikHelpers.setFieldError(el.field, el.error)
 										})
 								})

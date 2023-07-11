@@ -42,7 +42,9 @@ const login = createAppAsyncThunk<{ isLoginIn: true }, LoginRequestType>(
 								dispatch(appActions.setAppStatus({status: 'succeeded'}))
 								return {isLoginIn: true}
 						} else {
-								handleServerAppError(res.data, dispatch)
+								//fieldsErrors to handler in Formik
+								const isShowAppError = !res.data.fieldsErrors.length
+								handleServerAppError(res.data, dispatch, isShowAppError)
 								return rejectWithValue(res.data)
 						}
 				} catch (e) {
