@@ -1,4 +1,4 @@
-import React, {memo, useCallback} from "react";
+import React, {memo} from "react";
 import {AddItemForm} from "common/components/AddItemForm/AddItemForm";
 import EditableSpan from "common/components/EditableSpan/EditableSpan";
 import {List} from "@mui/material";
@@ -7,15 +7,14 @@ import {todoListsActions, todoListThunk, TodoListType} from "features/todos/todo
 import {Task} from "features/tasks/Task/Task";
 import {ButtonWithMemo} from "common/components/Button/ButtonWithMemo";
 import {TaskStatues} from "features/todos/todolist-api";
-import {useAppDispatch} from "common/hooks/useAppDispatch";
 import {tasksSelector} from "app/app.selectors";
 import {tasksThunks} from "features/tasks/tasks-reducers";
+import {useActions} from "common/hooks";
 
 
 type TodolistPropsType = {
     todoList: TodoListType
 }
-
 
 export const Todolist = memo((props: TodolistPropsType) => {
     const {
@@ -25,15 +24,10 @@ export const Todolist = memo((props: TodolistPropsType) => {
         entityStatus
     } = props.todoList
 
-    const dispatch = useAppDispatch()
+    const {updateTodoListTitleTC, removeTodoListTC, changeTodolistFilter, createTaskTC} =
+        useActions({...todoListThunk, ...todoListsActions, ...tasksThunks})
 
     let taskFromRedux = useAppSelector(tasksSelector(todoListId))
-
-    const changeTodoListTitle = useCallback(
-        (newTitle: string, setRejectTitle: (title: string) => void) => {
-        dispatch(todoListThunk.updateTodoListTitleTC({title: newTitle, todoListId, setRejectTitle}))
-    }, [])
-
 
     switch (filter) {
         case "active":
@@ -56,31 +50,31 @@ export const Todolist = memo((props: TodolistPropsType) => {
         )
     })
 
-    //adding new tasks (button)
-    const createTask = useCallback(
-        (title: string, setRejectTitle: (title: string) => void) => {
-        dispatch(tasksThunks.createTaskTC({todoListId, title, setRejectTitle}));
-    }, [todoListId])
+    const changeTodoListTitle =
+        (newTitle: string, setRejectTitle: (title: string) => void) => {
+            updateTodoListTitleTC({title: newTitle, todoListId, setRejectTitle})
+        }
 
-    //remove todoList
-    const removeTodoList = () => {
-        dispatch(todoListThunk.removeTodoListTC(todoListId))
+    const createTask =
+        (title: string, setRejectTitle: (title: string) => void) => {
+        createTaskTC({todoListId, title, setRejectTitle})
     }
 
-    const onClickButtonAll = useCallback(() => {
-        dispatch(todoListsActions.changeTodolistFilter(
-            {filter: 'all',id: todoListId}))
-    }, [todoListId])
+    const removeTodoList = () => {
+        removeTodoListTC(todoListId)
+    }
 
-    const onClickButtonComplied = useCallback(() => {
-        dispatch(todoListsActions.changeTodolistFilter(
-            {filter: 'complied',id: todoListId}))
-    }, [todoListId])
+    const onClickButtonAll = () => {
+        changeTodolistFilter({filter: 'all',id: todoListId})
+    }
 
-    const onClickButtonActive = useCallback(() => {
-        dispatch(todoListsActions.changeTodolistFilter(
-            {filter: 'active', id: todoListId}))
-    }, [todoListId])
+    const onClickButtonComplied = () => {
+       changeTodolistFilter({filter: 'complied',id: todoListId})
+    }
+
+    const onClickButtonActive = () => {
+      changeTodolistFilter({filter: 'active', id: todoListId})
+    }
 
     return (
         <div className={'todolist'}>

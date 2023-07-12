@@ -6,6 +6,7 @@ import s from "features/todos/TodoList/todolist.module.css";
 import {TaskRequestUpdateType, TaskStatues} from "features/todos/todolist-api";
 import {useAppDispatch} from "common/hooks/useAppDispatch";
 import cl from "features/tasks/Task/task.module.css"
+import {useActions} from "common/hooks";
 
 export type TaskPropsType = {
     task: TaskType
@@ -19,7 +20,7 @@ export const Task: React.FC<TaskPropsType> = memo((props) => {
     const todoListId = props.task.todoListId
     const isDisable = props.task.entityStatus === 'loading'
 
-    const dispatch = useAppDispatch()
+    const {removeTaskTC, updateTaskTC} = useActions(tasksThunks)
 
     const changeTaskTitle = useCallback(
         (newTitle: string, setRejectTitle: (title: string) => void) => {
@@ -28,12 +29,12 @@ export const Task: React.FC<TaskPropsType> = memo((props) => {
             title: newTitle,
         }
 
-        dispatch(tasksThunks.updateTaskTC({todoListId, taskId, changeValue, setRejectTitle}))
+       updateTaskTC({todoListId, taskId, changeValue, setRejectTitle})
     }, [taskId, todoListId])
 
 
     const removeTask = () => {
-        dispatch(tasksThunks.removeTaskTC({todoListId, taskId}))
+        removeTaskTC({todoListId, taskId})
     }
 
     // changing status
@@ -44,7 +45,7 @@ export const Task: React.FC<TaskPropsType> = memo((props) => {
         const changeValue: TaskRequestUpdateType = {
             status: statusChecked
         }
-        dispatch(tasksThunks.updateTaskTC({todoListId, taskId, changeValue}))
+        updateTaskTC({todoListId, taskId, changeValue})
     } // нет нужды в useCallBack потому что чекбокс из matherial UI
 
     return (

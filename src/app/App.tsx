@@ -1,18 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 import {
-    AppBar,
-    Button,
-    Checkbox,
-    CircularProgress,
-    createTheme,
-    CssBaseline,
-    FormControlLabel,
-    FormGroup,
-    IconButton,
-    ThemeProvider,
-    Toolbar,
-    Typography
+		AppBar,
+		Button,
+		Checkbox,
+		CircularProgress,
+		createTheme,
+		CssBaseline,
+		FormControlLabel,
+		FormGroup,
+		IconButton,
+		ThemeProvider,
+		Toolbar,
+		Typography
 } from '@mui/material';
 import {Menu} from "@mui/icons-material";
 import {lightBlue, orange} from "@mui/material/colors";
@@ -22,95 +22,96 @@ import {useAppSelector} from "./store";
 import {ErrorSnackbar} from "common/components/ErrorSnackBar/ErrorSnackBar";
 import {Navigate, Route, Routes} from "react-router-dom";
 import {Login} from "features/Login/Login";
-import {useAppDispatch} from "common/hooks/useAppDispatch";
 import {authThunk} from "features/auth/auth-reducer";
 import {isInitializedSelector, isLoginInSelector, statusSelector} from "app/app.selectors";
+import {useActions} from "common/hooks";
 
 
 function App(): JSX.Element {
-    const dispatch = useAppDispatch()
-    const appStatus = useAppSelector(statusSelector)
-    const isInitialized = useAppSelector(isInitializedSelector)
-    const isLoggedIn = useAppSelector(isLoginInSelector)
-    const isLoadingStatus = appStatus === 'loading'
+		const appStatus = useAppSelector(statusSelector)
+		const isInitialized = useAppSelector(isInitializedSelector)
+		const isLoggedIn = useAppSelector(isLoginInSelector)
+		const isLoadingStatus = appStatus === 'loading'
 
-    const [isDarkMode, setDarkMode] = useState(true)
+		const [isDarkMode, setDarkMode] = useState(true)
 
-    useEffect(() => {
-        dispatch(authThunk.initializeApp())
-    }, [])
+		const {initializeApp, logout} = useActions(authThunk)
 
-    const mode = isDarkMode ? 'dark' : 'light'
+		useEffect(() => {
+				initializeApp()
+		}, [])
 
-    const customTheme = createTheme({
-        palette: {
-            primary: lightBlue,
-            secondary: orange,
-            mode: mode
-        }
-    })
+		const mode = isDarkMode ? 'dark' : 'light'
 
-    const logoutHandler = () => {
-        isLoggedIn && dispatch(authThunk.logout())
-    }
+		const customTheme = createTheme({
+				palette: {
+						primary: lightBlue,
+						secondary: orange,
+						mode: mode
+				}
+		})
 
-    if (!isInitialized) {
-        return <div
-            style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
-            <CircularProgress/>
-        </div>
-    }
+		const logoutHandler = () => {
+				isLoggedIn && logout()
+		}
 
-    return (
-        <ThemeProvider theme={customTheme}>
-            <CssBaseline>
-                <div className="App">
-                    <AppBar position="static">
-                        <Toolbar>
-                            <IconButton
-                                size="large"
-                                edge="start"
-                                color="inherit"
-                                aria-label="menu"
-                                sx={{mr: 2}}
-                            >
-                                <Menu/>
-                            </IconButton>
-                            <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
-                                TodoList
-                            </Typography>
-                            <FormGroup>
-                                <FormControlLabel
-                                    control={<Checkbox
-                                        checked={isDarkMode}
-                                        onChange={(e) => setDarkMode(e.currentTarget.checked)}/>}
-                                    label={isDarkMode ? "Light mode" : "Dark mode"}
-                                />
-                            </FormGroup>
+		if (!isInitialized) {
+				return <div
+						style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
+						<CircularProgress/>
+				</div>
+		}
 
-                            <Button
-                                color="inherit"
-                                onClick={logoutHandler}
-                            >
-                                {isLoggedIn ? 'Logout' : 'Login'}
-                            </Button>
-                        </Toolbar>
-                    </AppBar>
-                    {/*Error messages*/}
-                    <ErrorSnackbar/>
-                    {/* Loader*/}
-                    {isLoadingStatus && <LinearLoader/>}
-                    {/*------TodoLists or Login Page*/}
-                    <Routes>
-                        <Route path={'/'} element={<AllTodoLists/>}/>
-                        <Route path={'/login'} element={<Login/>}/>
-                        <Route path='*' element={<Navigate to={'/404'}/>}/>
-                        <Route path='/404' element={<h1>404: PAGE NOT FOUND</h1>}/>
-                    </Routes>
-                </div>
-            </CssBaseline>
-        </ThemeProvider>
-    );
+		return (
+				<ThemeProvider theme={customTheme}>
+						<CssBaseline>
+								<div className="App">
+										<AppBar position="static">
+												<Toolbar>
+														<IconButton
+																size="large"
+																edge="start"
+																color="inherit"
+																aria-label="menu"
+																sx={{mr: 2}}
+														>
+																<Menu/>
+														</IconButton>
+														<Typography variant="h6" component="div" sx={{flexGrow: 1}}>
+																TodoList
+														</Typography>
+														<FormGroup>
+																<FormControlLabel
+																		control={<Checkbox
+																				checked={isDarkMode}
+																				onChange={(e) => setDarkMode(e.currentTarget.checked)}/>}
+																		label={isDarkMode ? "Light mode" : "Dark mode"}
+																/>
+														</FormGroup>
+
+														<Button
+																color="inherit"
+																onClick={logoutHandler}
+														>
+																{isLoggedIn ? 'Logout' : 'Login'}
+														</Button>
+												</Toolbar>
+										</AppBar>
+										{/*Error messages*/}
+										<ErrorSnackbar/>
+										{/* Loader*/}
+										{isLoadingStatus && <LinearLoader/>}
+										{/*------TodoLists or Login Page*/}
+										<Routes>
+												<Route path={'/'} element={<AllTodoLists/>}/>
+												<Route path={'/login'} element={<Login/>}/>
+												<Route path='*' element={<Navigate to={'/404'}/>}/>
+												<Route path='/404' element={<h1>404: PAGE NOT FOUND</h1>}/>
+										</Routes>
+								</div>
+						</CssBaseline>
+				</ThemeProvider>
+		);
 }
 
 export default App;

@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid";
 import {AddItemForm} from "common/components/AddItemForm/AddItemForm";
 import {useAppSelector} from "app/store";
 import {todoListThunk} from "features/todos/todolists-reducers";
-import {useAppDispatch} from "common/hooks";
+import {useActions} from "common/hooks";
 import {Todolist} from "features/todos/TodoList/Todolist";
 import {Navigate} from "react-router-dom";
 import {isLoggedInSelector, todoListsSelector} from "app/app.selectors";
@@ -12,19 +12,20 @@ import {isLoggedInSelector, todoListsSelector} from "app/app.selectors";
 
 export const AllTodoLists = () => {
 
-    const dispatch = useAppDispatch()
+    const {createTodoListTC, fetchTodoListsTC} = useActions(todoListThunk)
+
     const todoLists = useAppSelector(todoListsSelector)
     const isLoggedIn = useAppSelector(isLoggedInSelector)
 
     useEffect(() => {
         if (isLoggedIn) {
-            dispatch(todoListThunk.fetchTodoListsTC())
+            fetchTodoListsTC()
         }
     }, [])
 
     const createTodoList = useCallback(
         (title: string, setRejectTitle: (title: string) => void) => {
-            dispatch(todoListThunk.createTodoListTC({title, setRejectTitle}))
+            createTodoListTC({title, setRejectTitle})
         }, [])
 
 
