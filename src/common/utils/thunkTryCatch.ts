@@ -6,7 +6,7 @@ import {ResponseType} from "features/todos/todolist-api";
 
 
 /**
- * Обертка для асинхронных санкций (thunks) в Redux,
+ * Обертка для асинхронных санков (thunks) в Redux,
  * которая обрабатывает ошибки и устанавливает статус приложения.
  *
  * @param {BaseThunkAPI<AppRootStateType, any, AppThunkDispatch, null | ResponseType>} thunkAPI - Объект `BaseThunkAPI`, содержащий методы `dispatch` и `rejectWithValue`.

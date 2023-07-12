@@ -5,6 +5,7 @@ import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} fro
 import {AppThunk} from "app/store";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {authActions, authThunk} from "features/auth/auth-reducer";
+import {thunkTryCatch} from "common/utils/thunkTryCatch";
 
 export type TodoListType = {
 		filter: FilterType
@@ -23,10 +24,6 @@ const slice = createSlice({
 				// 		//2 way
 				// 		// return state.filter((tl) => tl.id != action.payload.id);
 				// 		//использовать return если изменяется весь стейт целиком, будь то массив или обьект
-				// },
-				// changeTodolistTitle(state, action: PayloadAction<{ title: string, id: string }>) {
-				// 		const index = state.findIndex(t => t.id === action.payload.id)
-				// 		if (index) state[index].title = action.payload.title
 				// },
 				changeTodolistFilter(state, action: PayloadAction<{ filter: FilterType, id: string }>) {
 						const index = state.findIndex(t => t.id === action.payload.id)
@@ -98,27 +95,25 @@ const fetchTodoListsTC = createAppAsyncThunk<{ todoLists: TodoListDomainType[] }
 const removeTodoListTC = createAppAsyncThunk<string, string>
 ('todoList/removeTodolist', async (todoListId, thunkAPI) => {
 		const {dispatch, rejectWithValue} = thunkAPI
-		dispatch(appActions.setAppStatus({status: 'loading'}))
 		dispatch(todoListsActions.changeTodolistEntityStatus(
 				{entityStatus: 'loading', id: todoListId}))
-		try {
-				const res = await TodolistApi.removeTodoList(todoListId)
-				if (res.data.resultCode === ResponseCode.Ok) {
-						dispatch(appActions.setAppStatus({status: 'succeeded'}))
-						return todoListId
-				} else {
-						handleServerAppError(res.data, dispatch)
+		return thunkTryCatch(thunkAPI,
+				async () => {
+						const res = await TodolistApi.removeTodoList(todoListId)
+						if (res.data.resultCode === ResponseCode.Ok) {
+								return todoListId
+						} else {
+								handleServerAppError(res.data, dispatch)
+								dispatch(todoListsActions.changeTodolistEntityStatus(
+										{entityStatus: 'failed', id: todoListId}))
+								return rejectWithValue(null)
+						}
+				},
+				() => {
 						dispatch(todoListsActions.changeTodolistEntityStatus(
-								{entityStatus: 'failed', id: todoListId}))
-						return rejectWithValue(null)
-				}
-		} catch (e) {
-				handleServerNetworkError(e, dispatch)
-				dispatch(todoListsActions.changeTodolistEntityStatus(
-						{entityStatus: 'failed', id: todoListId}
-				))
-				return rejectWithValue(null)
-		}
+								{entityStatus: 'failed', id: todoListId}
+						))
+				})
 })
 
 type CreateTodoListTCArgType = {
@@ -130,24 +125,21 @@ const createTodoListTC =
 		createAppAsyncThunk<TodoListDomainType, CreateTodoListTCArgType>('todoList/createTodoList',
 				async ({title, setRejectTitle}, thunkAPI) => {
 						const {dispatch, rejectWithValue} = thunkAPI
-						dispatch(appActions.setAppStatus({status: 'loading'}))
-						try {
-								const res = await TodolistApi.createTodoList(title)
-								if (res.data.resultCode === ResponseCode.Ok) {
-										dispatch(appActions.setAppStatus({status: 'succeeded'}))
-										return res.data.data.item
-								} else {
-										handleServerAppError(res.data, dispatch)
-										//Set title in local state AddItemForm
+						return thunkTryCatch(thunkAPI,
+								async () => {
+										const res = await TodolistApi.createTodoList(title)
+										if (res.data.resultCode === ResponseCode.Ok) {
+												return res.data.data.item
+										} else {
+												handleServerAppError(res.data, dispatch)
+												//Set title in local state AddItemForm
+												setRejectTitle(title)
+												return rejectWithValue(null)
+										}
+								},
+								() => {
 										setRejectTitle(title)
-										return rejectWithValue(null)
-								}
-						} catch (e) {
-								handleServerNetworkError(e, dispatch)
-								//Set title in local state AddItemForm
-								setRejectTitle(title)
-								return rejectWithValue(null)
-						}
+								})
 				})
 
 type UpdateTodoListOutputArgType = {
@@ -166,70 +158,32 @@ const updateTodoListTitleTC =
 						const {title, todoListId, setRejectTitle} = arg
 						const {dispatch, rejectWithValue} = thunkAPI
 
-						dispatch(appActions.setAppStatus({status: 'loading'}))
 						dispatch(todoListsActions.changeTodolistEntityStatus(
 								{entityStatus: 'loading', id: todoListId}))
-						try {
-								const res = await TodolistApi.changeTitleTodoList(title, todoListId)
-								if (res.data.resultCode === ResponseCode.Ok) {
-										dispatch(appActions.setAppStatus({status: 'succeeded'}))
-										dispatch(todoListsActions.changeTodolistEntityStatus(
-												{entityStatus: 'succeeded', id: todoListId}))
-										return {title, todoListId}
 
-								} else {
-										handleServerAppError(res.data, dispatch)
+						return thunkTryCatch(thunkAPI,
+								async () => {
+										const res = await TodolistApi.changeTitleTodoList(title, todoListId)
+										if (res.data.resultCode === ResponseCode.Ok) {
+												dispatch(todoListsActions.changeTodolistEntityStatus(
+														{entityStatus: 'succeeded', id: todoListId}))
+												return {title, todoListId}
+										} else {
+												handleServerAppError(res.data, dispatch)
+												dispatch(todoListsActions.changeTodolistEntityStatus(
+														{entityStatus: 'failed', id: todoListId}))
+												//Set title in local state EditableSpan
+												setRejectTitle(title)
+												return rejectWithValue(null)
+										}
+								},
+								() => {
 										dispatch(todoListsActions.changeTodolistEntityStatus(
 												{entityStatus: 'failed', id: todoListId}))
-										//Set title in local state EditableSpan
 										setRejectTitle(title)
-										return rejectWithValue(null)
-								}
-						} catch (e) {
-								handleServerNetworkError(e, dispatch)
-								dispatch(todoListsActions.changeTodolistEntityStatus(
-										{entityStatus: 'failed', id: todoListId}))
-								//Set title in local state EditableSpan
-								setRejectTitle(title)
-								return rejectWithValue(null)
-						}
+								})
 				})
 
-// export const _changeTodoListTitleTC = (
-// 		title: string,
-// 		todoId: string,
-// 		setRejectTitle: (title: string) => void
-// ): AppThunk => {
-// 		return (dispatch) => {
-// 				dispatch(appActions.setAppStatus({status: 'loading'}))
-// 				dispatch(todoListsActions.changeTodolistEntityStatus(
-// 						{entityStatus: 'loading', id: todoId}))
-//
-// 				TodolistApi.changeTitleTodoList(title, todoId)
-// 						.then(res => {
-// 								if (res.data.resultCode === ResponseCode.Ok) {
-// 										dispatch(todoListsActions.changeTodolistTitle({title, id: todoId}))
-// 										dispatch(appActions.setAppStatus({status: 'succeeded'}))
-// 										dispatch(todoListsActions.changeTodolistEntityStatus(
-// 												{entityStatus: 'succeeded', id: todoId}))
-//
-// 								} else {
-// 										handleServerAppError(res.data, dispatch)
-// 										dispatch(todoListsActions.changeTodolistEntityStatus(
-// 												{entityStatus: 'failed', id: todoId}))
-// 										//Set title in local state EditableSpan
-// 										setRejectTitle(title)
-// 								}
-// 						})
-// 						.catch((er) => {
-// 								handleServerNetworkError(er, dispatch)
-// 								dispatch(todoListsActions.changeTodolistEntityStatus(
-// 										{entityStatus: 'failed', id: todoId}))
-// 								//Set title in local state EditableSpan
-// 								setRejectTitle(title)
-// 						})
-// 		}
-// }
 
 export const todoListsReducer = slice.reducer
 export const todoListsActions = slice.actions
