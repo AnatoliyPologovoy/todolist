@@ -1,14 +1,12 @@
+import {LoginRequestType} from "features/todos/todolist-api";
+
 export type FormValuesType = {
     email: string,
     password: string,
     rememberMe: boolean
 }
 
-type FormikErrorType = {
-    email?: string
-    password?: string
-    rememberMe?: boolean
-}
+type FormikErrorType = Partial<LoginRequestType>
 
 export const validate = (values: FormValuesType) => {
     const errors: FormikErrorType = {}
