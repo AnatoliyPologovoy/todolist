@@ -1,6 +1,6 @@
-import {tasksActions, tasksReducer, TasksStateType, tasksThunks} from 'features/tasks/tasks-reducers'
-import {todoListsActions, todoListThunk} from "features/todos/todolists-reducers";
-import {TaskPriorities, TaskStatues} from "features/todos/todolist-api";
+import {tasksActions, tasksReducer, TasksStateType, tasksThunks} from 'features/todolists-lists/tasks/tasks-reducers'
+import {todoListsActions, todoListThunk} from "features/todolists-lists/todolists-reducers";
+import {TaskPriorities, TaskStatues} from "features/todolists-lists/todolist-api";
 
 let startState: TasksStateType
 

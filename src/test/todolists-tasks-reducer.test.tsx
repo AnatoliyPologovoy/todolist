@@ -1,6 +1,6 @@
-import {todoListsActions, todoListsReducer, todoListThunk, TodoListType} from "features/todos/todolists-reducers";
-import {tasksReducer, TasksStateType} from "features/tasks/tasks-reducers";
-import {TaskPriorities, TaskStatues} from "features/todos/todolist-api";
+import {todoListsActions, todoListsReducer, todoListThunk, TodoListType} from "features/todolists-lists/todolists-reducers";
+import {tasksReducer, TasksStateType} from "features/todolists-lists/tasks/tasks-reducers";
+import {TaskPriorities, TaskStatues} from "features/todolists-lists/todolist-api";
 import {v1} from "uuid";
 
 test('ids should be equals', () => {

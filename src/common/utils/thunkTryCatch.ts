@@ -2,7 +2,7 @@ import {AppRootStateType, AppThunkDispatch} from 'app/store';
 import { handleServerNetworkError } from 'common/utils/handle-server-network-error';
 import { BaseThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk';
 import {appActions} from "app/app-reducer";
-import {ResponseType} from "features/todos/todolist-api";
+import {ResponseType} from "features/todolists-lists/todolist-api";
 
 
 /**

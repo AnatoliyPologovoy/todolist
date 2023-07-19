@@ -13,7 +13,7 @@ import {useAppDispatch} from "common/hooks/useAppDispatch";
 import {useAppSelector} from "app/store";
 import {Navigate} from "react-router-dom";
 import {authThunk} from "features/auth/auth-reducer";
-import {ResponseType} from "features/todos/todolist-api";
+import {ResponseType} from "features/todolists-lists/todolist-api";
 
 export const Login = () => {
 		const isLoggedIn = useAppSelector(state => state.auth.isLoginIn)

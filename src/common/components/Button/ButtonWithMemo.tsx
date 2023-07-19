@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
 import {Button} from "@mui/material";
-import {FilterType} from "features/tasks/tasks-reducers";
+import {FilterType} from "features/todolists-lists/tasks/tasks-reducers";
 
 export type ButtonWithMemoPropsType = {
     title: string

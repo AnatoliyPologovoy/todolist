@@ -1,4 +1,4 @@
-import {LoginRequestType} from "features/todos/todolist-api";
+import {LoginRequestType} from "features/todolists-lists/todolist-api";
 
 export type FormValuesType = {
     email: string,

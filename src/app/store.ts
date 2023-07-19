@@ -1,6 +1,6 @@
 import {AnyAction, combineReducers} from 'redux';
-import {tasksReducer} from "features/tasks/tasks-reducers";
-import {todoListsReducer} from "features/todos/todolists-reducers";
+import {tasksReducer} from "features/todolists-lists/tasks/tasks-reducers";
+import {todoListsReducer} from "features/todolists-lists/todolists-reducers";
 import {appReducer} from "app/app-reducer";
 import {TypedUseSelectorHook, useSelector} from "react-redux";
 import {authReducer} from "features/auth/auth-reducer";

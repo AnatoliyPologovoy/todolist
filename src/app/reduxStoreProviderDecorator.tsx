@@ -2,10 +2,10 @@ import React from 'react'
 import {Provider} from "react-redux";
 import {AppRootStateType, store} from "./store";
 import {combineReducers, legacy_createStore} from "redux";
-import {tasksReducer} from "features/tasks/tasks-reducers";
-import {todoListsReducer} from "features/todos/todolists-reducers";
+import {tasksReducer} from "features/todolists-lists/tasks/tasks-reducers";
+import {todoListsReducer} from "features/todolists-lists/todolists-reducers";
 import {v1} from "uuid";
-import {TaskPriorities, TaskStatues} from "features/todos/todolist-api";
+import {TaskPriorities, TaskStatues} from "features/todolists-lists/todolist-api";
 import {appReducer} from "app/app-reducer";
 import {authReducer} from "features/auth/auth-reducer";
 
@@ -54,8 +54,6 @@ const initialGlobalState = {
     app: {
         status: 'idle',
         error: null,
-        // rejectedRequestTitle: {},
-        // rejectedRequestChangeTitle: {}
     },
     auth: {
         isLoginIn: false,

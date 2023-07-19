@@ -16,12 +16,12 @@ import {
 } from '@mui/material';
 import {Menu} from "@mui/icons-material";
 import {lightBlue, orange} from "@mui/material/colors";
-import {AllTodoLists} from "features/todos/AllTodoLists/AllTodoLists";
+import {AllTodoLists} from "features/todolists-lists/AllTodoLists/AllTodoLists";
 import {LinearLoader} from "common/components/LinearLoader/LinearLoader";
 import {useAppSelector} from "./store";
 import {ErrorSnackbar} from "common/components/ErrorSnackBar/ErrorSnackBar";
 import {Navigate, Route, Routes} from "react-router-dom";
-import {Login} from "features/Login/Login";
+import {Login} from "features/auth/Login/Login";
 import {authThunk} from "features/auth/auth-reducer";
 import {isInitializedSelector, isLoginInSelector, statusSelector} from "app/app.selectors";
 import {useActions} from "common/hooks";

@@ -3,46 +3,37 @@ import {AddItemForm} from "common/components/AddItemForm/AddItemForm";
 import EditableSpan from "common/components/EditableSpan/EditableSpan";
 import {List} from "@mui/material";
 import {useAppSelector} from "app/store";
-import {todoListsActions, todoListThunk, TodoListType} from "features/todos/todolists-reducers";
-import {Task} from "features/tasks/Task/Task";
+import {todoListsActions, todoListThunk, TodoListType} from "features/todolists-lists/todolists-reducers";
+import {Task} from "features/todolists-lists/tasks/Task/Task";
 import {ButtonWithMemo} from "common/components/Button/ButtonWithMemo";
-import {TaskStatues} from "features/todos/todolist-api";
+import {TaskStatues} from "features/todolists-lists/todolist-api";
 import {tasksSelector} from "app/app.selectors";
-import {tasksThunks} from "features/tasks/tasks-reducers";
+import {tasksThunks} from "features/todolists-lists/tasks/tasks-reducers";
 import {useActions} from "common/hooks";
+import {getFilteredTasks} from "common/utils/getFilteredTasks";
 
 
-type TodolistPropsType = {
+type Props = {
     todoList: TodoListType
 }
 
-export const Todolist = memo((props: TodolistPropsType) => {
+export const Todolist: React.FC<Props> = memo(({todoList}) => {
     const {
         id: todoListId,
         title,
         filter,
         entityStatus
-    } = props.todoList
+    } = todoList
 
     const {updateTodoListTitleTC, removeTodoListTC, changeTodolistFilter, createTaskTC} =
         useActions({...todoListThunk, ...todoListsActions, ...tasksThunks})
 
-    let taskFromRedux = useAppSelector(tasksSelector(todoListId))
-
-    switch (filter) {
-        case "active":
-            taskFromRedux = taskFromRedux.filter(task => task.status === TaskStatues.New)
-            break
-        case "complied":
-            taskFromRedux = taskFromRedux.filter(task => task.status === TaskStatues.Completed)
-            break
-    }
+    let tasks = useAppSelector(tasksSelector(todoListId))
+    tasks = getFilteredTasks(tasks, filter)
 
     const isDisableButton = entityStatus === 'loading'
 
-    //Tasks array
-    const renderTasksList = taskFromRedux.map(task => {
-
+    const renderTasksList = tasks.map(task => {
         return (
             <Task key={task.id}
                   task={task}

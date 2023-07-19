@@ -1,6 +1,6 @@
 import {v1} from "uuid";
-import {todoListsActions, todoListsReducer, todoListThunk, TodoListType} from "features/todos/todolists-reducers";
-import {FilterType} from "features/tasks/tasks-reducers";
+import {todoListsActions, todoListsReducer, todoListThunk, TodoListType} from "features/todolists-lists/todolists-reducers";
+import {FilterType} from "features/todolists-lists/tasks/tasks-reducers";
 
 let todolistId1: string
 let todolistId2: string

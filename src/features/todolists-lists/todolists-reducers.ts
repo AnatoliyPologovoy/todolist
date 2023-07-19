@@ -1,5 +1,5 @@
-import {ResponseCode, TodolistApi, TodoListDomainType} from "features/todos/todolist-api";
-import {FilterType, tasksThunks} from "features/tasks/tasks-reducers";
+import {ResponseCode, TodolistApi, TodoListDomainType} from "features/todolists-lists/todolist-api";
+import {FilterType, tasksThunks} from "features/todolists-lists/tasks/tasks-reducers";
 import {appActions, RequestStatusType} from "app/app-reducer";
 import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "common/utils";
 import {AppThunk} from "app/store";

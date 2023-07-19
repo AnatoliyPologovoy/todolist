@@ -1,5 +1,5 @@
 import {appActions} from "app/app-reducer";
-import {LoginRequestType, ResponseCode} from "features/todos/todolist-api";
+import {LoginRequestType, ResponseCode} from "features/todolists-lists/todolist-api";
 import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "common/utils";
 import {createSlice} from "@reduxjs/toolkit";
 import {authAPI} from "features/auth/auth.api";

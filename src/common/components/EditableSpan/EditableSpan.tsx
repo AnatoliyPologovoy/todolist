@@ -5,7 +5,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import BeenhereIcon from '@mui/icons-material/Beenhere';
 
-type EditableSpanPropsType = {
+type Props = {
 		disabled: boolean
 		title: string
 		classes: string
@@ -14,10 +14,11 @@ type EditableSpanPropsType = {
 		sizeButtons: 'small' | 'medium' | 'large'
 }
 
-const EditableSpan: FC<EditableSpanPropsType> = memo((props) => {
+const EditableSpan: FC<Props> = memo((props) => {
 		const {
 				title, classes, changeTitle, removeItem, sizeButtons, disabled,
 		} = props
+
 		const [isEditMode, setIsEditMode] = useState(false)
 		const [inputValue, setInputValue] = useState<string>(title)
 		const inputValueLength = inputValue.length
@@ -27,19 +28,19 @@ const EditableSpan: FC<EditableSpanPropsType> = memo((props) => {
 				setInputValue(title)
 		}
 
-		const onEditMode = () => {
+		const activeEditModeHandler = () => {
 				if (!disabled) { // if not disable
 						setIsEditMode(true)
 				}
 		}
-		const saveTitle = () => {
+		const changeTitleHandler = () => {
 				if (inputValueLength > 2) {
 						changeTitle(inputValue, setRejectTitle)
 						setIsEditMode(false)
 				}
 		}
 
-		const onChangeInput = (evt: ChangeEvent<HTMLInputElement>) => {
+		const onChangeInputHandler = (evt: ChangeEvent<HTMLInputElement>) => {
 				setInputValue(evt.currentTarget.value)
 		}
 
@@ -51,15 +52,15 @@ const EditableSpan: FC<EditableSpanPropsType> = memo((props) => {
 						}}
 						size={'small'}
 						variant="standard"
-						onBlur={saveTitle}
+						onBlur={changeTitleHandler}
 						autoFocus
 						value={inputValue}
-						onChange={onChangeInput}
+						onChange={onChangeInputHandler}
 				/>
 
 		const textViewMode =
 				<span className={classes}
-							onDoubleClick={onEditMode}
+							onDoubleClick={activeEditModeHandler}
 				>
             {inputValue}
         </span>
@@ -70,7 +71,7 @@ const EditableSpan: FC<EditableSpanPropsType> = memo((props) => {
 		const editButton =
 				<IconButton
 						size={"small"}
-						onClick={onEditMode}
+						onClick={activeEditModeHandler}
 						disabled={disabled}
 				>
 						<EditIcon fontSize={sizeButtons}/>
@@ -79,7 +80,7 @@ const EditableSpan: FC<EditableSpanPropsType> = memo((props) => {
 		const saveButton =
 				<IconButton
 						size={"small"}
-						onClick={saveTitle}
+						onClick={changeTitleHandler}
 						disabled={inputValueLength < 3}
 				>
 						<BeenhereIcon fontSize={sizeButtons}/>

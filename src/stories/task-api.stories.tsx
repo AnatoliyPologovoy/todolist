@@ -5,7 +5,7 @@ import {
     TaskPriorities,
     TaskStatues,
     TodolistApi
-} from "features/todos/todolist-api";
+} from "features/todolists-lists/todolist-api";
 
 export default {
     title: 'API'

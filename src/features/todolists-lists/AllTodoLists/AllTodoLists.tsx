@@ -3,9 +3,9 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import {AddItemForm} from "common/components/AddItemForm/AddItemForm";
 import {useAppSelector} from "app/store";
-import {todoListThunk} from "features/todos/todolists-reducers";
+import {todoListThunk} from "features/todolists-lists/todolists-reducers";
 import {useActions} from "common/hooks";
-import {Todolist} from "features/todos/TodoList/Todolist";
+import {Todolist} from "features/todolists-lists/TodoList/Todolist";
 import {Navigate} from "react-router-dom";
 import {isLoggedInSelector, todoListsSelector} from "app/app.selectors";
 

@@ -3,7 +3,7 @@ import {AddItemForm, AddItemFormPropsType} from "common/components/AddItemForm/A
 import {action} from "@storybook/addon-actions"
 import {IconButton, TextField} from "@mui/material";
 import AddBoxIcon from "@mui/icons-material/AddBox";
-import s from "features/todos/TodoList/todolist.module.css";
+import s from "features/todolists-lists/TodoList/todolist.module.css";
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
 
 

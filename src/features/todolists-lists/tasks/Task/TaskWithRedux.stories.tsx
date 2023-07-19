@@ -1,5 +1,5 @@
 import type {Meta, StoryObj} from '@storybook/react';
-import {Task} from "features/tasks/Task/Task";
+import {Task} from "features/todolists-lists/tasks/Task/Task";
 import {reduxStoreProviderDecorator} from "app/reduxStoreProviderDecorator";
 import {useAppSelector} from "app/store";
 

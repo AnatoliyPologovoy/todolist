@@ -4,11 +4,11 @@ import {
 		TaskResponseType,
 		TodolistApi,
 		UpdateTaskModelType
-} from "features/todos/todolist-api";
+} from "features/todolists-lists/todolist-api";
 import {appActions, RequestStatusType} from "app/app-reducer";
 import {handleServerAppError, handleServerNetworkError} from "common/utils";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {todoListsActions, todoListThunk} from "features/todos/todolists-reducers";
+import {todoListsActions, todoListThunk} from "features/todolists-lists/todolists-reducers";
 import {authActions, authThunk} from "features/auth/auth-reducer";
 import {createAppAsyncThunk} from "common/utils/create-app-async-thunk";
 import {thunkTryCatch} from "common/utils/thunkTryCatch";
