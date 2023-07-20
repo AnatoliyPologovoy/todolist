@@ -16,7 +16,7 @@ const meta: Meta<typeof Task> = {
   args: {
     // changeTaskStatus: action('Status changed inside Task'),
     // changeTaskTitle: action('Title changed inside Task'),
-    // removeTask: action('Remove Button clicked changed inside Task'),
+    // removeTask: action('Remove FilterButton clicked changed inside Task'),
     // task: {id: '12wsdewfijdei', title: 'JS', isDone: false},
     // todolistId: 'fgdosrg8rgjuh'
   },

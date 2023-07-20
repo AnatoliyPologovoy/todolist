@@ -17,7 +17,7 @@ const meta: Meta<typeof AddItemForm> = {
     argTypes: {
         // backgroundColor: { control: 'color' },
         addItem: {
-            description: 'Button clicked inside form11',
+            description: 'FilterButton clicked inside form11',
             action: 'clicked',
             type: 'boolean'
         }
@@ -32,7 +32,7 @@ type Story = StoryObj<typeof AddItemForm>;
 export const AddItemFormStory: Story = {
 
     args: {
-        addItem: action('Button clicked inside form')
+        addItem: action('FilterButton clicked inside form')
     },
 };
 

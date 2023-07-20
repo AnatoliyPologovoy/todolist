@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import './App.css';
 import {
 		AppBar,
 		Button,
@@ -26,8 +25,7 @@ import {authThunk} from "features/auth/auth-reducer";
 import {isInitializedSelector, isLoginInSelector, statusSelector} from "app/app.selectors";
 import {useActions} from "common/hooks";
 
-
-function App(): JSX.Element {
+const App: React.FC = () => {
 		const appStatus = useAppSelector(statusSelector)
 		const isInitialized = useAppSelector(isInitializedSelector)
 		const isLoggedIn = useAppSelector(isLoginInSelector)
