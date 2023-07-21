@@ -3,6 +3,11 @@
     margin: 10px;
 }
 
+.title {
+    width: 200px;
+    word-break: break-all;
+}
+
 .error {
     border: red 1px solid;
 }

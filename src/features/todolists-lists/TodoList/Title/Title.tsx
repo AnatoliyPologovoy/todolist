@@ -7,9 +7,11 @@ type Props = {
 		todoListId: string
 		title: string
 		isDisableButtons: boolean
+		classes?: string
 }
 
-export const Title: React.FC<Props> = memo(({todoListId, title, isDisableButtons}) => {
+export const Title: React.FC<Props> = memo(
+		({todoListId, title, isDisableButtons, classes}) => {
 		const {updateTodoListTitleTC, removeTodoListTC} = useActions(todoListThunk)
 
 		const changeTodoListTitle = useCallback(
@@ -25,7 +27,8 @@ export const Title: React.FC<Props> = memo(({todoListId, title, isDisableButtons
 				<EditableSpan
 						disabled={isDisableButtons}
 						sizeButtons={"medium"}
-						title={title} classes={''}
+						title={title}
+						classes={classes || ''}
 						changeTitle={changeTodoListTitle}
 						removeItem={removeTodoList}
 				/>

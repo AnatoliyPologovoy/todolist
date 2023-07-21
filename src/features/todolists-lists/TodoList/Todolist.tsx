@@ -44,6 +44,7 @@ export const Todolist: React.FC<Props> = memo(({todoList}) => {
 						<Title todoListId={todoListId}
 									 title={title}
 									 isDisableButtons={isDisableButtons}
+									 classes={cl.title}
 						/>
 						<AddItemForm
 								addItem={createTask}

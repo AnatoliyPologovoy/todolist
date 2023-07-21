@@ -48,7 +48,7 @@ const EditableSpan: FC<Props> = memo((props) => {
 		const textEditableMode =
 				<TextField
 						sx={{
-								width: 140
+								width: 180
 						}}
 						size={'small'}
 						variant="standard"
@@ -93,11 +93,11 @@ const EditableSpan: FC<Props> = memo((props) => {
 						display: 'flex',
 						alignItems: 'center',
 						justifyContent: 'space-between',
-						width: '100%'
+						maxWidth: '100%',
 				}}>
-						<div>
+						{/*<div>*/}
 								{renderTitle}
-						</div>
+						{/*</div>*/}
 						<ButtonGroup>
 								{renderUpdateButton}
 
