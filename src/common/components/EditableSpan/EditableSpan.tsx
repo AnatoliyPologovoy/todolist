@@ -34,8 +34,11 @@ const EditableSpan: FC<Props> = memo((props) => {
 				}
 		}
 		const changeTitleHandler = () => {
-				if (inputValueLength > 2) {
+				if (inputValueLength > 2 && inputValue !== title) {
 						changeTitle(inputValue, setRejectTitle)
+						setIsEditMode(false)
+				}
+				if (inputValue === title) {
 						setIsEditMode(false)
 				}
 		}
@@ -96,7 +99,7 @@ const EditableSpan: FC<Props> = memo((props) => {
 						maxWidth: '100%',
 				}}>
 						{/*<div>*/}
-								{renderTitle}
+						{renderTitle}
 						{/*</div>*/}
 						<ButtonGroup>
 								{renderUpdateButton}
