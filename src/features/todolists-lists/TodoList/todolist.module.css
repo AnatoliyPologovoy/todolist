@@ -8,6 +8,11 @@
     word-break: break-word;
 }
 
+.list {
+    width: 100%;
+    max-width: 360px;
+}
+
 .error {
     border: red 1px solid;
 }

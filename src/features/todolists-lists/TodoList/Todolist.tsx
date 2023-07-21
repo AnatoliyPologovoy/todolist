@@ -11,6 +11,7 @@ import {getFilteredTasks} from "common/utils/getFilteredTasks";
 import FilterButtonsGroup from "features/todolists-lists/TodoList/FilterButtonsGroup/FilterButtonsGroup";
 import {Title} from "features/todolists-lists/TodoList/Title/Title";
 import cl from "./todolist.module.css"
+import {Tasks} from "features/todolists-lists/tasks/Tasks";
 
 type Props = {
 		todoList: TodoListType
@@ -23,14 +24,6 @@ export const Todolist: React.FC<Props> = memo(({todoList}) => {
 
 		let tasks = useAppSelector(tasksSelector(todoListId))
 		tasks = getFilteredTasks(tasks, filter)
-
-		const renderTasksList = tasks.map(task => {
-				return (
-						<Task key={task.id}
-									task={task}
-						/>
-				)
-		})
 
 		const createTask = useCallback(
 				(title: string, setRejectTitle: (title: string) => void) => {
@@ -50,10 +43,11 @@ export const Todolist: React.FC<Props> = memo(({todoList}) => {
 								addItem={createTask}
 								disabled={isDisableButtons}
 						/>
-						<List sx={{width: '100%', maxWidth: 360}}
-									subheader={false}
+						<List
+								className={cl.list}
+								subheader={false}
 						>
-								{renderTasksList}
+								<Tasks tasks={tasks}/>
 						</List>
 						<FilterButtonsGroup
 								todoListId={todoListId}
