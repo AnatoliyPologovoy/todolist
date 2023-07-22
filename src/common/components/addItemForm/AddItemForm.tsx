@@ -2,6 +2,7 @@ import React, {ChangeEvent, FC, KeyboardEvent, memo, useState} from 'react';
 import s from "features/todolists-lists/todoList/todolist.module.css";
 import {IconButton, TextField} from "@mui/material";
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import {ResponseType} from "features/todolists-lists/todolist-api";
 
 export type AddItemFormPropsType = {
     addItem: (title: string) => Promise<any>
@@ -37,10 +38,12 @@ export const AddItemForm: FC<AddItemFormPropsType> = memo(({addItem, disabled}) 
             isAddItemPossible = false
         }
         if (isAddItemPossible) {
-            const res = addItem(trimmedValue);
-            res
-                .then(data => setInputValue(''))
-                .catch(e => setInputValue(trimmedValue))
+            addItem(trimmedValue)
+                .then(() => setInputValue(''))
+                .catch((data: ResponseType)=> {
+                    setError(data.messages[0])
+                    setInputValue(trimmedValue)
+                })
         }
     }
 

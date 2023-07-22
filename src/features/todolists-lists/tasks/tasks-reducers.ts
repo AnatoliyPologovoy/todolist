@@ -12,6 +12,7 @@ import {todoListsActions, todoListThunk} from "features/todolists-lists/todolist
 import {authActions, authThunk} from "features/auth/auth-reducer";
 import {createAppAsyncThunk} from "common/utils/create-app-async-thunk";
 import {thunkTryCatch} from "common/utils/thunkTryCatch";
+import {AnyAction} from "redux";
 
 
 export type TasksStateType = {
@@ -78,6 +79,11 @@ const slice = createSlice({
 						.addCase(authThunk.logout.fulfilled, (state, action) => {
 								if (!action.payload.isLoginIn) return initialState
 						})
+						.addMatcher((action: AnyAction) => {
+								return action.type.includes('updateTask') || action.type.includes('tasks/remove')
+						}, (state, action) => {
+								console.log(action)
+						})
 		}
 })
 
@@ -86,10 +92,8 @@ const fetchTasksTC =
 				string // принимаемое значение
 				// {dispatch: Dispatch, rejectValue: null} // методы thunkAPI для createAsyncThunk
 				>('tasks/setTasks', async (todoListId, thunkAPI) => {
-				const {dispatch} = thunkAPI
 				return thunkTryCatch(thunkAPI, async () => {
 						const res = await TodolistApi.getTasks(todoListId)
-						dispatch(appActions.setAppStatus({status: 'succeeded'}))
 						return {todoListId: todoListId, tasks: res.data.items}
 				})
 		})
@@ -109,7 +113,6 @@ const removeTaskTC = createAppAsyncThunk<removeTaskArgType,
 						async () => {
 								const res = await TodolistApi.removeTask({todoListId, taskId})
 								if (res.data.resultCode === ResponseCode.Ok) {
-										dispatch(appActions.setAppStatus({status: 'succeeded'}))
 										return {taskId, todoListId}
 								} else {
 										handleServerAppError(res.data, dispatch)
@@ -137,17 +140,11 @@ const createTaskTC = createAppAsyncThunk<{ task: TaskResponseType },
 						async () => {
 								const res = await TodolistApi.createTask({todoListId, title})
 								if (res.data.resultCode === ResponseCode.Ok) {
-										dispatch(appActions.setAppStatus({status: 'succeeded'}))
 										return {task: res.data.data.item}
 								} else {
-										handleServerAppError(res.data, dispatch)
-										//Set title in local state addItemForm
-										// setRejectTitle(title)
-										return rejectWithValue(title)
+										handleServerAppError(res.data, dispatch, false)
+										return rejectWithValue(res.data)
 								}
-						},
-						() => {
-								// setRejectTitle(title)
 						}
 				)
 		})
@@ -162,8 +159,6 @@ const updateTaskTC = createAppAsyncThunk<updateTaskTCOutputArgType, updateTaskTC
 ('task/updateTask', async (
 		{todoListId, taskId,	changeValue}, thunkAPI) => {
 		const {dispatch, rejectWithValue, getState} = thunkAPI
-
-		dispatch(appActions.setAppStatus({status: 'loading'}))
 		dispatch(tasksActions.changeTaskEntityStatus(
 				{taskId, entityStatus: 'loading', todoListId}))
 
@@ -172,7 +167,6 @@ const updateTaskTC = createAppAsyncThunk<updateTaskTCOutputArgType, updateTaskTC
 
 		if (!task) {
 				dispatch(appActions.setAppError({error: 'task not found'}))
-				dispatch(appActions.setAppStatus({status: 'failed'}))
 				dispatch(tasksActions.changeTaskEntityStatus(
 						{taskId, entityStatus: 'failed', todoListId}))
 				return rejectWithValue(null)
@@ -189,9 +183,7 @@ const updateTaskTC = createAppAsyncThunk<updateTaskTCOutputArgType, updateTaskTC
 						...changeValue // rewrite new title or status
 				}
 				const res = await TodolistApi.changeTask(todoListId, taskId, requestBody)
-
 				if (res.data.resultCode === ResponseCode.Ok) {
-						dispatch(appActions.setAppStatus({status: 'succeeded'}))
 						dispatch(tasksActions.changeTaskEntityStatus(
 								{taskId, entityStatus: 'succeeded', todoListId}))
 
@@ -214,7 +206,6 @@ const updateTaskTC = createAppAsyncThunk<updateTaskTCOutputArgType, updateTaskTC
 				handleServerNetworkError(e, dispatch)
 				dispatch(tasksActions.changeTaskEntityStatus(
 						{taskId, entityStatus: 'failed', todoListId}))
-				//Saved title
 				let rejectValue = null
 				if (changeValue.title) {
 						rejectValue = changeValue.title

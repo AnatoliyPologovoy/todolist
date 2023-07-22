@@ -23,11 +23,6 @@ const EditableSpan: FC<Props> = memo((props) => {
 		const [inputValue, setInputValue] = useState<string>(title)
 		const inputValueLength = inputValue.length
 
-		const setRejectTitle = (title: string) => {
-				setIsEditMode(true)
-				setInputValue(title)
-		}
-
 		const activeEditModeHandler = () => {
 				if (!disabled) { // if not disable
 						setIsEditMode(true)
@@ -61,7 +56,6 @@ const EditableSpan: FC<Props> = memo((props) => {
 						}}
 						size={'small'}
 						variant="standard"
-						onBlur={changeTitleHandler}
 						autoFocus
 						value={inputValue}
 						onChange={onChangeInputHandler}

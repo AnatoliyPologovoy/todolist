@@ -75,11 +75,9 @@ const fetchTodoListsTC = createAppAsyncThunk<{ todoLists: TodoListDomainType[] }
 ('todoList/fetchTodoList',
 		async (arg, thunkAPI) => {
 				const {dispatch, rejectWithValue} = thunkAPI
-				dispatch(appActions.setAppStatus({status: 'loading'}))
 				let todoLists
 				try {
 						const res = await TodolistApi.getTodoLists()
-						dispatch(appActions.setAppStatus({status: 'succeeded'}))
 						todoLists = res.data
 						return {todoLists}
 				} catch (e) {
@@ -128,14 +126,9 @@ const createTodoListTC =
 										if (res.data.resultCode === ResponseCode.Ok) {
 												return res.data.data.item
 										} else {
-												handleServerAppError(res.data, dispatch)
-												// //Set title in local state addItemForm
-												// setRejectTitle(title)
-												return rejectWithValue(title)
+												handleServerAppError(res.data, dispatch, false)
+												return rejectWithValue(res.data)
 										}
-								},
-								() => {
-										// setRejectTitle(title)
 								})
 				})
 
@@ -165,15 +158,12 @@ const updateTodoListTitleTC =
 												handleServerAppError(res.data, dispatch)
 												dispatch(todoListsActions.changeTodolistEntityStatus(
 														{entityStatus: 'failed', id: todoListId}))
-												//Set title in local state editableSpan
-												// setRejectTitle(title)
 												return rejectWithValue(null)
 										}
 								},
 								() => {
 										dispatch(todoListsActions.changeTodolistEntityStatus(
 												{entityStatus: 'failed', id: todoListId}))
-										// setRejectTitle(title)
 								})
 				})
 

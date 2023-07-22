@@ -19,7 +19,7 @@ export const thunkTryCatch = async (
 		tryLogic: Function,
 		catchLogic: Function = () => {}) => {
 		const {dispatch, rejectWithValue} = thunkAPI
-		dispatch(appActions.setAppStatus({status: 'loading'}))
+		// dispatch(appActions.setAppStatus({status: 'loading'}))
 		try {
 				return await tryLogic()
 		} catch (e) {
@@ -28,6 +28,6 @@ export const thunkTryCatch = async (
 				return rejectWithValue(null)
 		} finally {
 				// в handleServerNetworkError можно удалить убирание крутилки
-				dispatch(appActions.setAppStatus({status: 'idle'}))
+				// dispatch(appActions.setAppStatus({status: 'idle'}))
 		}
 }
