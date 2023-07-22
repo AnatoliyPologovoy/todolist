@@ -15,7 +15,7 @@ import {ResponseType} from "features/todolists-lists/todolist-api";
  * @returns {Promise<null | ResponseType>} - Промис, который разрешается либо значением `null`, если произошла ошибка, либо значением типа `ResponseType`.
  */
 export const thunkTryCatch = async (
-		thunkAPI: BaseThunkAPI<AppRootStateType, any, AppThunkDispatch, null | ResponseType>,
+		thunkAPI: BaseThunkAPI<AppRootStateType, any, AppThunkDispatch, null | ResponseType | string>,
 		tryLogic: Function,
 		catchLogic: Function = () => {}) => {
 		const {dispatch, rejectWithValue} = thunkAPI

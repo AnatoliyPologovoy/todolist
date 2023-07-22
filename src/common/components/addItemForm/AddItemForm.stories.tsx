@@ -1,15 +1,15 @@
 import type {Meta, StoryObj} from '@storybook/react';
-import {AddItemForm, AddItemFormPropsType} from "common/components/AddItemForm/AddItemForm";
+import {AddItemForm, AddItemFormPropsType} from "common/components/addItemForm/AddItemForm";
 import {action} from "@storybook/addon-actions"
 import {IconButton, TextField} from "@mui/material";
 import AddBoxIcon from "@mui/icons-material/AddBox";
-import s from "features/todolists-lists/TodoList/todolist.module.css";
+import s from "features/todolists-lists/todoList/todolist.module.css";
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
 
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof AddItemForm> = {
-    title: 'TODOLISTS/AddItemForm',
+    title: 'TODOLISTS/addItemForm',
     component: AddItemForm,
     // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
     tags: ['autodocs'],
@@ -17,7 +17,7 @@ const meta: Meta<typeof AddItemForm> = {
     argTypes: {
         // backgroundColor: { control: 'color' },
         addItem: {
-            description: 'FilterButton clicked inside form11',
+            description: 'filterButton clicked inside form11',
             action: 'clicked',
             type: 'boolean'
         }
@@ -29,10 +29,12 @@ type Story = StoryObj<typeof AddItemForm>;
 
 
 //first way create story
+
 export const AddItemFormStory: Story = {
 
     args: {
-        addItem: action('FilterButton clicked inside form')
+        // @ts-ignore
+        addItem: action('filterButton clicked inside form')
     },
 };
 
@@ -66,11 +68,11 @@ export const AddItemFormStoryWithReactFC: React.FC <AddItemFormPropsType> = (arg
             isAddTaskPossible = false
         }
         if (trimmedValue.length > maxLengthTitle) {
-            setError('Title is too long')
+            setError('title is too long')
             isAddTaskPossible = false
         }
         if (trimmedValue.length < minLengthTitle) {
-            setError('Title is too short')
+            setError('title is too short')
             isAddTaskPossible = false
         }
         if (isAddTaskPossible) {

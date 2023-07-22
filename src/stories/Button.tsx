@@ -15,7 +15,7 @@ interface ButtonProps {
    */
   size?: 'small' | 'medium' | 'large';
   /**
-   * FilterButton contents
+   * filterButton contents
    */
   label: string;
   /**

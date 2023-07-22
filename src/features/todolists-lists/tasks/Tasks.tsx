@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
 import {TaskType} from "features/todolists-lists/tasks/tasks-reducers";
-import {Task} from "features/todolists-lists/tasks/Task/Task";
+import {Task} from "features/todolists-lists/tasks/task/Task";
 
 type Props = {
 		tasks: TaskType[]

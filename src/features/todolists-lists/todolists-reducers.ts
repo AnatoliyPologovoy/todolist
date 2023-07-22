@@ -132,7 +132,7 @@ const createTodoListTC =
 												return res.data.data.item
 										} else {
 												handleServerAppError(res.data, dispatch)
-												//Set title in local state AddItemForm
+												//Set title in local state addItemForm
 												setRejectTitle(title)
 												return rejectWithValue(null)
 										}
@@ -172,7 +172,7 @@ const updateTodoListTitleTC =
 												handleServerAppError(res.data, dispatch)
 												dispatch(todoListsActions.changeTodolistEntityStatus(
 														{entityStatus: 'failed', id: todoListId}))
-												//Set title in local state EditableSpan
+												//Set title in local state editableSpan
 												setRejectTitle(title)
 												return rejectWithValue(null)
 										}

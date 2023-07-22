@@ -1,7 +1,7 @@
 import React, {memo, useCallback} from 'react';
 import {useActions} from "common/hooks";
 import {todoListsActions} from "features/todolists-lists/todolists-reducers";
-import {FilterButton} from "common/components/FilterButton/FilterButton";
+import {FilterButton} from "common/components/filterButton/FilterButton";
 import {FilterType} from "features/todolists-lists/tasks/tasks-reducers";
 import cl from "./filterButtonsGroup.module.css"
 

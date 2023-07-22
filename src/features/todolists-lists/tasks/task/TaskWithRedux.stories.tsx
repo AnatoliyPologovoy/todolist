@@ -1,5 +1,5 @@
 import type {Meta, StoryObj} from '@storybook/react';
-import {Task} from "features/todolists-lists/tasks/Task/Task";
+import {Task} from "features/todolists-lists/tasks/task/Task";
 import {reduxStoreProviderDecorator} from "app/reduxStoreProviderDecorator";
 import {useAppSelector} from "app/store";
 
@@ -14,9 +14,9 @@ const meta: Meta<typeof Task> = {
   //
   // },
   args: {
-    // changeTaskStatus: action('Status changed inside Task'),
-    // changeTaskTitle: action('Title changed inside Task'),
-    // removeTask: action('Remove FilterButton clicked changed inside Task'),
+    // changeTaskStatus: action('Status changed inside task'),
+    // changeTaskTitle: action('title changed inside task'),
+    // removeTask: action('Remove filterButton clicked changed inside task'),
     // task: {id: '12wsdewfijdei', title: 'JS', isDone: false},
     // todolistId: 'fgdosrg8rgjuh'
   },

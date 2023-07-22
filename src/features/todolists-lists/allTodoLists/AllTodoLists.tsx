@@ -1,19 +1,19 @@
 import React, {useCallback, useEffect} from 'react';
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import {AddItemForm} from "common/components/AddItemForm/AddItemForm";
+import {AddItemForm} from "common/components/addItemForm/AddItemForm";
 import {useAppSelector} from "app/store";
 import {todoListThunk} from "features/todolists-lists/todolists-reducers";
-import {useActions} from "common/hooks";
-import {Todolist} from "features/todolists-lists/TodoList/Todolist";
+import {useActions, useAppDispatch} from "common/hooks";
+import {Todolist} from "features/todolists-lists/todoList/Todolist";
 import {Navigate} from "react-router-dom";
 import {isLoggedInSelector, todoListsSelector} from "app/app.selectors";
 
 
 export const AllTodoLists = () => {
 
-    const {createTodoListTC, fetchTodoListsTC} = useActions(todoListThunk)
-
+    const {fetchTodoListsTC} = useActions(todoListThunk)
+    const dispatch = useAppDispatch()
     const todoLists = useAppSelector(todoListsSelector)
     const isLoggedIn = useAppSelector(isLoggedInSelector)
 
@@ -25,7 +25,9 @@ export const AllTodoLists = () => {
 
     const createTodoList = useCallback(
         (title: string, setRejectTitle: (title: string) => void) => {
-            createTodoListTC({title, setRejectTitle})
+            return dispatch(todoListThunk.createTodoListTC(
+                {title, setRejectTitle}))
+                .unwrap()
         }, [])
 
 

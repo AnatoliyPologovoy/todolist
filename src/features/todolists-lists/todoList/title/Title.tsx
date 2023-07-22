@@ -1,5 +1,5 @@
 import React, {memo, useCallback} from 'react';
-import EditableSpan from "common/components/EditableSpan/EditableSpan";
+import EditableSpan from "common/components/editableSpan/EditableSpan";
 import {useActions} from "common/hooks";
 import {todoListThunk} from "features/todolists-lists/todolists-reducers";
 

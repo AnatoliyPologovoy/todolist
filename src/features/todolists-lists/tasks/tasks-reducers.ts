@@ -142,9 +142,9 @@ const createTaskTC = createAppAsyncThunk<{ task: TaskResponseType },
 										return {task: res.data.data.item}
 								} else {
 										handleServerAppError(res.data, dispatch)
-										//Set title in local state AddItemForm
+										//Set title in local state addItemForm
 										setRejectTitle(title)
-										return rejectWithValue(null)
+										return rejectWithValue(title)
 								}
 						},
 						() => {
@@ -180,7 +180,7 @@ const updateTaskTC = createAppAsyncThunk<updateTaskTCOutputArgType, updateTaskTC
 		const task = state.tasks[todoListId].find(t => t.id === taskId)
 
 		if (!task) {
-				dispatch(appActions.setAppError({error: 'Task not found'}))
+				dispatch(appActions.setAppError({error: 'task not found'}))
 				dispatch(appActions.setAppStatus({status: 'failed'}))
 				dispatch(tasksActions.changeTaskEntityStatus(
 						{taskId, entityStatus: 'failed', todoListId}))

@@ -1,10 +1,10 @@
 import React, {ChangeEvent, FC, KeyboardEvent, memo, useLayoutEffect, useState} from 'react';
-import s from "features/todolists-lists/TodoList/todolist.module.css";
+import s from "features/todolists-lists/todoList/todolist.module.css";
 import {IconButton, TextField} from "@mui/material";
 import AddBoxIcon from '@mui/icons-material/AddBox';
 
 export type AddItemFormPropsType = {
-    addItem: (title: string, setRejectTitle: (title: string) => void) => void
+    addItem: (title: string, setRejectTitle: (title: string) => void) => Promise<any>
     // value: string
     disabled: boolean
 }
@@ -29,15 +29,18 @@ export const AddItemForm: FC<AddItemFormPropsType> = memo(({addItem, disabled}) 
             isAddTaskPossible = false
         }
         if (trimmedValue.length > maxLengthTitle) {
-            setError('Title is too long')
+            setError('title is too long')
             isAddTaskPossible = false
         }
         if (trimmedValue.length < minLengthTitle) {
-            setError('Title is too short')
+            setError('title is too short')
             isAddTaskPossible = false
         }
         if (isAddTaskPossible) {
-            addItem(trimmedValue, setInputValue);
+            const res = addItem(trimmedValue, setInputValue);
+            res
+                .then(data => console.log(data))
+                .catch(e => console.log(e))
             setInputValue('');
         }
     }

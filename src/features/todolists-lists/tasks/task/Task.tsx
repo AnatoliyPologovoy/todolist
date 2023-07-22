@@ -1,10 +1,10 @@
 import React, {memo, useCallback} from 'react';
 import {Checkbox, ListItem} from "@mui/material";
-import EditableSpan from "common/components/EditableSpan/EditableSpan";
+import EditableSpan from "common/components/editableSpan/EditableSpan";
 import {tasksThunks, TaskType} from "features/todolists-lists/tasks/tasks-reducers";
-import s from "features/todolists-lists/TodoList/todolist.module.css";
+import s from "features/todolists-lists/todoList/todolist.module.css";
 import {TaskRequestUpdateType, TaskStatues} from "features/todolists-lists/todolist-api";
-import cl from "features/todolists-lists/tasks/Task/task.module.css"
+import cl from "features/todolists-lists/tasks/task/task.module.css"
 import {useActions} from "common/hooks";
 
 export type Props = {
