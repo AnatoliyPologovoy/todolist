@@ -76,8 +76,11 @@ export const AddItemFormStoryWithReactFC: React.FC <AddItemFormPropsType> = (arg
             isAddTaskPossible = false
         }
         if (isAddTaskPossible) {
-            args.addItem(trimmedValue, setInputValue);
-            setInputValue('');
+            const res = args.addItem(trimmedValue);
+            res
+                .then(data => setInputValue(''))
+                .catch(e => setInputValue(trimmedValue))
+
         }
     }
 
@@ -127,7 +130,7 @@ export const AddItemFormErrorStory: Story = {
                     multiline={false}
                     size={"small"}
                 />
-                <IconButton onClick={() => args.addItem('', rejectTitle)}>
+                <IconButton onClick={() => args.addItem('')}>
                     <AddBoxIcon/>
                 </IconButton>
                 {error && <div className={s.errorMessage}>{error}</div>}

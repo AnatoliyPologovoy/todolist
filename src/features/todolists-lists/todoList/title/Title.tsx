@@ -1,6 +1,6 @@
 import React, {memo, useCallback} from 'react';
 import EditableSpan from "common/components/editableSpan/EditableSpan";
-import {useActions} from "common/hooks";
+import {useActions, useAppDispatch} from "common/hooks";
 import {todoListThunk} from "features/todolists-lists/todolists-reducers";
 
 type Props = {
@@ -12,25 +12,29 @@ type Props = {
 
 export const Title: React.FC<Props> = memo(
 		({todoListId, title, isDisableButtons, classes}) => {
-		const {updateTodoListTitleTC, removeTodoListTC} = useActions(todoListThunk)
+				const {removeTodoListTC} = useActions(todoListThunk)
+				const dispatch = useAppDispatch()
 
-		const changeTodoListTitle = useCallback(
-				(newTitle: string, setRejectTitle: (title: string) => void) => {
-						updateTodoListTitleTC({title: newTitle, todoListId, setRejectTitle})
+				const changeTodoListTitle = useCallback(
+						(newTitle: string) => {
+								return dispatch(
+										todoListThunk.updateTodoListTitleTC(
+												{title: newTitle, todoListId}))
+										.unwrap()
+						}, [todoListId])
+
+				const removeTodoList = useCallback(() => {
+						removeTodoListTC(todoListId)
 				}, [todoListId])
 
-		const removeTodoList = useCallback(() => {
-				removeTodoListTC(todoListId)
-		}, [todoListId])
-
-		return <h2>
-				<EditableSpan
-						disabled={isDisableButtons}
-						sizeButtons={"medium"}
-						title={title}
-						classes={classes || ''}
-						changeTitle={changeTodoListTitle}
-						removeItem={removeTodoList}
-				/>
-		</h2>
-})
+				return <h2>
+						<EditableSpan
+								disabled={isDisableButtons}
+								sizeButtons={"medium"}
+								title={title}
+								classes={classes || ''}
+								changeTitle={changeTodoListTitle}
+								removeItem={removeTodoList}
+						/>
+				</h2>
+		})

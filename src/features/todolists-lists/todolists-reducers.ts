@@ -93,7 +93,8 @@ const fetchTodoListsTC = createAppAsyncThunk<{ todoLists: TodoListDomainType[] }
 		})
 
 const removeTodoListTC = createAppAsyncThunk<string, string>
-('todoList/removeTodolist', async (todoListId, thunkAPI) => {
+('todoList/removeTodolist',
+		async (todoListId, thunkAPI) => {
 		const {dispatch, rejectWithValue} = thunkAPI
 		dispatch(todoListsActions.changeTodolistEntityStatus(
 				{entityStatus: 'loading', id: todoListId}))
@@ -116,14 +117,10 @@ const removeTodoListTC = createAppAsyncThunk<string, string>
 				})
 })
 
-type CreateTodoListTCArgType = {
-		title: string,
-		setRejectTitle: (title: string) => void
-}
-
 const createTodoListTC =
-		createAppAsyncThunk<TodoListDomainType, CreateTodoListTCArgType>('todoList/createTodoList',
-				async ({title, setRejectTitle}, thunkAPI) => {
+		createAppAsyncThunk<TodoListDomainType, string>(
+				'todoList/createTodoList',
+				async (title, thunkAPI) => {
 						const {dispatch, rejectWithValue} = thunkAPI
 						return thunkTryCatch(thunkAPI,
 								async () => {
@@ -132,30 +129,26 @@ const createTodoListTC =
 												return res.data.data.item
 										} else {
 												handleServerAppError(res.data, dispatch)
-												//Set title in local state addItemForm
-												setRejectTitle(title)
-												return rejectWithValue(null)
+												// //Set title in local state addItemForm
+												// setRejectTitle(title)
+												return rejectWithValue(title)
 										}
 								},
 								() => {
-										setRejectTitle(title)
+										// setRejectTitle(title)
 								})
 				})
 
 type UpdateTodoListOutputArgType = {
 		title: string,
-		todoListId: string,
-}
-
-type UpdateTodoListInputArgType = UpdateTodoListOutputArgType & {
-		setRejectTitle: (title: string) => void
+		todoListId: string
 }
 
 const updateTodoListTitleTC =
-		createAppAsyncThunk<UpdateTodoListOutputArgType, UpdateTodoListInputArgType>
+		createAppAsyncThunk<UpdateTodoListOutputArgType, UpdateTodoListOutputArgType>
 		('todoList/updateTodoListTitle',
 				async (arg, thunkAPI) => {
-						const {title, todoListId, setRejectTitle} = arg
+						const {title, todoListId} = arg
 						const {dispatch, rejectWithValue} = thunkAPI
 
 						dispatch(todoListsActions.changeTodolistEntityStatus(
@@ -173,14 +166,14 @@ const updateTodoListTitleTC =
 												dispatch(todoListsActions.changeTodolistEntityStatus(
 														{entityStatus: 'failed', id: todoListId}))
 												//Set title in local state editableSpan
-												setRejectTitle(title)
+												// setRejectTitle(title)
 												return rejectWithValue(null)
 										}
 								},
 								() => {
 										dispatch(todoListsActions.changeTodolistEntityStatus(
 												{entityStatus: 'failed', id: todoListId}))
-										setRejectTitle(title)
+										// setRejectTitle(title)
 								})
 				})
 

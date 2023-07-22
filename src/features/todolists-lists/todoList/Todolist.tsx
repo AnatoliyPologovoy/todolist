@@ -3,10 +3,9 @@ import {AddItemForm} from "common/components/addItemForm/AddItemForm";
 import {List} from "@mui/material";
 import {useAppSelector} from "app/store";
 import {TodoListType} from "features/todolists-lists/todolists-reducers";
-import {Task} from "features/todolists-lists/tasks/task/Task";
 import {tasksSelector} from "app/app.selectors";
 import {tasksThunks} from "features/todolists-lists/tasks/tasks-reducers";
-import {useActions, useAppDispatch} from "common/hooks";
+import {useAppDispatch} from "common/hooks";
 import {getFilteredTasks} from "common/utils/getFilteredTasks";
 import FilterButtonsGroup from "features/todolists-lists/todoList/filterButtonsGroup/FilterButtonsGroup";
 import {Title} from "features/todolists-lists/todoList/title/Title";
@@ -21,15 +20,13 @@ export const Todolist: React.FC<Props> = memo(({todoList}) => {
 		const {id: todoListId, title, filter, entityStatus} = todoList
 		const dispatch = useAppDispatch()
 
-		// const {createTaskTC} = useActions(tasksThunks)
-
 		let tasks = useAppSelector(tasksSelector(todoListId))
 		tasks = getFilteredTasks(tasks, filter)
 
 		const createTask = useCallback(
-				(title: string, setRejectTitle: (title: string) => void) => {
-						return dispatch(tasksThunks.createTaskTC(
-								{todoListId, title, setRejectTitle}))
+				(title: string) => {
+						return dispatch(
+								tasksThunks.createTaskTC({todoListId, title}))
 								.unwrap()
 				}, [todoListId])
 

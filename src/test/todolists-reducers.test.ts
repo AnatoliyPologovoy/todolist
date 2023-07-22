@@ -53,7 +53,7 @@ test('correct todolist should be added', () => {
     const action = todoListThunk.createTodoListTC.fulfilled(
         testTodoItem,
         'requestId',
-        {title: newTodolistTitle, setRejectTitle: (t) => {}}
+        newTodolistTitle
     )
     const endState = todoListsReducer(startState,
         action)
@@ -67,7 +67,7 @@ test('correct todolist should change its name', () => {
     const action = todoListThunk.updateTodoListTitleTC.fulfilled(
         {title: newTodolistTitle, todoListId: todolistId2},
         'requestId',
-        {title: newTodolistTitle, todoListId: todolistId2, setRejectTitle: (t) => {}}
+        {title: newTodolistTitle, todoListId: todolistId2}
     )
     const endState = todoListsReducer(startState,action)
 

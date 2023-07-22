@@ -128,11 +128,10 @@ const removeTaskTC = createAppAsyncThunk<removeTaskArgType,
 const createTaskTC = createAppAsyncThunk<{ task: TaskResponseType },
 		{
 				todoListId: string,
-				title: string,
-				setRejectTitle: (title: string) => void
+				title: string
 		}>
 ('tasks/createTask',
-		async ({todoListId, title, setRejectTitle}, thunkAPI) => {
+		async ({todoListId, title}, thunkAPI) => {
 				const {dispatch, rejectWithValue} = thunkAPI
 				return thunkTryCatch(thunkAPI,
 						async () => {
@@ -143,12 +142,12 @@ const createTaskTC = createAppAsyncThunk<{ task: TaskResponseType },
 								} else {
 										handleServerAppError(res.data, dispatch)
 										//Set title in local state addItemForm
-										setRejectTitle(title)
+										// setRejectTitle(title)
 										return rejectWithValue(title)
 								}
 						},
 						() => {
-								setRejectTitle(title)
+								// setRejectTitle(title)
 						}
 				)
 		})
@@ -159,17 +158,9 @@ type updateTaskTCOutputArgType = {
 		changeValue: TaskRequestUpdateType
 }
 
-type updateTaskTCInputArgType = updateTaskTCOutputArgType & {
-		setRejectTitle?: ((title: string) => void) | null
-}
-
-const updateTaskTC = createAppAsyncThunk<updateTaskTCOutputArgType, updateTaskTCInputArgType>
-('task/updateTask', async ({
-															 todoListId,
-															 taskId,
-															 changeValue,
-															 setRejectTitle
-													 }, thunkAPI) => {
+const updateTaskTC = createAppAsyncThunk<updateTaskTCOutputArgType, updateTaskTCOutputArgType>
+('task/updateTask', async (
+		{todoListId, taskId,	changeValue}, thunkAPI) => {
 		const {dispatch, rejectWithValue, getState} = thunkAPI
 
 		dispatch(appActions.setAppStatus({status: 'loading'}))
@@ -213,20 +204,22 @@ const updateTaskTC = createAppAsyncThunk<updateTaskTCOutputArgType, updateTaskTC
 						handleServerAppError(res.data, dispatch)
 						dispatch(tasksActions.changeTaskEntityStatus(
 								{taskId, entityStatus: 'failed', todoListId}))
-						//Saved title
+						let rejectValue = null
 						if (changeValue.title || changeValue.title === '') {
-								setRejectTitle &&	setRejectTitle(changeValue.title)
+								rejectValue = changeValue.title
 						}
-						return rejectWithValue(null)
+						return rejectWithValue(rejectValue)
 				}
 		} catch (e) {
 				handleServerNetworkError(e, dispatch)
 				dispatch(tasksActions.changeTaskEntityStatus(
 						{taskId, entityStatus: 'failed', todoListId}))
 				//Saved title
-				changeValue?.title && setRejectTitle &&
-				setRejectTitle(changeValue.title)
-				return rejectWithValue(null)
+				let rejectValue = null
+				if (changeValue.title) {
+						rejectValue = changeValue.title
+				}
+				return rejectWithValue(rejectValue)
 		}
 })
 

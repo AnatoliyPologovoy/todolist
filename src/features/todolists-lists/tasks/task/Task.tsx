@@ -5,7 +5,7 @@ import {tasksThunks, TaskType} from "features/todolists-lists/tasks/tasks-reduce
 import s from "features/todolists-lists/todoList/todolist.module.css";
 import {TaskRequestUpdateType, TaskStatues} from "features/todolists-lists/todolist-api";
 import cl from "features/todolists-lists/tasks/task/task.module.css"
-import {useActions} from "common/hooks";
+import {useActions, useAppDispatch} from "common/hooks";
 
 export type Props = {
     task: TaskType
@@ -19,15 +19,19 @@ export const Task: React.FC<Props> = memo(({task}) => {
     const isDisable = task.entityStatus === 'loading'
 
     const {removeTaskTC, updateTaskTC} = useActions(tasksThunks)
+    const dispatch = useAppDispatch()
 
     const changeTaskTitleHandler = useCallback(
-        (newTitle: string, setRejectTitle: (title: string) => void) => {
+        (newTitle: string) => {
 
         const changeValue: TaskRequestUpdateType = {
             title: newTitle,
         }
 
-       updateTaskTC({todoListId, taskId, changeValue, setRejectTitle})
+       return  dispatch(
+           tasksThunks.updateTaskTC(
+               {todoListId, taskId, changeValue}))
+           .unwrap()
     }, [taskId, todoListId])
 
 

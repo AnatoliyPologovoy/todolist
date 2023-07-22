@@ -9,7 +9,7 @@ type Props = {
 		disabled: boolean
 		title: string
 		classes: string
-		changeTitle: (newTitle: string, setRejectTitle: (title: string) => void) => void
+		changeTitle: (newTitle: string) => Promise<any>
 		removeItem: () => void
 		sizeButtons: 'small' | 'medium' | 'large'
 }
@@ -35,9 +35,14 @@ const EditableSpan: FC<Props> = memo((props) => {
 		}
 		const changeTitleHandler = () => {
 				if (inputValueLength > 2 && inputValue !== title) {
-						changeTitle(inputValue, setRejectTitle)
+						const res = changeTitle(inputValue)
+								.then(data => setIsEditMode(false))
+								.catch(e => {
+										setIsEditMode(true)
+										setInputValue(inputValue)
+								})
 						//if catch = editMode = true
-						setIsEditMode(false)
+
 				}
 				if (inputValue === title) {
 						setIsEditMode(false)

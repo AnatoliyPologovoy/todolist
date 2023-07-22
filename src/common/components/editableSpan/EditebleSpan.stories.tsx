@@ -20,7 +20,7 @@ const meta: Meta<typeof EditableSpan> = {
     }
   },
   args: {
-    changeTitle: action('Change'),
+    // changeTitle: action('Change'),
     title: 'hi'
   }
 

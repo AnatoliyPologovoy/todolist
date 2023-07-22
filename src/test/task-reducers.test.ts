@@ -117,8 +117,7 @@ test('correct task should be added to correct array', () => {
 				'requestId',
 				{
 						todoListId: task.todoListId,
-						title: task.title,
-						setRejectTitle: (t: string) => {}
+						title: task.title
 				})
 
 		const endState = tasksReducer(startState, action)
@@ -179,7 +178,7 @@ test('new array should be added when new todolist is added', () => {
 		const action = todoListThunk.createTodoListTC.fulfilled(
 				testTodoItem,
 				'requestId',
-				{title: 'new todolist', setRejectTitle: (t: string) => {}}
+				'new todolist'
 		)
 
 		const endState = tasksReducer(startState, action)

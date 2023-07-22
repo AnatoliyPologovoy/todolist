@@ -24,9 +24,8 @@ export const AllTodoLists = () => {
     }, [])
 
     const createTodoList = useCallback(
-        (title: string, setRejectTitle: (title: string) => void) => {
-            return dispatch(todoListThunk.createTodoListTC(
-                {title, setRejectTitle}))
+        (title: string) => {
+            return dispatch(todoListThunk.createTodoListTC(title))
                 .unwrap()
         }, [])
 

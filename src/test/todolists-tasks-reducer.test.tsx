@@ -15,7 +15,7 @@ test('ids should be equals', () => {
 		const action = todoListThunk.createTodoListTC.fulfilled(
 				testTodoItem,
 				'requestId',
-				{title: newTodolistTitle, setRejectTitle: (t) => {}}
+				 newTodolistTitle
 				)
 
 		const endTasksState = tasksReducer(startTasksState, action)
