@@ -6,13 +6,17 @@ import {
 		UpdateTaskModelType
 } from "features/todolists-lists/todolist-api";
 import {appActions, RequestStatusType} from "app/app-reducer";
-import {handleServerAppError, handleServerNetworkError} from "common/utils";
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {todoListsActions, todoListThunk} from "features/todolists-lists/todolists-reducers";
-import {authActions, authThunk} from "features/auth/auth-reducer";
-import {createAppAsyncThunk} from "common/utils/create-app-async-thunk";
+import {
+		changeTaskEntityStatus,
+		handleServerAppError,
+		handleServerNetworkError,
+		isActionUpdateOrRemoveTask
+} from "common/utils";
+import {todoListThunk} from "features/todolists-lists/todolists-reducers";
+import {authThunk} from "features/auth/auth-reducer";
+import {createAppAsyncThunk} from "common/utils/createAppAsyncThunk";
 import {thunkTryCatch} from "common/utils/thunkTryCatch";
-import {AnyAction} from "redux";
+import {createSlice} from "@reduxjs/toolkit";
 
 
 export type TasksStateType = {
@@ -25,6 +29,31 @@ export type TaskType = TaskResponseType & {
 
 export type FilterType = 'all' | 'complied' | 'active'
 
+export type updateTaskThunkArgType = {
+		todoListId: string,
+		taskId: string,
+		changeValue: TaskRequestUpdateType
+}
+
+export type removeTaskThunkArgType = {
+		todoListId: string,
+		taskId: string
+}
+
+export type commonTaskThunkArgType = removeTaskThunkArgType
+
+export type ThunkAction<ThunkArg, PromiseResult> = {
+		type: string
+		payload: PromiseResult
+		error?: any
+		meta: {
+				requestId: string
+				arg: ThunkArg
+		}
+}
+
+export type PromiseStatusType = 'pending' | 'fulfilled' | 'rejected'
+
 const initialState: TasksStateType = {
 		// [tdlId_1]: [
 		//     {id: v1(), title: "HTML&CSS", isDone: true},
@@ -34,13 +63,7 @@ const initialState: TasksStateType = {
 const slice = createSlice({
 		name: 'task',
 		initialState,
-		reducers: {
-				changeTaskEntityStatus(state, action: PayloadAction<{ taskId: string, entityStatus: RequestStatusType, todoListId: string }>) {
-						const tasks = state[action.payload.todoListId]
-						const index = tasks.findIndex(t => t.id === action.payload.taskId)
-						if (index !== -1) tasks[index].entityStatus = action.payload.entityStatus
-				}
-		},
+		reducers: {},
 		extraReducers: builder => {
 				builder
 						.addCase(createTaskTC.fulfilled, (state, action) => {
@@ -79,11 +102,26 @@ const slice = createSlice({
 						.addCase(authThunk.logout.fulfilled, (state, action) => {
 								if (!action.payload.isLoginIn) return initialState
 						})
-						.addMatcher((action: AnyAction) => {
-								return action.type.includes('updateTask') || action.type.includes('tasks/remove')
-						}, (state, action) => {
-								console.log(action)
+						// change EntityStatus
+						.addMatcher((action) => {
+										return isActionUpdateOrRemoveTask(action, 'pending')
+								},
+								(state, action: ThunkAction<commonTaskThunkArgType, any>) => {
+										changeTaskEntityStatus(state, action.meta.arg, 'loading')
+
 						})
+						.addMatcher((action) => {
+										return isActionUpdateOrRemoveTask(action, 'fulfilled')
+								},
+								(state, action: ThunkAction<commonTaskThunkArgType, any>) => {
+										changeTaskEntityStatus(state, action.meta.arg, 'succeeded')
+								})
+						.addMatcher((action) => {
+										return isActionUpdateOrRemoveTask(action, 'rejected')
+								},
+								(state, action: ThunkAction<commonTaskThunkArgType, any>) => {
+										changeTaskEntityStatus(state, action.meta.arg, 'failed')
+								})
 		}
 })
 
@@ -98,33 +136,20 @@ const fetchTasksTC =
 				})
 		})
 
-type removeTaskArgType = {
-		todoListId: string,
-		taskId: string
-}
-
-const removeTaskTC = createAppAsyncThunk<removeTaskArgType,
-		removeTaskArgType>('tasks/removeTasks',
+const removeTaskTC = createAppAsyncThunk<removeTaskThunkArgType,
+		removeTaskThunkArgType>('tasks/removeTasks',
 		async ({todoListId, taskId}, thunkAPI) => {
-				const {dispatch, rejectWithValue} = thunkAPI
-				dispatch(tasksActions.changeTaskEntityStatus(
-						{taskId, entityStatus: 'loading', todoListId}))
+				const {rejectWithValue} = thunkAPI
 				return thunkTryCatch(thunkAPI,
 						async () => {
-								const res = await TodolistApi.removeTask({todoListId, taskId})
+								const res =
+										await TodolistApi.removeTask({todoListId, taskId})
 								if (res.data.resultCode === ResponseCode.Ok) {
 										return {taskId, todoListId}
 								} else {
-										handleServerAppError(res.data, dispatch)
-										dispatch(tasksActions.changeTaskEntityStatus(
-												{taskId, entityStatus: 'failed', todoListId}))
 										return rejectWithValue(null)
 								}
 						},
-						() => {
-								dispatch(tasksActions.changeTaskEntityStatus(
-										{taskId, entityStatus: 'failed', todoListId}))
-						}
 				)
 		})
 
@@ -149,26 +174,16 @@ const createTaskTC = createAppAsyncThunk<{ task: TaskResponseType },
 				)
 		})
 
-type updateTaskTCOutputArgType = {
-		todoListId: string,
-		taskId: string,
-		changeValue: TaskRequestUpdateType
-}
-
-const updateTaskTC = createAppAsyncThunk<updateTaskTCOutputArgType, updateTaskTCOutputArgType>
+const updateTaskTC = createAppAsyncThunk<updateTaskThunkArgType, updateTaskThunkArgType>
 ('task/updateTask', async (
 		{todoListId, taskId,	changeValue}, thunkAPI) => {
 		const {dispatch, rejectWithValue, getState} = thunkAPI
-		dispatch(tasksActions.changeTaskEntityStatus(
-				{taskId, entityStatus: 'loading', todoListId}))
 
 		const state = getState()
 		const task = state.tasks[todoListId].find(t => t.id === taskId)
 
 		if (!task) {
 				dispatch(appActions.setAppError({error: 'task not found'}))
-				dispatch(tasksActions.changeTaskEntityStatus(
-						{taskId, entityStatus: 'failed', todoListId}))
 				return rejectWithValue(null)
 		}
 		try {
@@ -184,9 +199,6 @@ const updateTaskTC = createAppAsyncThunk<updateTaskTCOutputArgType, updateTaskTC
 				}
 				const res = await TodolistApi.changeTask(todoListId, taskId, requestBody)
 				if (res.data.resultCode === ResponseCode.Ok) {
-						dispatch(tasksActions.changeTaskEntityStatus(
-								{taskId, entityStatus: 'succeeded', todoListId}))
-
 						return {
 								todoListId,
 								taskId,
@@ -194,8 +206,6 @@ const updateTaskTC = createAppAsyncThunk<updateTaskTCOutputArgType, updateTaskTC
 						}
 				} else {
 						handleServerAppError(res.data, dispatch)
-						dispatch(tasksActions.changeTaskEntityStatus(
-								{taskId, entityStatus: 'failed', todoListId}))
 						let rejectValue = null
 						if (changeValue.title || changeValue.title === '') {
 								rejectValue = changeValue.title
@@ -204,8 +214,6 @@ const updateTaskTC = createAppAsyncThunk<updateTaskTCOutputArgType, updateTaskTC
 				}
 		} catch (e) {
 				handleServerNetworkError(e, dispatch)
-				dispatch(tasksActions.changeTaskEntityStatus(
-						{taskId, entityStatus: 'failed', todoListId}))
 				let rejectValue = null
 				if (changeValue.title) {
 						rejectValue = changeValue.title
@@ -215,5 +223,4 @@ const updateTaskTC = createAppAsyncThunk<updateTaskTCOutputArgType, updateTaskTC
 })
 
 export const tasksReducer = slice.reducer
-export const tasksActions = slice.actions
 export const tasksThunks = {fetchTasksTC, removeTaskTC, createTaskTC, updateTaskTC}

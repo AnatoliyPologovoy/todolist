@@ -84,7 +84,7 @@ const EditableSpan: FC<Props> = memo((props) => {
 				<IconButton
 						size={"small"}
 						onClick={changeTitleHandler}
-						disabled={inputValueLength < 3}
+						disabled={inputValueLength < 3 || disabled}
 				>
 						<BeenhereIcon fontSize={sizeButtons}/>
 				</IconButton>

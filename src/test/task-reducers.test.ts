@@ -1,4 +1,4 @@
-import {tasksActions, tasksReducer, TasksStateType, tasksThunks} from 'features/todolists-lists/tasks/tasks-reducers'
+import {tasksReducer, TasksStateType, tasksThunks} from 'features/todolists-lists/tasks/tasks-reducers'
 import {todoListsActions, todoListThunk} from "features/todolists-lists/todolists-reducers";
 import {TaskPriorities, TaskStatues} from "features/todolists-lists/todolist-api";
 
@@ -157,16 +157,17 @@ test('title of specified task should be changed', () => {
 })
 
 test('entityStatus of specified task should be changed', () => {
+		const actionPayload =
+				{taskId: '3', changeValue: {title: 'new title'}, todoListId: 'todolistId2'}
 
-		const action = tasksActions.changeTaskEntityStatus({
-				taskId: '3',
-				entityStatus: 'loading',
-				todoListId: 'todolistId2'
-		})
+		const action = tasksThunks.updateTaskTC.fulfilled(
+				actionPayload,
+				'requestId',
+				actionPayload)
 
 		const endState = tasksReducer(startState, action)
 
-		expect(endState['todolistId2'][2].entityStatus).toBe('loading')
+		expect(endState['todolistId2'][2].entityStatus).toBe('succeeded')
 		expect(endState['todolistId1'][2].entityStatus).toBe('idle')
 })
 
