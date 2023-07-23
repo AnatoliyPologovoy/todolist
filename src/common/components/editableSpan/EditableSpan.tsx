@@ -30,14 +30,12 @@ const EditableSpan: FC<Props> = memo((props) => {
 		}
 		const changeTitleHandler = () => {
 				if (inputValueLength > 2 && inputValue !== title) {
-						const res = changeTitle(inputValue)
+						changeTitle(inputValue)
 								.then(data => setIsEditMode(false))
 								.catch(e => {
 										setIsEditMode(true)
 										setInputValue(inputValue)
 								})
-						//if catch = editMode = true
-
 				}
 				if (inputValue === title) {
 						setIsEditMode(false)

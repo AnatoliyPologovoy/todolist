@@ -14,16 +14,16 @@ import {ResponseType} from "features/todolists-lists/todolist-api";
  * @param {Function=} catchLogic - Функция, вызываемая в случае возникновения ошибки. По умолчанию, это пустая функция.
  * @returns {Promise<null | ResponseType>} - Промис, который разрешается либо значением `null`, если произошла ошибка, либо значением типа `ResponseType`.
  */
-export const thunkTryCatch = async (
-		thunkAPI: BaseThunkAPI<AppRootStateType, any, AppThunkDispatch, null | ResponseType | string>,
-		tryLogic: Function,
-		catchLogic: Function = () => {}) => {
-		const {dispatch, rejectWithValue} = thunkAPI
-		try {
-				return await tryLogic()
-		} catch (e) {
-				handleServerNetworkError(e, dispatch)
-				catchLogic()
-				return rejectWithValue(null)
-		}
-}
+// export const thunkTryCatch = async (
+// 		thunkAPI: BaseThunkAPI<AppRootStateType, any, AppThunkDispatch, null | RejectValueType>,
+// 		tryLogic: Function,
+// 		catchLogic: Function = () => {}) => {
+// 		const {dispatch, rejectWithValue} = thunkAPI
+// 		try {
+// 				return await tryLogic()
+// 		} catch (e) {
+// 				handleServerNetworkError(e, dispatch)
+// 				catchLogic()
+// 				return rejectWithValue(null)
+// 		}
+// }

@@ -27,7 +27,7 @@ export const Task: React.FC<Props> = memo(({task}) => {
         const changeValue: TaskRequestUpdateType = {
             title: newTitle,
         }
-       return  dispatch(
+       return dispatch(
            tasksThunks.updateTaskTC(
                {todoListId, taskId, changeValue}))
            .unwrap()

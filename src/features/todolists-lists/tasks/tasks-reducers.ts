@@ -6,16 +6,10 @@ import {
 		UpdateTaskModelType
 } from "features/todolists-lists/todolist-api";
 import {appActions, RequestStatusType} from "app/app-reducer";
-import {
-		changeTaskEntityStatus,
-		handleServerAppError,
-		handleServerNetworkError,
-		isActionUpdateOrRemoveTask
-} from "common/utils";
+import {changeTaskEntityStatus, isActionUpdateOrRemoveTask} from "common/utils";
 import {todoListThunk} from "features/todolists-lists/todolists-reducers";
 import {authThunk} from "features/auth/auth-reducer";
 import {createAppAsyncThunk} from "common/utils/createAppAsyncThunk";
-import {thunkTryCatch} from "common/utils/thunkTryCatch";
 import {createSlice} from "@reduxjs/toolkit";
 
 
@@ -109,7 +103,7 @@ const slice = createSlice({
 								(state, action: ThunkAction<commonTaskThunkArgType, any>) => {
 										changeTaskEntityStatus(state, action.meta.arg, 'loading')
 
-						})
+								})
 						.addMatcher((action) => {
 										return isActionUpdateOrRemoveTask(action, 'fulfilled')
 								},
@@ -130,27 +124,23 @@ const fetchTasksTC =
 				string // принимаемое значение
 				// {dispatch: Dispatch, rejectValue: null} // методы thunkAPI для createAsyncThunk
 				>('tasks/setTasks', async (todoListId, thunkAPI) => {
-				return thunkTryCatch(thunkAPI, async () => {
+						const {dispatch, rejectWithValue} = thunkAPI
 						const res = await TodolistApi.getTasks(todoListId)
 						return {todoListId: todoListId, tasks: res.data.items}
-				})
-		})
+				}
+		)
 
 const removeTaskTC = createAppAsyncThunk<removeTaskThunkArgType,
 		removeTaskThunkArgType>('tasks/removeTasks',
 		async ({todoListId, taskId}, thunkAPI) => {
 				const {rejectWithValue} = thunkAPI
-				return thunkTryCatch(thunkAPI,
-						async () => {
-								const res =
-										await TodolistApi.removeTask({todoListId, taskId})
-								if (res.data.resultCode === ResponseCode.Ok) {
-										return {taskId, todoListId}
-								} else {
-										return rejectWithValue(null)
-								}
-						},
-				)
+				const res =
+						await TodolistApi.removeTask({todoListId, taskId})
+				if (res.data.resultCode === ResponseCode.Ok) {
+						return {taskId, todoListId}
+				} else {
+						return rejectWithValue(res.data)
+				}
 		})
 
 const createTaskTC = createAppAsyncThunk<{ task: TaskResponseType },
@@ -161,22 +151,18 @@ const createTaskTC = createAppAsyncThunk<{ task: TaskResponseType },
 ('tasks/createTask',
 		async ({todoListId, title}, thunkAPI) => {
 				const {dispatch, rejectWithValue} = thunkAPI
-				return thunkTryCatch(thunkAPI,
-						async () => {
-								const res = await TodolistApi.createTask({todoListId, title})
-								if (res.data.resultCode === ResponseCode.Ok) {
-										return {task: res.data.data.item}
-								} else {
-										handleServerAppError(res.data, dispatch, false)
-										return rejectWithValue(res.data)
-								}
-						}
-				)
+				const res = await TodolistApi.createTask({todoListId, title})
+				if (res.data.resultCode === ResponseCode.Ok) {
+						return {task: res.data.data.item}
+				} else {
+						return rejectWithValue(res.data)
+				}
+
 		})
 
 const updateTaskTC = createAppAsyncThunk<updateTaskThunkArgType, updateTaskThunkArgType>
 ('task/updateTask', async (
-		{todoListId, taskId,	changeValue}, thunkAPI) => {
+		{todoListId, taskId, changeValue}, thunkAPI) => {
 		const {dispatch, rejectWithValue, getState} = thunkAPI
 
 		const state = getState()
@@ -186,39 +172,26 @@ const updateTaskTC = createAppAsyncThunk<updateTaskThunkArgType, updateTaskThunk
 				dispatch(appActions.setAppError({error: 'task not found'}))
 				return rejectWithValue(null)
 		}
-		try {
-				const requestBody: UpdateTaskModelType = {
-						deadline: task.deadline,
-						description: task.description,
-						priority: task.priority,
-						startDate: task.startDate,
-						completed: task.completed,
-						title: task.title,
-						status: task.status,
-						...changeValue // rewrite new title or status
+
+		const requestBody: UpdateTaskModelType = {
+				deadline: task.deadline,
+				description: task.description,
+				priority: task.priority,
+				startDate: task.startDate,
+				completed: task.completed,
+				title: task.title,
+				status: task.status,
+				...changeValue // rewrite new title or status
+		}
+		const res = await TodolistApi.changeTask(todoListId, taskId, requestBody)
+		if (res.data.resultCode === ResponseCode.Ok) {
+				return {
+						todoListId,
+						taskId,
+						changeValue
 				}
-				const res = await TodolistApi.changeTask(todoListId, taskId, requestBody)
-				if (res.data.resultCode === ResponseCode.Ok) {
-						return {
-								todoListId,
-								taskId,
-								changeValue
-						}
-				} else {
-						handleServerAppError(res.data, dispatch)
-						let rejectValue = null
-						if (changeValue.title || changeValue.title === '') {
-								rejectValue = changeValue.title
-						}
-						return rejectWithValue(rejectValue)
-				}
-		} catch (e) {
-				handleServerNetworkError(e, dispatch)
-				let rejectValue = null
-				if (changeValue.title) {
-						rejectValue = changeValue.title
-				}
-				return rejectWithValue(rejectValue)
+		} else {
+				return rejectWithValue(res.data)
 		}
 })
 

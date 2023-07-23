@@ -1,9 +1,7 @@
-import {appActions} from "app/app-reducer";
 import {LoginRequestType, ResponseCode} from "features/todolists-lists/todolist-api";
-import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "common/utils";
+import {createAppAsyncThunk} from "common/utils";
 import {createSlice} from "@reduxjs/toolkit";
 import {authAPI} from "features/auth/auth.api";
-import {thunkTryCatch} from "common/utils/thunkTryCatch";
 
 const initialState = {
 		isLoginIn: false,
@@ -28,26 +26,21 @@ export const slice = createSlice({
 		}
 })
 export const authReducer = slice.reducer
-export const authActions = slice.actions
 
 
 //thunks
 const login = createAppAsyncThunk<{ isLoginIn: true }, LoginRequestType>(
 		'auth/loginIn',
 		async (formData, thunkAPI) => {
-				const {dispatch, rejectWithValue} = thunkAPI
-				return thunkTryCatch(thunkAPI,
-						async () => {
-								const res = await authAPI.login(formData)
-								if (res.data.resultCode === ResponseCode.Ok) {
-										return {isLoginIn: true}
-								} else {
-										//fieldsErrors to handler in Formik
-										const isShowAppError = !res.data.fieldsErrors.length
-										handleServerAppError(res.data, dispatch, isShowAppError)
-										return rejectWithValue(res.data)
-								}
-						})
+				const res = await authAPI.login(formData)
+				if (res.data.resultCode === ResponseCode.Ok) {
+						return {isLoginIn: true}
+				} else {
+						//fieldsErrors to handler in Formik
+						// const isShowAppError = !res.data.fieldsErrors.length
+						// handleServerAppError(res.data, dispatch, isShowAppError)
+						return thunkAPI.rejectWithValue(res.data)
+				}
 		})
 
 const initializeApp = createAppAsyncThunk<{ isInitialized: true }, void>(
@@ -66,9 +59,11 @@ const initializeApp = createAppAsyncThunk<{ isInitialized: true }, void>(
 										}
 								))
 						}
-				} catch (e) {
-						handleServerNetworkError(e, dispatch)
-				} finally {
+				}
+						// catch (e) {
+						// handleServerNetworkError(e, dispatch)
+						// }
+				finally {
 						return {isInitialized: true}
 				}
 		}
@@ -78,17 +73,13 @@ const logout = createAppAsyncThunk<{ isLoginIn: false }, void>(
 		'auth/logout',
 		async (_, thunkAPI) => {
 				const {dispatch, rejectWithValue} = thunkAPI
-				return thunkTryCatch(thunkAPI,
-						async () => {
-								const res = await authAPI.logout()
-								if (res.data.resultCode === ResponseCode.Ok) {
-										return {isLoginIn: false}
-								} else {
-										handleServerAppError(res.data, dispatch)
-										return rejectWithValue(null)
-								}
-						})
-		}
-)
+				const res = await authAPI.logout()
+				if (res.data.resultCode === ResponseCode.Ok) {
+						return {isLoginIn: false}
+				} else {
+						// handleServerAppError(res.data, dispatch)
+						return rejectWithValue(res.data)
+				}
+		})
 
 export const authThunk = {login, initializeApp, logout}

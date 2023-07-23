@@ -1,5 +1,7 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {AnyAction} from "redux";
+import {ThunkAction} from "features/todolists-lists/tasks/tasks-reducers";
+import {ResponseType} from "features/todolists-lists/todolist-api";
 
 export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed'
 export type AppErrorType = string | null
@@ -11,6 +13,7 @@ const initialState = {
 }
 //значение перед as RequestStatusType дополняет(расширяет) RequestStatusType
 //поэтому оно может отличаваться от уже затипизированных значений
+
 
 export type InitialAppStateType = typeof initialState
 
@@ -43,7 +46,17 @@ export const slice = createSlice({
 						.addMatcher((action: AnyAction) => {
 										return action.type.endsWith('rejected')
 								},
-								(state, action) => {
+								(state, action: ThunkAction<any, ResponseType>) => {
+												console.log(action)
+										if (action.payload) {
+												//don`t show global error for createTodoList and loginIn
+												if (!action.type.includes('createTodoList')
+														&& action.payload.messages.length === 1) {
+														state.error = action.payload.messages[0]
+												}
+										} else {
+												state.error = action.error.message ? action.error.message : 'Some error occurred'
+										}
 										state.status = 'failed'
 								})
 		}
