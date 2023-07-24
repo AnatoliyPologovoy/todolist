@@ -39,7 +39,12 @@ export type commonTaskThunkArgType = removeTaskThunkArgType
 export type ThunkAction<ThunkArg, PromiseResult> = {
 		type: string
 		payload: PromiseResult
-		error?: any
+		error?: {
+				name?: string
+				message?: string
+				stack?: string
+				code?: string
+		}
 		meta: {
 				requestId: string
 				arg: ThunkArg
@@ -120,57 +125,51 @@ const slice = createSlice({
 })
 
 const fetchTasksTC =
-		createAppAsyncThunk<{ todoListId: string, tasks: TaskResponseType[] }, //возвращаемое значение
-				string // принимаемое значение
-				// {dispatch: Dispatch, rejectValue: null} // методы thunkAPI для createAsyncThunk
-				>('tasks/setTasks', async (todoListId, thunkAPI) => {
-						const {dispatch, rejectWithValue} = thunkAPI
+		createAppAsyncThunk<{todoListId: string, tasks: TaskResponseType[]}, string>(
+				'tasks/setTasks',
+				async (todoListId) => {
 						const res = await TodolistApi.getTasks(todoListId)
 						return {todoListId: todoListId, tasks: res.data.items}
 				}
 		)
 
-const removeTaskTC = createAppAsyncThunk<removeTaskThunkArgType,
-		removeTaskThunkArgType>('tasks/removeTasks',
+const removeTaskTC =
+		createAppAsyncThunk<removeTaskThunkArgType, removeTaskThunkArgType>(
+				'tasks/removeTasks',
 		async ({todoListId, taskId}, thunkAPI) => {
-				const {rejectWithValue} = thunkAPI
 				const res =
 						await TodolistApi.removeTask({todoListId, taskId})
 				if (res.data.resultCode === ResponseCode.Ok) {
 						return {taskId, todoListId}
 				} else {
-						return rejectWithValue(res.data)
+						return thunkAPI.rejectWithValue(res.data)
 				}
 		})
 
-const createTaskTC = createAppAsyncThunk<{ task: TaskResponseType },
-		{
-				todoListId: string,
-				title: string
-		}>
+const createTaskTC = createAppAsyncThunk<{task: TaskResponseType},
+		{todoListId: string, title: string}>
 ('tasks/createTask',
 		async ({todoListId, title}, thunkAPI) => {
-				const {dispatch, rejectWithValue} = thunkAPI
 				const res = await TodolistApi.createTask({todoListId, title})
 				if (res.data.resultCode === ResponseCode.Ok) {
 						return {task: res.data.data.item}
 				} else {
-						return rejectWithValue(res.data)
+						return thunkAPI.rejectWithValue(res.data)
 				}
 
 		})
 
 const updateTaskTC = createAppAsyncThunk<updateTaskThunkArgType, updateTaskThunkArgType>
-('task/updateTask', async (
+('task/updateTask',
+		async (
 		{todoListId, taskId, changeValue}, thunkAPI) => {
-		const {dispatch, rejectWithValue, getState} = thunkAPI
+		const {rejectWithValue, getState} = thunkAPI
 
 		const state = getState()
 		const task = state.tasks[todoListId].find(t => t.id === taskId)
 
 		if (!task) {
-				dispatch(appActions.setAppError({error: 'task not found'}))
-				return rejectWithValue(null)
+				return rejectWithValue('task not found')
 		}
 
 		const requestBody: UpdateTaskModelType = {

@@ -41,21 +41,27 @@ export const slice = createSlice({
 										return action.type.endsWith('fulfilled')
 								},
 								(state, action) => {
+										console.log(action)
 										state.status = 'succeeded'
 								})
 						.addMatcher((action: AnyAction) => {
 										return action.type.endsWith('rejected')
 								},
 								(state, action: ThunkAction<any, ResponseType>) => {
-												console.log(action)
+										console.log(action)
 										if (action.payload) {
-												//don`t show global error for createTodoList and loginIn
-												if (!action.type.includes('createTodoList')
-														&& action.payload.messages.length === 1) {
+												//for updateTaskTC case
+												if (typeof action.payload === 'string') {
+														state.error = action.payload
+												}
+												//don`t show global error for createTodoList
+												else if (!action.type.includes('createTodoList')
+														//for loginIn case - fieldsErrors to handle in formik
+														&& !action.payload.fieldsErrors.length) {
 														state.error = action.payload.messages[0]
 												}
 										} else {
-												state.error = action.error.message ? action.error.message : 'Some error occurred'
+												state.error = action?.error?.message ? action.error.message : 'Some error occurred'
 										}
 										state.status = 'failed'
 								})

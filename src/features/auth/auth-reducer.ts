@@ -36,14 +36,11 @@ const login = createAppAsyncThunk<{ isLoginIn: true }, LoginRequestType>(
 				if (res.data.resultCode === ResponseCode.Ok) {
 						return {isLoginIn: true}
 				} else {
-						//fieldsErrors to handler in Formik
-						// const isShowAppError = !res.data.fieldsErrors.length
-						// handleServerAppError(res.data, dispatch, isShowAppError)
 						return thunkAPI.rejectWithValue(res.data)
 				}
 		})
 
-const initializeApp = createAppAsyncThunk<{ isInitialized: true }, void>(
+const initializeApp = createAppAsyncThunk<{isInitialized: true}, void>(
 		'auth/initializeApp',
 		async (_, thunkAPI) => {
 				const {dispatch} = thunkAPI
@@ -60,9 +57,6 @@ const initializeApp = createAppAsyncThunk<{ isInitialized: true }, void>(
 								))
 						}
 				}
-						// catch (e) {
-						// handleServerNetworkError(e, dispatch)
-						// }
 				finally {
 						return {isInitialized: true}
 				}
@@ -72,12 +66,11 @@ const initializeApp = createAppAsyncThunk<{ isInitialized: true }, void>(
 const logout = createAppAsyncThunk<{ isLoginIn: false }, void>(
 		'auth/logout',
 		async (_, thunkAPI) => {
-				const {dispatch, rejectWithValue} = thunkAPI
+				const {rejectWithValue} = thunkAPI
 				const res = await authAPI.logout()
 				if (res.data.resultCode === ResponseCode.Ok) {
 						return {isLoginIn: false}
 				} else {
-						// handleServerAppError(res.data, dispatch)
 						return rejectWithValue(res.data)
 				}
 		})

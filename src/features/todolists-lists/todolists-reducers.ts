@@ -36,13 +36,6 @@ const slice = createSlice({
 				changeTodolistFilter(state, action: PayloadAction<{ filter: FilterType, id: string }>) {
 						const index = state.findIndex(t => t.id === action.payload.id)
 						if (index) state[index].filter = action.payload.filter
-				},
-				changeTodolistEntityStatus(state, action: PayloadAction<{
-						entityStatus: RequestStatusType,
-						id: string
-				}>) {
-						const index = state.findIndex(t => t.id === action.payload.id)
-						if (index) state[index].entityStatus = action.payload.entityStatus
 				}
 		},
 		extraReducers: builder => {
@@ -100,19 +93,15 @@ const slice = createSlice({
 const fetchTodoListsTC = createAppAsyncThunk<{ todoLists: TodoListDomainType[] }>
 ('todoList/fetchTodoList',
 		async (arg, thunkAPI) => {
-				const {dispatch, rejectWithValue} = thunkAPI
 				let todoLists
 				try {
 						const res = await TodolistApi.getTodoLists()
 						todoLists = res.data
 						return {todoLists}
 				}
-				// catch (e) {
-				// 		return rejectWithValue(null)
-				// }
 				finally {
 						todoLists?.forEach(t => {
-								dispatch(tasksThunks.fetchTasksTC(t.id))
+								thunkAPI.dispatch(tasksThunks.fetchTasksTC(t.id))
 						})
 				}
 		})
@@ -120,12 +109,11 @@ const fetchTodoListsTC = createAppAsyncThunk<{ todoLists: TodoListDomainType[] }
 const removeTodoListTC = createAppAsyncThunk<string, string>
 ('todoList/removeTodolist',
 		async (todoListId, thunkAPI) => {
-				const {rejectWithValue} = thunkAPI
 				const res = await TodolistApi.removeTodoList(todoListId)
 				if (res.data.resultCode === ResponseCode.Ok) {
 						return todoListId
 				} else {
-						return rejectWithValue(res.data)
+						return thunkAPI.rejectWithValue(res.data)
 				}
 		})
 
@@ -133,12 +121,11 @@ const createTodoListTC =
 		createAppAsyncThunk<TodoListDomainType, string>(
 				'todoList/createTodoList',
 				async (title, thunkAPI) => {
-						const {rejectWithValue} = thunkAPI
 						const res = await TodolistApi.createTodoList(title)
 						if (res.data.resultCode === ResponseCode.Ok) {
 								return res.data.data.item
 						} else {
-								return rejectWithValue(res.data)
+								return thunkAPI.rejectWithValue(res.data)
 						}
 				})
 
@@ -148,12 +135,11 @@ const updateTodoListTitleTC =
 		('todoList/updateTodoListTitle',
 				async (arg, thunkAPI) => {
 						const {title, todoListId} = arg
-						const {rejectWithValue} = thunkAPI
 						const res = await TodolistApi.changeTitleTodoList(title, todoListId)
 						if (res.data.resultCode === ResponseCode.Ok) {
 								return {title, todoListId}
 						} else {
-								return rejectWithValue(res.data)
+								return thunkAPI.rejectWithValue(res.data)
 						}
 				})
 
