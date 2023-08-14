@@ -1,48 +1,54 @@
-import {instance} from "common/common.api";
+import { instance } from 'common/common.api'
 
 export const TodolistApi = {
     getTodoLists() {
         return instance.get<TodoListDomainType[]>('todo-lists')
     },
     createTodoList(title: string) {
-        return instance.post<ResponseType<{ item: TodoListDomainType }>>('todo-lists', {title})
+        return instance.post<ResponseType<{ item: TodoListDomainType }>>(
+            'todo-lists',
+            { title },
+        )
     },
     removeTodoList(todoId: string) {
         return instance.delete<ResponseType>('todo-lists/' + todoId)
     },
     changeTitleTodoList(title: string, todoId: string) {
-        return instance.put<ResponseType>('todo-lists/' + todoId, {title})
+        return instance.put<ResponseType>('todo-lists/' + todoId, { title })
     },
     getTasks(todoListId: string) {
-        return instance
-            .get<GetTasksRequestType>(`todo-lists/${todoListId}/tasks`)
+        return instance.get<GetTasksRequestType>(
+            `todo-lists/${todoListId}/tasks`,
+        )
     },
-    createTask({todoListId, title} : createTaskRequestArgType) {
-        return instance
-            .post<ResponseType<{ item: TaskResponseType }>>
-            (`todo-lists/${todoListId}/tasks`, {
-                title
-            })
+    createTask({ todoListId, title }: createTaskRequestArgType) {
+        return instance.post<ResponseType<{ item: TaskResponseType }>>(
+            `todo-lists/${todoListId}/tasks`,
+            {
+                title,
+            },
+        )
     },
     changeTask(todoListId: string, taskId: string, task: UpdateTaskModelType) {
-        return instance
-            .put<ResponseType<{ item: TaskResponseType }>>
-            (`todo-lists/${todoListId}/tasks/${taskId}`, task)
+        return instance.put<ResponseType<{ item: TaskResponseType }>>(
+            `todo-lists/${todoListId}/tasks/${taskId}`,
+            task,
+        )
     },
-    removeTask({todoListId, taskId}: removeTaskRequestArgType) {
-        return instance
-            .delete<ResponseType>
-            (`todo-lists/${todoListId}/tasks/${taskId}`)
-    }
+    removeTask({ todoListId, taskId }: removeTaskRequestArgType) {
+        return instance.delete<ResponseType>(
+            `todo-lists/${todoListId}/tasks/${taskId}`,
+        )
+    },
 }
 
 type createTaskRequestArgType = {
-    todoListId: string,
+    todoListId: string
     title: string
 }
 
 type removeTaskRequestArgType = {
-    todoListId: string,
+    todoListId: string
     taskId: string
 }
 
@@ -77,7 +83,7 @@ export enum TaskStatues {
     New = 0,
     inProgress = 1,
     Completed = 2,
-    Draft = 3
+    Draft = 3,
 }
 
 export enum TaskPriorities {
@@ -85,12 +91,12 @@ export enum TaskPriorities {
     Middle = 1,
     Hi = 2,
     Urgently = 3,
-    Later = 4
+    Later = 4,
 }
 
 export const ResponseCode = {
     Ok: 0,
-    Error: 1
+    Error: 1,
 } as const
 
 export type ResponseCodeType = typeof ResponseCode
@@ -123,7 +129,6 @@ export type TaskRequestUpdateType = {
     title?: string
     status?: TaskStatues
 }
-
 
 export type GetTasksRequestType = {
     items: TaskResponseType[]

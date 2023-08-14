@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import {Task} from "../features/todolists-lists/tasks/task/Task";
-import EditableSpan from "../common/components/editableSpan/EditableSpan";
-import {action} from "@storybook/addon-actions";
-import App from "./App";
-import {Provider} from "react-redux";
-import {store} from "./store";
-import {reduxStoreProviderDecorator} from "./reduxStoreProviderDecorator";
+import type { Meta, StoryObj } from '@storybook/react'
+import { Task } from '../features/todolists-lists/tasks/task/Task'
+import EditableSpan from '../common/components/editableSpan/EditableSpan'
+import { action } from '@storybook/addon-actions'
+import App from './App'
+import { Provider } from 'react-redux'
+import { store } from './store'
+import { reduxStoreProviderDecorator } from './reduxStoreProviderDecorator'
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof App> = {
@@ -13,14 +13,12 @@ const meta: Meta<typeof App> = {
     component: App,
     // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
     tags: ['autodocs'],
-    decorators: [reduxStoreProviderDecorator]
-};
+    decorators: [reduxStoreProviderDecorator],
+}
 
-export default meta;
-type Story = StoryObj<typeof App>;
+export default meta
+type Story = StoryObj<typeof App>
 
 export const AppWithReduxStory: Story = {
-    render: () => <App/>
-};
-
-
+    render: () => <App />,
+}

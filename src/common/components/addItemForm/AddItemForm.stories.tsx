@@ -1,11 +1,13 @@
-import type {Meta, StoryObj} from '@storybook/react';
-import {AddItemForm, AddItemFormPropsType} from "common/components/addItemForm/AddItemForm";
-import {action} from "@storybook/addon-actions"
-import {IconButton, TextField} from "@mui/material";
-import AddBoxIcon from "@mui/icons-material/AddBox";
-import s from "features/todolists-lists/todoList/todolist.module.css";
-import React, {ChangeEvent, KeyboardEvent, useState} from "react";
-
+import type { Meta, StoryObj } from '@storybook/react'
+import {
+    AddItemForm,
+    AddItemFormPropsType,
+} from 'common/components/addItemForm/AddItemForm'
+import { action } from '@storybook/addon-actions'
+import { IconButton, TextField } from '@mui/material'
+import AddBoxIcon from '@mui/icons-material/AddBox'
+import s from 'features/todolists-lists/todoList/todolist.module.css'
+import React, { ChangeEvent, KeyboardEvent, useState } from 'react'
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof AddItemForm> = {
@@ -19,41 +21,37 @@ const meta: Meta<typeof AddItemForm> = {
         addItem: {
             description: 'filterButton clicked inside form11',
             action: 'clicked',
-            type: 'boolean'
-        }
+            type: 'boolean',
+        },
     },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof AddItemForm>;
-
+export default meta
+type Story = StoryObj<typeof AddItemForm>
 
 //first way create story
 
 export const AddItemFormStory: Story = {
-
     args: {
         // @ts-ignore
-        addItem: action('filterButton clicked inside form')
+        addItem: action('filterButton clicked inside form'),
     },
-};
+}
 
 //second way create story
 export const AddItemFormStoryWithRender: Story = {
-
-    render: args => <AddItemForm
-        addItem={args.addItem}
-        disabled={false}/>
-};
+    render: (args) => <AddItemForm addItem={args.addItem} disabled={false} />,
+}
 
 //thirteen way create story - new component
-export const AddItemFormStoryWithReactFC: React.FC <AddItemFormPropsType> = (args) => {
+export const AddItemFormStoryWithReactFC: React.FC<AddItemFormPropsType> = (
+    args,
+) => {
     //possible use react hook
     let [inputValue, setInputValue] = useState<string>('')
     let [error, setError] = useState<string | null>('Error text')
 
-
-    const onChangeInput = (evt:ChangeEvent<HTMLInputElement>) => {
+    const onChangeInput = (evt: ChangeEvent<HTMLInputElement>) => {
         setError('') //remove error when we start change input
         setInputValue(evt.currentTarget.value)
     }
@@ -76,14 +74,12 @@ export const AddItemFormStoryWithReactFC: React.FC <AddItemFormPropsType> = (arg
             isAddTaskPossible = false
         }
         if (isAddTaskPossible) {
-            const res = args.addItem(trimmedValue);
-            res
-                .then(data => setInputValue(''))
-                .catch(e => setInputValue(trimmedValue))
-
+            const res = args.addItem(trimmedValue)
+            res.then((data) => setInputValue('')).catch((e) =>
+                setInputValue(trimmedValue),
+            )
         }
     }
-
 
     const onKeyInputHandler = (evt: KeyboardEvent<HTMLInputElement>) => {
         if (evt.key === 'Enter') {
@@ -91,7 +87,7 @@ export const AddItemFormStoryWithReactFC: React.FC <AddItemFormPropsType> = (arg
         }
     }
     // const isError = !!error
-    const isError = true// hardcode line
+    const isError = true // hardcode line
 
     return (
         <div>
@@ -102,16 +98,18 @@ export const AddItemFormStoryWithReactFC: React.FC <AddItemFormPropsType> = (arg
                 onKeyDown={onKeyInputHandler}
                 error={isError}
                 multiline={false}
-                size={"small"}
+                size={'small'}
             />
             <IconButton onClick={addItemHandler}>
-                <AddBoxIcon/>
+                <AddBoxIcon />
             </IconButton>
             {/*{ isError && <div className={s.errorMessage}>{error}</div>}*/}
-            { isError && <div className={s.errorMessage}>{'hardcode error'}</div>}
+            {isError && (
+                <div className={s.errorMessage}>{'hardcode error'}</div>
+            )}
         </div>
-    );
-};
+    )
+}
 
 export const AddItemFormErrorStory: Story = {
     // More on args: https://storybook.js.org/docs/react/writing-stories/args
@@ -124,18 +122,21 @@ export const AddItemFormErrorStory: Story = {
                 <TextField
                     value={''}
                     type="text"
-                    onChange={() => {alert('onChange')}}
-                    onKeyDown={() => {alert('onKeyPress')}}
+                    onChange={() => {
+                        alert('onChange')
+                    }}
+                    onKeyDown={() => {
+                        alert('onKeyPress')
+                    }}
                     error={true}
                     multiline={false}
-                    size={"small"}
+                    size={'small'}
                 />
                 <IconButton onClick={() => args.addItem('')}>
-                    <AddBoxIcon/>
+                    <AddBoxIcon />
                 </IconButton>
                 {error && <div className={s.errorMessage}>{error}</div>}
             </div>
         )
-
-    }
-};
+    },
+}
