@@ -4,16 +4,17 @@ import Checkbox from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormGroup from '@mui/material/FormGroup'
-import FormLabel from '@mui/material/FormLabel'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
-import { useFormik } from 'formik'
-import { validate } from 'common/utils'
-import { useAppDispatch } from 'common/hooks/useAppDispatch'
-import { useAppSelector } from 'app/store'
-import { Navigate } from 'react-router-dom'
-import { authThunk } from 'features/auth/auth-reducer'
-import { ResponseType } from 'features/todolists-lists/todolist-api'
+import {useFormik} from 'formik'
+import {validate} from 'common/utils'
+import {useAppDispatch} from 'common/hooks/useAppDispatch'
+import {useAppSelector} from 'app/store'
+import {Navigate} from 'react-router-dom'
+import {authThunk} from 'features/auth/auth-reducer'
+import {ResponseType} from 'features/todolists-lists/todolist-api'
+import {guestLoginRequestData} from "../../../constants";
+import cl from 'features/auth/login/login.module.css'
 
 export const Login = () => {
     const isLoggedIn = useAppSelector((state) => state.auth.isLoginIn)
@@ -38,31 +39,27 @@ export const Login = () => {
     })
 
     if (isLoggedIn) {
-        return <Navigate to={'/'} />
+        return <Navigate to={'/'}/>
+    }
+
+    const handlerGuestLoginRequestData = () => {
+        dispatch(authThunk.login(guestLoginRequestData))
     }
 
     return (
         <Grid container justifyContent={'center'}>
             <Grid item justifyContent={'center'}>
-                <form onSubmit={formik.handleSubmit}>
+                <form onSubmit={formik.handleSubmit} className={cl.loginForm}>
                     <FormControl>
-                        <FormLabel>
-                            <p>
-                                To log in get registered
-                                <a
-                                    href={
-                                        'https://social-network.samuraijs.com/'
-                                    }
-                                    target={'_blank'}
-                                >
-                                    {' '}
-                                    here
-                                </a>
-                            </p>
-                            <p>or use common test account credentials:</p>
-                            <p>Email: free@samuraijs.com</p>
-                            <p>Password: free</p>
-                        </FormLabel>
+                        <Button
+                            // className={cl.guestLoginBtn}
+                            sx={{marginBottom: '30px'}}
+                            variant={'contained'}
+                            color={'secondary'}
+                            onClick={handlerGuestLoginRequestData}
+                        >
+                            Guest login
+                        </Button>
                         <FormGroup>
                             {/*email input*/}
                             <TextField
@@ -72,7 +69,7 @@ export const Login = () => {
                             />
                             {/*email errors*/}
                             {formik.errors.email && formik.touched.email && (
-                                <span style={{ color: 'red' }}>
+                                <span style={{color: 'red'}}>
                                     {formik.errors.email}
                                 </span>
                             )}
@@ -86,7 +83,7 @@ export const Login = () => {
                             {/*password errors*/}
                             {formik.errors.password &&
                                 formik.touched.password && (
-                                    <span style={{ color: 'red' }}>
+                                    <span style={{color: 'red'}}>
                                         {formik.errors.password}
                                     </span>
                                 )}
