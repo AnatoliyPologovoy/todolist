@@ -97,6 +97,14 @@ export const Login = () => {
                                     />
                                 }
                             />
+                            {/*captcha*/}
+                            {/*<img src={captchaUrl} alt="captchaUrl"/>*/}
+                            {/*<TextField*/}
+                            {/*    type="captcha"*/}
+                            {/*    label="Captcha"*/}
+                            {/*    margin="normal"*/}
+                            {/*    {...formik.getFieldProps('captcha')}*/}
+                            {/*/>*/}
                             <Button
                                 type={'submit'}
                                 variant={'contained'}
